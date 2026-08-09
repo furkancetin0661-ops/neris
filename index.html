@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NERIS | Premium Butik</title>
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/responsive.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<header>
+
+<div class="topbar">
+
+<p>
+✨ Yeni Sezon Ürünleri Satışta
+</p>
+
+</div>
+
+<nav>
+
+<div class="logo">
+
+NERIS
+
+</div>
+
+<ul>
+
+<li><a href="#">Ana Sayfa</a></li>
+
+<li><a href="#">Elbiseler</a></li>
+
+<li><a href="#">Gömlekler</a></li>
+
+<li><a href="#">Pantolonlar</a></li>
+
+<li><a href="#">Ceketler</a></li>
+
+<li><a href="#">İletişim</a></li>
+
+</ul>
+
+<div class="icons">
+
+<i class="fa-solid fa-magnifying-glass"></i>
+
+<i class="fa-regular fa-heart"></i>
+
+<a href="cart.html" class="cart-link">
+
+    <i class="fa-solid fa-cart-shopping"></i>
+
+    <span id="cartCount" class="cart-count">0</span>
+
+</a>
+
+</div>
+
+</nav>
+
+</header>
+
+<section class="hero">
+
+<div class="hero-text">
+
+<h1>
+
+Yeni Sezon
+
+</h1>
+
+<h2>
+
+Premium Kadın Giyim
+
+</h2>
+
+<p>
+
+Şıklığın yeni adresi
+
+</p>
+
+<button>
+
+Alışverişe Başla
+
+</button>
+
+</div>
+
+</section>
+
+<section class="categories">
+
+<h2>
+
+Kategoriler
+
+</h2>
+
+<div class="category-grid">
+
+<div class="category-grid">
+
+    <div class="category-card">
+        <h3>👗 Elbiseler</h3>
+    </div>
+
+    <div class="category-card">
+        <h3>👚 Gömlekler</h3>
+    </div>
+
+    <div class="category-card">
+        <h3>👖 Pantolonlar</h3>
+    </div>
+
+    <div class="category-card">
+        <h3>🧥 Ceketler</h3>
+    </div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="featured">
+
+<div class="section-title">
+
+    <h2>Yeni Gelenler</h2>
+
+    <p>Bu haftanın en popüler ürünleri</p>
+
+</div>
+
+<div class="filters">
+
+    <input
+        type="text"
+        id="searchInput"
+        placeholder="🔍 Ürün ara...">
+
+    <select id="categoryFilter">
+        <option value="Tümü">Tüm Kategoriler</option>
+        <option value="Elbise">Elbise</option>
+        <option value="Gömlek">Gömlek</option>
+        <option value="Pantolon">Pantolon</option>
+        <option value="Ceket">Ceket</option>
+        <option value="Etek">Etek</option>
+        <option value="Takım">Takım</option>
+    </select>
+
+</div>
+
+<div id="products" class="product-grid">
+    <!-- Firebase ürünleri buraya gelecek -->
+</div>
+
+</section>
+
+<section class="campaign">
+
+<div class="campaign-content">
+
+<h2>
+Yeni Sezona Özel
+</h2>
+
+<h3>
+%20 İndirim
+</h3>
+
+<p>
+
+Belirli ürünlerde geçerli.
+
+</p>
+
+<button>
+
+Kampanyayı İncele
+
+</button>
+
+</div>
+
+</section>
+
+<section class="instagram">
+
+<h2>
+
+Instagram'da NERIS
+
+</h2>
+
+<div class="instagram-grid">
+
+<div class="insta-box"></div>
+
+<div class="insta-box"></div>
+
+<div class="insta-box"></div>
+
+<div class="insta-box"></div>
+
+<div class="insta-box"></div>
+
+<div class="insta-box"></div>
+
+</div>
+
+</section>
+
+<section class="best-sellers">
+
+    <div class="section-title">
+
+        <h2>Çok Satanlar</h2>
+
+        <p>En çok tercih edilen ürünler</p>
+
+    </div>
+
+    <div class="product-grid" id="bestProducts">
+
+        <!-- Firebase'den gelecek -->
+
+    </div>
+
+</section>
+
+<section class="about">
+
+    <div class="about-content">
+
+        <h2>NERIS</h2>
+
+        <p>
+
+            NERIS, modern ve zarif kadın giyimini bir araya getiren
+            premium bir butik markasıdır.
+
+            Kaliteli kumaşlar, özgün tasarımlar ve güvenli alışveriş
+            anlayışıyla sizlere hizmet vermektedir.
+
+        </p>
+
+    </div>
+
+</section>
+
+<section class="reviews">
+
+    <h2>Müşteri Yorumları</h2>
+
+    <div class="review-grid">
+
+        <div class="review-card">
+
+            ⭐⭐⭐⭐⭐
+
+            <p>
+
+                Elbisenin kumaşı gerçekten çok kaliteli.
+
+            </p>
+
+            <span>
+
+                Ayşe K.
+
+            </span>
+
+        </div>
+
+        <div class="review-card">
+
+            ⭐⭐⭐⭐⭐
+
+            <p>
+
+                Kargo çok hızlı geldi.
+
+            </p>
+
+            <span>
+
+                Elif T.
+
+            </span>
+
+        </div>
+
+        <div class="review-card">
+
+            ⭐⭐⭐⭐⭐
+
+            <p>
+
+                Göründüğünden daha güzel.
+
+            </p>
+
+            <span>
+
+                Zeynep A.
+
+            </span>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section class="newsletter">
+
+    <h2>
+
+        Kampanyaları Kaçırma
+
+    </h2>
+
+    <p>
+
+        Yeni ürünlerden ve indirimlerden ilk sen haberdar ol.
+
+    </p>
+
+    <form>
+
+        <input
+            type="email"
+            placeholder="E-posta adresiniz">
+
+        <button>
+
+            Abone Ol
+
+        </button>
+
+    </form>
+
+</section>
+
+<section class="advantages">
+
+    <div class="advantage-card">
+
+        <i class="fa-solid fa-truck-fast"></i>
+
+        <h3>Hızlı Teslimat</h3>
+
+        <p>Türkiye'nin her yerine güvenli gönderim.</p>
+
+    </div>
+
+    <div class="advantage-card">
+
+        <i class="fa-solid fa-shield-halved"></i>
+
+        <h3>Güvenli Ödeme</h3>
+
+        <p>Shopier ile güvenli alışveriş deneyimi.</p>
+
+    </div>
+
+    <div class="advantage-card">
+
+        <i class="fa-solid fa-rotate-left"></i>
+
+        <h3>Kolay İade</h3>
+
+        <p>14 gün içinde kolay iade imkanı.</p>
+
+    </div>
+
+</section>
+
+<footer>
+
+<div class="footer-container">
+
+<div class="footer-column">
+
+<h3>NERIS</h3>
+
+<p>
+
+Modern kadın giyiminde kalite ve şıklığın adresi.
+
+</p>
+
+</div>
+
+<div class="footer-column">
+
+<h3>Kurumsal</h3>
+
+<ul>
+
+<li><a href="#">Hakkımızda</a></li>
+
+<li><a href="#">İletişim</a></li>
+
+<li><a href="#">Gizlilik Politikası</a></li>
+
+<li><a href="#">Mesafeli Satış Sözleşmesi</a></li>
+
+</ul>
+
+</div>
+
+<div class="footer-column">
+
+<h3>Kategoriler</h3>
+
+<ul>
+
+<li><a href="#">Elbise</a></li>
+
+<li><a href="#">Gömlek</a></li>
+
+<li><a href="#">Pantolon</a></li>
+
+<li><a href="#">Ceket</a></li>
+
+</ul>
+
+</div>
+
+<div class="footer-column">
+
+<h3>Bizi Takip Edin</h3>
+
+<div class="social-icons">
+
+<a href="#"><i class="fab fa-instagram"></i></a>
+
+<a href="#"><i class="fab fa-tiktok"></i></a>
+
+<a href="#"><i class="fab fa-facebook-f"></i></a>
+
+<a href="#"><i class="fab fa-x-twitter"></i></a>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="footer-bottom">
+
+    <p>
+
+        © 2026 NERIS. Tüm hakları saklıdır.
+
+    </p>
+
+</div>
+
+</footer>
+
+<div class="mobile-menu">
+
+<a href="#">
+<i class="fa-solid fa-house"></i>
+<span>Ana Sayfa</span>
+</a>
+
+<a href="#">
+<i class="fa-solid fa-shirt"></i>
+<span>Kategoriler</span>
+</a>
+
+<a href="#">
+<i class="fa-solid fa-heart"></i>
+<span>Favoriler</span>
+</a>
+
+<a href="#">
+<i class="fa-solid fa-cart-shopping"></i>
+<span>Sepet</span>
+</a>
+
+<a href="#">
+<i class="fa-solid fa-user"></i>
+<span>Hesabım</span>
+</a>
+
+</div>
+
+<script type="module" src="js/firebase.js"></script>
+
+<script type="module" src="js/app.js"></script>
+
+<div id="scrollTop" class="scroll-top">
+    <i class="fa-solid fa-arrow-up"></i>
+</div>
+
+<div id="loading-screen">
+    <div class="loader"></div>
+    <h2>NERIS</h2>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NERIS | Ürün</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/product.css">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<header>
+
+    <a href="index.html" class="logo">
+        NERIS
+    </a>
+
+    <a href="cart.html" class="cart-link">
+    <i class="fa-solid fa-cart-shopping"></i>
+    <span id="cartCount" class="cart-count">0</span>
+</a>
+
+</header>
+
+<main class="product-page">
+
+    <div class="product-image">
+
+        <img id="productImage" src="" alt="Ürün">
+
+        <div class="gallery">
+
+            <img class="thumb active" id="thumb1">
+
+            <img class="thumb" id="thumb2">
+
+            <img class="thumb" id="thumb3">
+
+        </div>
+
+    </div>
+
+    <div class="product-details">
+<div id="productBadge" class="product-badge"></div>
+        <h1 id="productName"></h1>
+
+        <p id="productCategory" class="category"></p>
+
+        <div class="price-box">
+
+    <span id="oldPrice" class="old-price"></span>
+
+    <h2 id="productPrice"></h2>
+
+</div>
+
+        <p id="productDescription"></p>
+
+        <div class="stock">
+
+            <p id="stockText"></p>
+
+        </div>
+
+        <h3>Beden</h3>
+
+        <div class="sizes">
+
+            <button data-size="XS">XS</button>
+            <button data-size="S">S</button>
+            <button data-size="M">M</button>
+            <button data-size="L">L</button>
+            <button data-size="XL">XL</button>
+
+        </div>
+
+        <div class="actions">
+
+            <button id="addCart">
+                🛒 Sepete Ekle
+            </button>
+
+            <a id="buyNow" target="_blank">
+
+                <button>
+                    Satın Al
+                </button>
+
+            </a>
+
+        </div>
+
+        <div class="advantages">
+
+            <div>
+                <i class="fa-solid fa-truck-fast"></i>
+                Aynı Gün Kargo
+            </div>
+
+            <div>
+                <i class="fa-solid fa-shield-halved"></i>
+                Güvenli Ödeme
+            </div>
+
+            <div>
+                <i class="fa-solid fa-rotate-left"></i>
+                14 Gün Kolay İade
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+<script type="module" src="js/product.js"></script>
+
+</body>
+</html>

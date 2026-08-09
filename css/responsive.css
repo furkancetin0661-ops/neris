@@ -1,0 +1,200 @@
+/* ==========================
+   TABLET (1024px ve altı)
+========================== */
+
+@media (max-width:1024px){
+
+    nav{
+        padding:20px 5%;
+    }
+
+    nav ul{
+        gap:20px;
+    }
+
+    .hero h1{
+        font-size:48px;
+    }
+
+    .hero h2{
+        font-size:30px;
+    }
+
+    .category-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .product-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .review-grid{
+        grid-template-columns:1fr;
+    }
+
+    .advantages{
+        grid-template-columns:1fr;
+    }
+
+    .footer-container{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+/* ==========================
+   TELEFON (768px ve altı)
+========================== */
+
+@media (max-width:768px){
+
+    nav{
+        padding:18px;
+    }
+
+    nav ul{
+        display:none;
+    }
+
+    .icons{
+        gap:15px;
+        font-size:18px;
+    }
+
+    .logo{
+        font-size:28px;
+    }
+
+    .hero{
+        height:70vh;
+        padding:20px;
+    }
+
+    .hero h1{
+        font-size:38px;
+    }
+
+    .hero h2{
+        font-size:24px;
+    }
+
+    .hero p{
+        font-size:15px;
+        line-height:26px;
+    }
+
+    .hero button{
+        width:100%;
+        max-width:300px;
+    }
+
+    .category-grid{
+        grid-template-columns:1fr;
+    }
+
+    .product-grid{
+        grid-template-columns:1fr;
+    }
+
+    .footer-container{
+        grid-template-columns:1fr;
+        text-align:center;
+    }
+
+    .mobile-menu{
+        display:flex;
+    }
+
+    body{
+        padding-bottom:80px;
+    }
+
+}
+
+/* ==========================
+   KÜÇÜK TELEFONLAR (480px ve altı)
+========================== */
+
+@media (max-width:480px){
+
+    .topbar{
+        font-size:12px;
+        padding:10px;
+    }
+
+    .hero h1{
+        font-size:30px;
+    }
+
+    .hero h2{
+        font-size:20px;
+    }
+
+    .hero p{
+        font-size:14px;
+    }
+
+    .categories,
+    .featured,
+    .campaign,
+    .about,
+    .reviews,
+    .newsletter,
+    .advantages{
+        padding:60px 20px;
+    }
+
+    .section-title h2,
+    .categories h2,
+    .reviews h2,
+    .campaign h2,
+    .newsletter h2,
+    .about h2{
+        font-size:30px;
+    }
+
+    .product-card img{
+        height:300px;
+    }
+
+    .newsletter form{
+        flex-direction:column;
+        align-items:center;
+    }
+
+    .newsletter input{
+        width:100%;
+    }
+
+    .newsletter button{
+        width:100%;
+    }
+
+    .scroll-top{
+        width:45px;
+        height:45px;
+        right:15px;
+        bottom:90px;
+    }
+}
+
+/* ==========================
+   YARDIMCI SINIFLAR
+========================== */
+
+img{
+    max-width:100%;
+    display:block;
+}
+
+button{
+    font-family:inherit;
+}
+
+input{
+    font-family:inherit;
+}
+
+a{
+    -webkit-tap-highlight-color: transparent;
+}

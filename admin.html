@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NERIS Admin Paneli</title>
+
+<link rel="stylesheet" href="css/admin.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>NERIS Admin Paneli</h1>
+
+<div class="form">
+
+<input
+type="text"
+id="productName"
+placeholder="Ürün Adı">
+
+<input
+type="number"
+id="productPrice"
+placeholder="Fiyat">
+
+
+<input
+type="text"
+id="productImage"
+placeholder="Resim Linki">
+
+<input
+type="text"
+id="productLink"
+placeholder="Shopier Linki">
+<input
+id="productImage2"
+type="text"
+placeholder="2. Resim Linki">
+
+<input
+id="productImage3"
+type="text"
+placeholder="3. Resim Linki">
+
+<input
+id="productOldPrice"
+type="number"
+placeholder="Eski Fiyat">
+
+<select id="productBadge">
+
+<option value="">Etiket Yok</option>
+<option value="YENİ">YENİ</option>
+<option value="ÇOK SATAN">ÇOK SATAN</option>
+<option value="İNDİRİM">İNDİRİM</option>
+
+</select>
+<select id="productCategory">
+
+    <option value="">Kategori Seç</option>
+    <input
+
+
+    <option>Elbise</option>
+    <option>Gömlek</option>
+    <option>Pantolon</option>
+    <option>Ceket</option>
+    <option>Etek</option>
+    <option>Takım</option>
+
+</select>
+
+<textarea
+id="productDescription"
+placeholder="Ürün Açıklaması">
+</textarea>
+
+<input
+type="number"
+id="productStock"
+placeholder="Stok Adedi">
+
+<button id="addProduct">
+
+Ürünü Ekle
+
+</button>
+
+</div>
+
+<div id="status"></div>
+<hr>
+
+<h2>Eklenen Ürünler</h2>
+
+<div id="productList"></div>
+
+</div>
+
+<script type="module" src="js/admin.js"></script>
+
+</body>
+</html>

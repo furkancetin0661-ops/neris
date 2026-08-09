@@ -1,0 +1,83 @@
+body {
+    background: #0a0a0a;
+    color: #fff;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* GENEL ALAN */
+.cart-section {
+    display: flex;
+    justify-content: space-between;
+    padding: 60px;
+}
+
+/* ÜRÜNLER */
+#cartItems {
+    width: 60%;
+}
+
+#cartItems div {
+    background: #111;
+    border: 1px solid #222;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    transition: 0.3s;
+}
+
+#cartItems div:hover {
+    border-color: #d4af37;
+    transform: scale(1.02);
+}
+
+#cartItems h4 {
+    margin: 0;
+    font-size: 18px;
+}
+
+#cartItems p {
+    color: #aaa;
+}
+
+/* SEPET ÖZET */
+.cart-summary {
+    width: 30%;
+    background: #111;
+    padding: 30px;
+    border-radius: 16px;
+    border: 1px solid #222;
+    box-shadow: 0 0 20px rgba(212,175,55,0.1);
+}
+
+.cart-summary h3 {
+    margin-bottom: 20px;
+}
+
+.cart-summary p {
+    margin: 10px 0;
+    color: #ccc;
+}
+
+/* ALTIN RENK */
+#genelToplam {
+    color: #d4af37;
+    font-size: 22px;
+}
+
+/* BUTON */
+#checkoutBtn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 15px;
+    background: linear-gradient(135deg, #d4af37, #b8962e);
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#checkoutBtn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(212,175,55,0.5);
+}
