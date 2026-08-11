@@ -1208,13 +1208,54 @@
     }
 
     /* ÜST BAR */
-    .topbar {
-        width: 100%;
-        min-height: 46px;
-        padding: 8px 12px;
-        overflow: hidden;
-        white-space: nowrap;
-    }
+    /* MOBİL ÜST BİLGİ MENÜSÜ */
+.topbar {
+    display: flex !important;
+    width: 100% !important;
+    height: 42px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    white-space: nowrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 0 18px !important;
+    gap: 20px !important;
+    box-sizing: border-box !important;
+    scrollbar-width: none !important;
+}
+
+.topbar::-webkit-scrollbar {
+    display: none !important;
+}
+
+.topbar-left,
+.topbar-right {
+    display: flex !important;
+    align-items: center !important;
+    flex-shrink: 0 !important;
+    gap: 20px !important;
+}
+
+.topbar a,
+.topbar button,
+.topbar span {
+    flex-shrink: 0 !important;
+    font-size: 10px !important;
+    letter-spacing: 1.5px !important;
+    white-space: nowrap !important;
+}
+
+.topbar-separator {
+    display: inline-block !important;
+    flex-shrink: 0 !important;
+}
+
+/* Ana header artık bunun altında */
+.main-header,
+.navbar {
+    height: 82px !important;
+    min-height: 82px !important;
+}
 
     .topbar-left,
     .topbar-right {
