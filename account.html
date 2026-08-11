@@ -242,15 +242,19 @@
 
 
         <!-- SİPARİŞLER -->
-        <section id="orders" style="display:none;">
+       <section id="orders" style="display:none;">
 
-          <h2 class="section-title">Siparişlerim</h2>
+    <h2 class="section-title">Siparişlerim</h2>
 
-          <div class="empty">
-            Henüz bir siparişiniz bulunmuyor.
-          </div>
+    <div id="ordersList">
 
-        </section>
+        <div class="empty" id="ordersLoading">
+            Siparişleriniz yükleniyor...
+        </div>
+
+    </div>
+
+</section>
 
 
         <!-- FAVORİLER -->
@@ -282,6 +286,14 @@
       signOut
     }
       from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+    import {
+    getFirestore,
+    collection,
+    query,
+    where,
+    getDocs,
+    orderBy
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 
     // NERIS FIREBASE
@@ -308,6 +320,7 @@
     const app = initializeApp(firebaseConfig);
 
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
 
     // GİRİŞ KONTROLÜ
@@ -391,7 +404,77 @@
       button.classList.add("active");
 
     };
+// SİPARİŞLERİ FIREBASE'DEN GETİR
+async function loadOrders(user) {
+    const ordersList = document.getElementById("ordersList");
 
+    if (!ordersList) return;
+
+    ordersList.innerHTML = `
+        <div class="empty">
+            Siparişleriniz yükleniyor...
+        </div>
+    `;
+
+    try {
+        const ordersQuery = query(
+            collection(db, "siparisler"),
+            where("kullaniciId", "==", user.uid)
+        );
+
+        const snapshot = await getDocs(ordersQuery);
+
+        if (snapshot.empty) {
+            ordersList.innerHTML = `
+                <div class="empty">
+                    Henüz bir siparişiniz bulunmuyor.
+                </div>
+            `;
+            return;
+        }
+
+        ordersList.innerHTML = "";
+
+        snapshot.forEach((docSnapshot) => {
+            const order = docSnapshot.data();
+
+            const orderCard = document.createElement("div");
+            orderCard.className = "order-card";
+
+            orderCard.innerHTML = `
+                <div class="order-header">
+                    <strong>Sipariş #${docSnapshot.id.substring(0, 8)}</strong>
+                    <span>${order.durum || "Hazırlanıyor"}</span>
+                </div>
+
+                <div class="order-info">
+                    <p><strong>Ürün:</strong> ${order.urunAdi || "Ürün bilgisi yok"}</p>
+                    <p><strong>Adet:</strong> ${order.adet || 1}</p>
+                    <p><strong>Toplam:</strong> ${order.toplam || order.fiyat || "—"} TL</p>
+                </div>
+            `;
+
+            ordersList.appendChild(orderCard);
+        });
+
+    } catch (error) {
+        console.error("Siparişler yüklenemedi:", error);
+
+        ordersList.innerHTML = `
+            <div class="empty">
+                Siparişler yüklenirken bir hata oluştu.
+            </div>
+        `;
+    }
+}
+
+
+// KULLANICI GİRİŞ YAPTIĞINDA SİPARİŞLERİ HAZIRLA
+onAuthStateChanged(auth, function(user) {
+    if (user) {
+        loadOrders(user);
+    }
+});
   </script>
 
 </body>
