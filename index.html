@@ -2684,18 +2684,10 @@ auth.onAuthStateChanged(function(user) {
         // Giriş yapan kullanıcının adını göster
         const userName = user.displayName || user.email.split("@")[0];
 
-        loginLink.innerHTML = "♙ " + userName;
+accountName.textContent = userName;
         loginLink.href = "#";
 
-        loginLink.onclick = function(e) {
-            e.preventDefault();
-
-            if (confirm("Hesabınızdan çıkış yapmak istiyor musunuz?")) {
-                auth.signOut().then(function() {
-                    window.location.reload();
-                });
-            }
-        };
+        
 
     } else {
         // Giriş yapılmamışsa
