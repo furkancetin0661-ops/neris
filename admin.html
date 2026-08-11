@@ -1,110 +1,48 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>NERIS Admin Paneli</title>
-
-<link rel="stylesheet" href="css/admin.css">
-
+<title>Neris Admin</title>
 </head>
 
-<body>
+<body style="background:black;color:white;padding:40px">
 
-<div class="container">
+<h2>Ürün Ekle</h2>
 
-<h1>NERIS Admin Paneli</h1>
+<input id="name" placeholder="Ürün adı"><br><br>
+<input id="price" placeholder="Fiyat"><br><br>
+<input id="img" placeholder="Görsel URL"><br><br>
+<input id="link" placeholder="Shopier link"><br><br>
 
-<div class="form">
+<button onclick="addProduct()">EKLE</button>
 
-<input
-type="text"
-id="productName"
-placeholder="Ürün Adı">
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-<input
-type="number"
-id="productPrice"
-placeholder="Fiyat">
+const firebaseConfig = {
+  apiKey: "AIzaSyBcoeTk7aZhocmMQVPMHjVK-NfG0JUiS7I",
+  authDomain: "nerissite-dc8ec.firebaseapp.com",
+  projectId: "nerissite-dc8ec",
+  storageBucket: "nerissite-dc8ec.firebasestorage.app",
+  messagingSenderId: "943518451048",
+  appId: "1:943518451048:web:e07e8594f5c1cc53c1c2dd"
+};
 
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-<input
-type="text"
-id="productImage"
-placeholder="Resim Linki">
+window.addProduct = async function() {
+  await addDoc(collection(db, "products"), {
+    name: document.getElementById("name").value,
+    price: document.getElementById("price").value,
+    img: document.getElementById("img").value,
+    link: document.getElementById("link").value
+  });
 
-<input
-type="text"
-id="productLink"
-placeholder="Shopier Linki">
-<input
-id="productImage2"
-type="text"
-placeholder="2. Resim Linki">
-
-<input
-id="productImage3"
-type="text"
-placeholder="3. Resim Linki">
-
-<input
-id="productOldPrice"
-type="number"
-placeholder="Eski Fiyat">
-
-<select id="productBadge">
-
-<option value="">Etiket Yok</option>
-<option value="YENİ">YENİ</option>
-<option value="ÇOK SATAN">ÇOK SATAN</option>
-<option value="İNDİRİM">İNDİRİM</option>
-
-</select>
-<select id="productCategory">
-
-    <option value="">Kategori Seç</option>
-    <input
-
-
-    <option>Elbise</option>
-    <option>Gömlek</option>
-    <option>Pantolon</option>
-    <option>Ceket</option>
-    <option>Etek</option>
-    <option>Takım</option>
-
-</select>
-
-<textarea
-id="productDescription"
-placeholder="Ürün Açıklaması">
-</textarea>
-
-<input
-type="number"
-id="productStock"
-placeholder="Stok Adedi">
-
-<button id="addProduct">
-
-Ürünü Ekle
-
-</button>
-
-</div>
-
-<div id="status"></div>
-<hr>
-
-<h2>Eklenen Ürünler</h2>
-
-<div id="productList"></div>
-
-</div>
-
-<script type="module" src="js/admin.js"></script>
+  alert("Ürün eklendi!");
+}
+</script>
 
 </body>
 </html>

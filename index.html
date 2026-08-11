@@ -1,527 +1,2061 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
+  <title>Neris Premium</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-<title>NERIS | Premium Butik</title>
+  <style>
 
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/responsive.css">
+    *{
+      box-sizing:border-box;
+    }
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
+    html{
+      scroll-behavior:smooth;
+    }
 
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    body{
+      margin:0;
+      font-family:Poppins,sans-serif;
+      background:#0a0a0a;
+      color:#fff;
+    }
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
+/* =========================
+   NERIS ÜST BİLGİ BAR
+========================= */
+.topbar{
+  width:100%;
+  height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 50px;
+  background:#050505;
+  border-bottom:1px solid rgba(212,175,55,.16);
+  color:#bdbdbd;
+  font-size:11px;
+  letter-spacing:1.2px;
+  position:relative;
+  z-index:1001;
+}
+.topbar-left,.topbar-right{
+  display:flex;
+  align-items:center;
+  gap:22px;
+}
+.topbar a,.topbar button{
+  color:#bdbdbd;
+  text-decoration:none;
+  background:none;
+  border:0;
+  padding:0;
+  font:inherit;
+  letter-spacing:inherit;
+  cursor:pointer;
+  transition:.25s ease;
+}
+.topbar a:hover,.topbar button:hover{
+  color:#d4af37;
+}
+.topbar-separator{
+  width:1px;
+  height:12px;
+  background:rgba(255,255,255,.18);
+}
+.nav-action{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  cursor:pointer;
+}
+.nav-action .nav-icon{
+  font-size:16px;
+  line-height:1;
+}
+.navbar{
+  top:0;
+}
+.search-panel{
+  display:none;
+  position:absolute;
+  right:50px;
+  top:calc(100% + 10px);
+  width:min(430px,calc(100vw - 30px));
+  background:#101010;
+  border:1px solid rgba(212,175,55,.28);
+  box-shadow:0 18px 45px rgba(0,0,0,.55);
+  padding:14px;
+  z-index:1100;
+}
+.search-panel.open{display:flex;gap:8px}
+.search-panel input{
+  flex:1;
+  min-width:0;
+  background:#080808;
+  color:#fff;
+  border:1px solid #333;
+  padding:12px 13px;
+  outline:none;
+  font-family:Poppins,sans-serif;
+}
+.search-panel input:focus{border-color:#d4af37}
+.search-panel button{
+  background:#d4af37;
+  color:#050505;
+  border:0;
+  padding:0 16px;
+  cursor:pointer;
+  font-weight:600;
+}
+.info-modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.78);
+  z-index:3000;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.info-modal.open{display:flex}
+.info-box{
+  width:min(560px,100%);
+  max-height:85vh;
+  overflow:auto;
+  background:#101010;
+  border:1px solid rgba(212,175,55,.3);
+  box-shadow:0 25px 70px rgba(0,0,0,.7);
+  padding:35px;
+  position:relative;
+}
+.info-box h2{
+  margin:0 0 15px;
+  font-family:'Playfair Display',serif;
+  font-size:30px;
+  color:#fff;
+}
+.info-box p{color:#aaa;line-height:1.8;font-size:14px}
+.info-close{
+  position:absolute;
+  top:14px;
+  right:16px;
+  background:none;
+  border:0;
+  color:#aaa;
+  font-size:25px;
+  cursor:pointer;
+}
+.info-close:hover{color:#d4af37}
+.info-form{
+  display:grid;
+  gap:10px;
+  margin-top:20px;
+}
+.info-form input,.info-form textarea{
+  width:100%;
+  padding:12px;
+  background:#080808;
+  border:1px solid #333;
+  color:#fff;
+  font-family:Poppins,sans-serif;
+  outline:none;
+}
+.info-form textarea{min-height:110px;resize:vertical}
+.info-form button{
+  padding:12px;
+  border:1px solid #d4af37;
+  background:#d4af37;
+  color:#000;
+  font-weight:600;
+  cursor:pointer;
+}
+@media(max-width:700px){
+  .topbar{
+    height:auto;
+    min-height:42px;
+    padding:9px 14px;
+    font-size:9px;
+  }
+  .topbar-left,.topbar-right{gap:10px}
+  .topbar-left .optional-link{display:none}
+  .topbar-separator{display:none}
+  .search-panel{right:15px}
+}
+
+    /* =========================
+       NAVBAR
+    ========================= */
+
+    .navbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      width:100%;
+      padding:20px 50px;
+      background:rgba(0,0,0,0.82);
+      border-bottom:1px solid rgba(255,255,255,0.1);
+      backdrop-filter:blur(12px);
+      position:sticky;
+      top:0;
+      z-index:1000;
+      box-shadow:0 5px 25px rgba(0,0,0,0.35);
+    }
+
+    .logo{
+      flex:1;
+      font-family:'Playfair Display',serif;
+      font-size:32px;
+      font-weight:700;
+      letter-spacing:4px;
+      color:#d4af37;
+      text-decoration:none;
+    }
+
+    .menu{
+      flex:1;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:10px;
+    }
+
+    .menu a{
+      position:relative;
+      margin:0 10px;
+      color:#fff;
+      text-decoration:none;
+      font-size:14px;
+      font-weight:500;
+      transition:0.3s;
+      padding:8px 0;
+    }
+
+    .menu a:hover{
+      color:#d4af37;
+    }
+
+    .menu a::after{
+      content:"";
+      position:absolute;
+      left:0;
+      bottom:0;
+      width:0;
+      height:2px;
+      background:#d4af37;
+      transition:0.3s;
+    }
+
+    .menu a:hover::after{
+      width:100%;
+    }
+
+    .icons{
+      flex:1;
+      display:flex;
+      justify-content:flex-end;
+      align-items:center;
+      gap:18px;
+    }
+
+    .icons span{
+      cursor:pointer;
+      font-size:19px;
+      transition:0.3s;
+    }
+
+    .icons span:hover{
+      color:#d4af37;
+      transform:scale(1.08);
+    }
+
+    /* =========================
+       HERO
+    ========================= */
+
+    .hero{
+      min-height:80vh;
+      background:
+        linear-gradient(rgba(0,0,0,0.48),rgba(0,0,0,0.58)),
+        url("https://images.unsplash.com/photo-1520975916090-3105956dac38?q=80&w=2070")
+        center/cover no-repeat;
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      position:relative;
+    }
+
+    .hero-text{
+      position:relative;
+      z-index:2;
+      padding:20px;
+    }
+
+    .hero h1{
+      margin:0 0 15px;
+      font-family:'Playfair Display',serif;
+      font-size:64px;
+      font-weight:600;
+      letter-spacing:2px;
+    }
+
+    .hero p{
+      margin:0;
+      color:#ddd;
+      font-size:18px;
+    }
+
+    .hero-btn{
+      display:inline-block;
+      margin-top:28px;
+      padding:14px 35px;
+      background:linear-gradient(45deg,#d4af37,#f5dea5);
+      color:#000;
+      text-decoration:none;
+      border-radius:8px;
+      font-weight:600;
+      transition:0.3s;
+    }
+
+    .hero-btn:hover{
+      transform:scale(1.05);
+      box-shadow:0 10px 25px rgba(212,175,55,0.35);
+    }
+
+    /* =========================
+       GÜVEN BAR
+    ========================= */
+
+    .trust{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:50px;
+      padding:22px 20px;
+      background:#111;
+      border-bottom:1px solid #222;
+      font-size:14px;
+      color:#ddd;
+    }
+
+    /* =========================
+       PRODUCTS
+    ========================= */
+
+    .products{
+  max-width:1280px;
+  margin:0 auto;
+  padding:80px 35px;
+}
+
+.products-title{
+  text-align:center;
+  margin-bottom:45px;
+}
+
+.products-title h2{
+  font-family:'Playfair Display',serif;
+  font-size:42px;
+  font-weight:500;
+  letter-spacing:1px;
+  margin-bottom:12px;
+}
+
+.products-title p{
+  color:#888;
+  font-size:14px;
+  letter-spacing:1px;
+}
+
+.products-title::after{
+  content:"";
+  display:block;
+  width:45px;
+  height:2px;
+  background:#d4af37;
+  margin:20px auto 0;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,300px));
+    justify-content:center;
+    gap:30px;
+    max-width:1400px;
+    margin:0 auto;
+}
+
+.card{
+  background:#111;
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:0;
+  overflow:hidden;
+  position:relative;
+  transition:all .4s ease;
+}
+
+.card:hover{
+  transform:translateY(-8px);
+  border-color:rgba(212,175,55,.35);
+  box-shadow:0 18px 45px rgba(0,0,0,.55);
+}
+
+.card-image{
+  height:390px;
+  overflow:hidden;
+}
+
+.card-image img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform .6s ease;
+}
+
+.card:hover .card-image img{
+  transform:scale(1.06);
+}
+
+.badge{
+  top:14px;
+  left:14px;
+  background:#d4af37;
+  color:#080808;
+  padding:6px 12px;
+  border-radius:0;
+  font-size:10px;
+  letter-spacing:1.5px;
+  font-weight:600;
+}
+
+.card-content{
+  padding:20px;
+}
+
+.card h3{
+  font-family:'Playfair Display',serif;
+  font-size:18px;
+  font-weight:500;
+  margin:0 0 10px;
+}
+
+.card p{
+  color:#d4af37;
+  font-size:15px;
+  margin:0;
+}
+
+.buy{
+    display:block;
+    width:100%;
+    box-sizing:border-box;
+    padding:13px 20px;
+    margin-top:16px;
+    text-align:center;
+    text-decoration:none;
+    color:#d4af37;
+    background:transparent;
+    border:1px solid #d4af37;
+    border-radius:0;
+    font-size:13px;
+    font-weight:500;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    transition:all 0.35s ease;
+}
+
+.buy:hover{
+    background:#d4af37;
+    color:#000;
+    box-shadow:0 8px 25px rgba(212,175,55,0.25);
+}
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    .footer{
+      margin-top:40px;
+      padding:60px 20px;
+      text-align:center;
+      background:#050505;
+      border-top:1px solid #222;
+    }
+
+    .footer h2{
+      margin:0 0 10px;
+      font-family:'Playfair Display',serif;
+      letter-spacing:4px;
+    }
+
+    .footer p{
+      color:#888;
+    }
+
+    .footer a{
+      color:#d4af37;
+      text-decoration:none;
+    }
+
+    /* =========================
+       MOBİL
+    ========================= */
+
+    @media(max-width:900px){
+
+      .navbar{
+        padding:18px 20px;
+      }
+
+      .logo{
+        font-size:25px;
+      }
+
+      .menu a{
+        margin:0 6px;
+        font-size:12px;
+      }
+
+      .grid{
+        grid-template-columns:repeat(2,1fr);
+      }
+
+      .hero h1{
+        font-size:46px;
+      }
+    }
+
+    @media(max-width:600px){
+
+      .navbar{
+        padding:16px;
+      }
+
+      .topbar-right .nav-action{
+        font-size:9px;
+      }
+
+      .menu{
+        display:none;
+      }
+
+      .logo{
+        font-size:25px;
+      }
+
+      .icons{
+        flex:0;
+      }
+
+      .hero{
+        min-height:70vh;
+      }
+
+      .hero h1{
+        font-size:38px;
+      }
+
+      .hero p{
+        font-size:15px;
+      }
+
+      .trust{
+        flex-direction:column;
+        gap:12px;
+      }
+
+      .products{
+        padding:45px 15px;
+      }
+
+      .grid{
+        grid-template-columns:1fr 1fr;
+        gap:12px;
+      }
+
+      .card-image{
+        height:260px;
+      }
+
+      .card-content{
+        padding:12px;
+      }
+
+      .card h3{
+        font-size:14px;
+      }
+
+      .buy{
+        padding:11px 5px;
+        font-size:13px;
+      }
+    }
+/* NERIS PREMIUM KATEGORİLER */
+
+.categories{
+  max-width:1280px;
+  margin:0 auto;
+  padding:80px 35px;
+}
+
+.categories-title{
+  text-align:center;
+  margin-bottom:40px;
+}
+
+.categories-title span{
+  color:#d4af37;
+  font-size:11px;
+  letter-spacing:3px;
+}
+
+.categories-title h2{
+  margin:10px 0 0;
+  font-family:'Playfair Display',serif;
+  font-size:40px;
+  font-weight:500;
+}
+
+.category-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:20px;
+}
+
+.category-card{
+  position:relative;
+  height:430px;
+  overflow:hidden;
+  text-decoration:none;
+  background:#111;
+}
+
+.category-card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  transition:transform .6s ease;
+}
+
+.category-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    to top,
+    rgba(0,0,0,.85),
+    rgba(0,0,0,.05)
+  );
+}
+
+.category-card:hover img{
+  transform:scale(1.07);
+}
+
+.category-overlay{
+  position:absolute;
+  z-index:2;
+  left:25px;
+  bottom:25px;
+  color:#fff;
+}
+
+.category-overlay h3{
+  margin:0 0 7px;
+  font-family:'Playfair Display',serif;
+  font-size:25px;
+  font-weight:500;
+}
+
+.category-overlay span{
+  color:#d4af37;
+  font-size:12px;
+  letter-spacing:1px;
+}
+
+@media(max-width:900px){
+  .category-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media(max-width:600px){
+  .categories{
+    padding:55px 15px;
+  }
+
+  .category-grid{
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+
+  .category-card{
+    height:280px;
+  }
+
+  .categories-title h2{
+    font-size:32px;
+  }
+ }
+/* NERIS AVANTAJLAR */
+
+.benefits{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    max-width:1200px;
+    margin:0 auto;
+    padding:55px 40px;
+    background:#0b0b0b;
+    border-top:1px solid rgba(212,175,55,0.15);
+    border-bottom:1px solid rgba(212,175,55,0.15);
+}
+
+.benefit{
+    text-align:center;
+    padding:10px 30px;
+    position:relative;
+}
+
+.benefit:not(:last-child)::after{
+    content:"";
+    position:absolute;
+    right:0;
+    top:15%;
+    width:1px;
+    height:70%;
+    background:rgba(212,175,55,0.25);
+}
+
+.benefit-icon{
+    width:46px;
+    height:46px;
+    margin:0 auto 18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid #d4af37;
+    border-radius:50%;
+    color:#d4af37;
+    font-size:20px;
+}
+
+.benefit h3{
+    margin:0 0 10px;
+    color:#fff;
+    font-family:'Playfair Display',serif;
+    font-size:18px;
+    font-weight:500;
+}
+
+.benefit p{
+    margin:0;
+    color:#999;
+    font-size:13px;
+    line-height:1.6;
+}
+
+/* MOBİL */
+
+@media(max-width:768px){
+
+    .benefits{
+        grid-template-columns:1fr 1fr;
+        padding:35px 15px;
+        gap:30px 0;
+    }
+
+    .benefit{
+        padding:10px 15px;
+    }
+
+    .benefit:nth-child(2)::after{
+        display:none;
+    }
+
+    .benefit h3{
+        font-size:16px;
+    }
+
+    .benefit p{
+        font-size:12px;
+    }
+}
+/* ================================
+   NERIS PREMIUM FOOTER
+================================ */
+
+.footer{
+    background:#0b0b0b;
+    color:#fff;
+    padding:70px 7% 30px;
+    border-top:1px solid rgba(212,175,55,.25);
+}
+
+.footer-container{
+    max-width:1400px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:1fr 1.2fr 1.2fr 1fr 1fr;
+    gap:50px;
+    align-items:start;
+}
+
+.footer-column{
+    display:flex;
+    flex-direction:column;
+}
+
+.footer-column h3{
+    color:#d4af37;
+    font-size:13px;
+    letter-spacing:2px;
+    margin:0 0 22px;
+    font-weight:600;
+}
+
+.footer-column a{
+    color:#bdbdbd;
+    text-decoration:none;
+    font-size:13px;
+    margin-bottom:13px;
+    transition:.3s ease;
+}
+
+.footer-column a:hover{
+    color:#d4af37;
+    padding-left:4px;
+}
+
+
+/* NERIS LOGO */
+
+.footer-brand{
+    text-align:center;
+    padding-top:5px;
+}
+
+.footer-logo{
+    font-family:'Playfair Display',serif;
+    color:#d4af37;
+    font-size:38px;
+    letter-spacing:8px;
+    margin-bottom:10px;
+}
+
+.footer-brand p{
+    color:#999;
+    font-size:11px;
+    letter-spacing:4px;
+    margin:5px 0;
+}
+
+.footer-brand-small{
+    font-size:9px !important;
+    letter-spacing:3px !important;
+    color:#666 !important;
+}
+
+
+/* ALT FOOTER */
+
+.footer-bottom{
+    max-width:1400px;
+    margin:55px auto 0;
+    padding-top:30px;
+    border-top:1px solid rgba(255,255,255,.08);
+    text-align:center;
+}
+
+
+/* INSTAGRAM */
+
+/* NERIS INSTAGRAM */
+
+.footer-instagram{
+    position:relative;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:11px;
+
+    min-width:190px;
+    padding:13px 24px;
+
+    color:#d4af37;
+    background:transparent;
+
+    border:1px solid rgba(212,175,55,.45);
+    border-radius:2px;
+
+    text-decoration:none;
+
+    font-size:12px;
+    font-weight:500;
+    letter-spacing:2px;
+
+    overflow:hidden;
+    transition:all .4s ease;
+}
+
+
+/* Instagram ikonu */
+
+.footer-instagram span:first-child{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    width:20px;
+    height:20px;
+
+    font-size:20px;
+    line-height:1;
+
+    transition:transform .4s ease;
+}
+
+
+/* Üzerine gelince */
+
+.footer-instagram:hover{
+    color:#0b0b0b;
+    background:#d4af37;
+
+    border-color:#d4af37;
+
+    box-shadow:
+        0 0 15px rgba(212,175,55,.18),
+        0 0 35px rgba(212,175,55,.08);
+
+    transform:translateY(-2px);
+}
+
+
+.footer-instagram:hover span:first-child{
+    transform:scale(1.15) rotate(5deg);
+}
+
+
+/* Altın ışık efekti */
+
+.footer-instagram::before{
+    content:"";
+
+    position:absolute;
+    top:0;
+    left:-120%;
+
+    width:70%;
+    height:100%;
+
+    background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.18),
+        transparent
+    );
+
+    transform:skewX(-20deg);
+    transition:left .6s ease;
+}
+
+
+.footer-instagram:hover::before{
+    left:150%;
+}
+
+
+/* ALT ÇİZGİ */
+
+.footer-line{
+    width:60px;
+    height:1px;
+    background:#d4af37;
+    margin:25px auto;
+}
+
+
+/* TELİF */
+
+.footer-copyright{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:15px;
+    color:#777;
+    font-size:11px;
+    letter-spacing:.5px;
+}
+
+.footer-separator{
+    color:#d4af37;
+}
+
+
+/* TABLET */
+
+@media(max-width:900px){
+
+    .footer{
+        padding:55px 25px 25px;
+    }
+
+    .footer-container{
+        grid-template-columns:repeat(2,1fr);
+        gap:40px 25px;
+    }
+
+    .footer-brand{
+        grid-column:1 / -1;
+        grid-row:1;
+        margin-bottom:10px;
+    }
+
+    .footer-column{
+        text-align:center;
+    }
+
+}
+
+
+/* TELEFON */
+
+@media(max-width:600px){
+
+    .footer{
+        padding:45px 20px 25px;
+    }
+
+    .footer-container{
+        grid-template-columns:1fr 1fr;
+        gap:35px 15px;
+    }
+
+    .footer-brand{
+        grid-column:1 / -1;
+    }
+
+    .footer-logo{
+        font-size:30px;
+        letter-spacing:6px;
+    }
+
+    .footer-column h3{
+        font-size:11px;
+        letter-spacing:1.5px;
+    }
+
+    .footer-column a{
+        font-size:11px;
+        margin-bottom:10px;
+    }
+
+    .footer-bottom{
+        margin-top:40px;
+    }
+
+    .footer-copyright{
+        flex-direction:column;
+        gap:8px;
+        line-height:1.6;
+    }
+
+    .footer-separator{
+        display:none;
+    }
+
+}
+
+@media(max-width:480px){
+
+    .footer-container{
+        grid-template-columns:1fr;
+        text-align:center;
+    }
+
+    .footer-brand{
+        grid-column:auto;
+    }
+
+    .footer-column h3{
+        margin-bottom:15px;
+    }
+
+    .footer-column a:hover{
+        padding-left:0;
+    }
+
+}
+.footer-instagram{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    padding:14px 26px;
+    border:1px solid rgba(212,175,55,.55);
+    color:#d4af37;
+    text-decoration:none;
+    font-size:13px;
+    letter-spacing:1.8px;
+    transition:all .3s ease;
+}
+
+.instagram-icon{
+    width:18px;
+    height:18px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.8;
+}
+
+.footer-instagram:hover{
+    background:#d4af37;
+    color:#080808;
+    border-color:#d4af37;
+    transform:translateY(-2px);
+}
+.payment-logos{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:32px;
+    margin:28px auto;
+    padding:0;
+    flex-wrap:nowrap;
+    box-sizing:border-box;
+}
+
+.payment-logos img{
+    display:block;
+    width:90px;
+    height:32px;
+    object-fit:contain;
+    flex:0 0 90px;
+}
+
+.payment-logos span{
+    font-family:Arial,sans-serif;
+    font-size:15px;
+    font-weight:700;
+    letter-spacing:1px;
+    color:#bdbdbd;
+    opacity:.9;
+    transition:.3s ease;
+}
+
+.payment-logos span:hover{
+    color:#d4af37;
+    transform:translateY(-2px);
+}
+/* FOOTER MERKEZLEME */
+.footer-bottom {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.footer-bottom > * {
+    margin-left: auto;
+    margin-right: auto;
+}
+/* FOOTER ANA DÜZEN */
+.footer-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    align-items: start;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+/* Tüm footer bölümleri eşit genişlikte */
+.footer-container .footer-column,
+.footer-container .footer-brand {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+}
+  </style>
 </head>
 
 <body>
 
-<header>
+  <!-- ÜST BİLGİ BAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <a href="#" onclick="openInfo('story');return false;">HİKAYEMİZ</a>
+      <span class="topbar-separator"></span>
+      <a href="#" onclick="openInfo('tracking');return false;">SİPARİŞ TAKİP</a>
+      <span class="topbar-separator"></span>
+      <a href="#" class="optional-link" onclick="openInfo('contact');return false;">BİZE ULAŞIN</a>
+    </div>
 
-<div class="topbar">
+    <div class="topbar-right">
+      <button class="nav-action" onclick="toggleSearch()">
+        <span class="nav-icon">⌕</span> ARAMA
+      </button>
+      <span class="topbar-separator"></span>
+      <button class="nav-action" onclick="openInfo('login')">
+        <span class="nav-icon">♙</span> GİRİŞ YAP
+      </button>
+      <span class="topbar-separator"></span>
+      <button class="nav-action" onclick="openInfo('favorites')">
+        <span class="nav-icon">♡</span> FAVORİLER
+      </button>
+    </div>
 
-<p>
-✨ Yeni Sezon Ürünleri Satışta
-</p>
+    <div class="search-panel" id="searchPanel">
+      <input id="siteSearch" type="search" placeholder="Ürün ara..." onkeydown="if(event.key==='Enter')searchProducts()">
+      <button onclick="searchProducts()">ARA</button>
+    </div>
+  </div>
 
+  <!-- NAVBAR -->
+  <div class="navbar">
+
+    <a href="#" class="logo">NERIS</a>
+
+    <div class="menu">
+      <a href="#">Ana Sayfa</a>
+      <a href="#products">Ürünler</a>
+      <a href="#categories">Kategoriler</a>
+      <a href="#footer">İletişim</a>
+    </div>
+
+    <div class="icons">
+    <span>🛒</span>
 </div>
 
-<nav>
+  </div>
 
-<div class="logo">
 
-NERIS
+  <!-- HERO -->
+  <section class="hero">
 
-</div>
+    <div class="hero-text">
+      <h1>Yeni Sezon</h1>
+      <p>Şıklığın en sade hali</p>
+      <a href="#products" class="hero-btn">Alışverişe Başla</a>
+    </div>
 
-<ul>
+  </section>
+  <!-- KATEGORİLER -->
+<section class="categories" id="categories">
 
-<li><a href="#">Ana Sayfa</a></li>
+  <div class="categories-title">
+    <span>NERIS COLLECTION</span>
+    <h2>Kategorileri Keşfet</h2>
+  </div>
 
-<li><a href="#">Elbiseler</a></li>
+  <div class="category-grid">
 
-<li><a href="#">Gömlekler</a></li>
+    <a href="#products" class="category-card">
+      <img src="https://picsum.photos/600/750?random=11" alt="Elbiseler">
+      <div class="category-overlay">
+        <h3>Elbiseler</h3>
+        <span>Keşfet →</span>
+      </div>
+    </a>
 
-<li><a href="#">Pantolonlar</a></li>
+    <a href="#products" class="category-card">
+      <img src="https://picsum.photos/600/750?random=12" alt="Ceketler">
+      <div class="category-overlay">
+        <h3>Ceketler</h3>
+        <span>Keşfet →</span>
+      </div>
+    </a>
 
-<li><a href="#">Ceketler</a></li>
+    <a href="#products" class="category-card">
+      <img src="https://picsum.photos/600/750?random=13" alt="Yeni Gelenler">
+      <div class="category-overlay">
+        <h3>Yeni Gelenler</h3>
+        <span>Keşfet →</span>
+      </div>
+    </a>
 
-<li><a href="#">İletişim</a></li>
+    <a href="#products" class="category-card">
+      <img src="https://picsum.photos/600/750?random=14" alt="İndirim">
+      <div class="category-overlay">
+        <h3>İndirim</h3>
+        <span>Keşfet →</span>
+      </div>
+    </a>
 
-</ul>
+  </div>
 
-<div class="icons">
+</section>
 
-<i class="fa-solid fa-magnifying-glass"></i>
 
-<i class="fa-regular fa-heart"></i>
+  <!-- GÜVEN -->
+  <!-- NERIS AVANTAJLAR -->
+<section class="benefits">
 
-<a href="cart.html" class="cart-link">
+    <div class="benefit">
+        <div class="benefit-icon">✦</div>
+        <h3>Ücretsiz Kargo</h3>
+        <p>2.500 TL üzeri kargo bedava</p>
+    </div>
 
-    <i class="fa-solid fa-cart-shopping"></i>
+    <div class="benefit">
+        <div class="benefit-icon">↺</div>
+        <h3>Kolay İade</h3>
+        <p>14 gün içinde güvenli iade</p>
+    </div>
 
-    <span id="cartCount" class="cart-count">0</span>
+    <div class="benefit">
+        <div class="benefit-icon">♢</div>
+        <h3>Güvenli Ödeme</h3>
+        <p>Güvenli ödeme altyapısı</p>
+    </div>
 
+    <div class="benefit">
+        <div class="benefit-icon">✧</div>
+        <h3>Özenli Paketleme</h3>
+        <p>Her sipariş NERİS özeniyle</p>
+    </div>
+
+</section>
+
+
+  <!-- ÜRÜNLER -->
+  <section class="products" id="products">
+
+    <div class="products-title">
+      <h2>Yeni Ürünler</h2>
+      <p>Neris'in yeni sezon koleksiyonunu keşfedin</p>
+    </div>
+
+    <div class="grid" id="productsGrid">
+
+      <!-- Şimdilik örnek ürünler -->
+      <div class="card">
+
+        <div class="badge">NEW</div>
+        
+
+        <div class="card-image">
+          <img src="https://picsum.photos/500/650?random=1" alt="Siyah Elbise">
+        </div>
+
+        <div class="card-content">
+          <h3>Siyah Elbise</h3>
+          <p>₺899</p>
+          <a href="#" class="buy">Satın Al</a>
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="badge">NEW</div>
+
+        <div class="card-image">
+          <img src="https://picsum.photos/500/650?random=2" alt="Beyaz Elbise">
+        </div>
+
+        <div class="card-content">
+          <h3>Beyaz Elbise</h3>
+          <p>₺799</p>
+          <a href="#" class="buy">Satın Al</a>
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="badge">NEW</div>
+
+        <div class="card-image">
+          <img src="https://picsum.photos/500/650?random=3" alt="Kırmızı Elbise">
+        </div>
+
+        <div class="card-content">
+          <h3>Kırmızı Elbise</h3>
+          <p>₺999</p>
+          <a href="#" class="buy">Satın Al</a>
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="badge">NEW</div>
+
+        <div class="card-image">
+          <img src="https://picsum.photos/500/650?random=4" alt="Bej Elbise">
+        </div>
+
+        <div class="card-content">
+          <h3>Bej Elbise</h3>
+          <p>₺849</p>
+          <a href="#" class="buy">Satın Al</a>
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- FOOTER -->
+  <!-- NERIS PREMIUM FOOTER -->
+<footer class="footer" id="footer">
+
+    <div class="footer-container">
+
+        <!-- HIZLI MENÜ -->
+        <div class="footer-column">
+            <h3>HIZLI MENÜ</h3>
+
+            <a href="#products">Ürünler</a>
+            <a href="#categories">Kategoriler</a>
+            <a href="#" onclick="openInfo('story'); return false;">Hikayemiz</a>
+            <a href="#" onclick="openInfo('contact'); return false;">İletişim</a>
+        </div>
+
+
+        <!-- ALIŞVERİŞ BİLGİLERİ -->
+        <div class="footer-column">
+            <h3>ALIŞVERİŞ BİLGİLERİ</h3>
+
+            <a href="#" onclick="openInfo('shipping'); return false;">
+    Sipariş ve Teslimat
+</a>
+            <a href="#" onclick="openInfo('distance'); return false;">
+    Mesafeli Satış Sözleşmesi
+</a>
+            <a href="#" onclick="openInfo('privacy'); return false;">
+    KVKK ve Gizlilik
+</a>
+            <a href="#" onclick="openInfo('returns'); return false;">
+    İptal ve İade Koşulları
+</a>
+            <a href="#" onclick="openInfo('preinfo'); return false;">
+    Ön Bilgilendirme Formu
+</a>
+        </div>
+
+
+        <!-- MERKEZ LOGO -->
+        <div class="footer-brand">
+
+            <div class="footer-logo">NERIS</div>
+
+            <p>
+                Şıklığın en sade hali
+            </p>
+
+            <p class="footer-brand-small">
+                PREMIUM WOMEN'S WEAR
+            </p>
+
+        </div>
+
+
+        <!-- ÜRÜN KATEGORİLERİ -->
+        <div class="footer-column">
+            <h3>ÜRÜN KATEGORİLERİ</h3>
+
+            <a href="#categories">Elbiseler</a>
+            <a href="#categories">Ceketler</a>
+            <a href="#categories">Yeni Gelenler</a>
+            <a href="#categories">İndirim</a>
+        </div>
+
+
+        <!-- DİĞER SEÇENEKLER -->
+        <div class="footer-column">
+            <h3>DİĞER SEÇENEKLER</h3>
+
+            <a href="#products">Yeni Ürünler</a>
+            <a href="#products">Çok Satanlar</a>
+            <a href="#products">İndirimli Ürünler</a>
+            <a href="#products">Tüm Ürünler</a>
+        </div>
+
+    </div>
+
+
+    <!-- ALT FOOTER -->
+    <div class="footer-bottom">
+
+        <!-- INSTAGRAM -->
+        <a
+    href="https://www.instagram.com/nerisbutik_/"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="footer-instagram"
+    aria-label="NERIS Instagram"
+>
+    <svg class="instagram-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="5"></rect>
+        <circle cx="12" cy="12" r="4"></circle>
+        <circle cx="17.5" cy="6.5" r="1"></circle>
+    </svg>
+    <span>@nerisbutik_</span>
 </a>
 
-</div>
 
-</nav>
+        <!-- AYIRICI -->
+        <div class="footer-line"></div>
 
-</header>
 
-<section class="hero">
-
-<div class="hero-text">
-
-<h1>
-
-Yeni Sezon
-
-</h1>
-
-<h2>
-
-Premium Kadın Giyim
-
-</h2>
-
-<p>
-
-Şıklığın yeni adresi
-
-</p>
-
-<button>
-
-Alışverişe Başla
-
-</button>
-
-</div>
-
-</section>
-
-<section class="categories">
-
-<h2>
-
-Kategoriler
-
-</h2>
-
-<div class="category-grid">
-
-<div class="category-grid">
-
-    <div class="category-card">
-        <h3>👗 Elbiseler</h3>
-    </div>
-
-    <div class="category-card">
-        <h3>👚 Gömlekler</h3>
-    </div>
-
-    <div class="category-card">
-        <h3>👖 Pantolonlar</h3>
-    </div>
-
-    <div class="category-card">
-        <h3>🧥 Ceketler</h3>
-    </div>
-
-</div>
-
-</div>
-
-</section>
-
-<section class="featured">
-
-<div class="section-title">
-
-    <h2>Yeni Gelenler</h2>
-
-    <p>Bu haftanın en popüler ürünleri</p>
-
-</div>
-
-<div class="filters">
-
-    <input
-        type="text"
-        id="searchInput"
-        placeholder="🔍 Ürün ara...">
-
-    <select id="categoryFilter">
-        <option value="Tümü">Tüm Kategoriler</option>
-        <option value="Elbise">Elbise</option>
-        <option value="Gömlek">Gömlek</option>
-        <option value="Pantolon">Pantolon</option>
-        <option value="Ceket">Ceket</option>
-        <option value="Etek">Etek</option>
-        <option value="Takım">Takım</option>
-    </select>
-
-</div>
-
-<div id="products" class="product-grid">
-    <!-- Firebase ürünleri buraya gelecek -->
-</div>
-
-</section>
-
-<section class="campaign">
-
-<div class="campaign-content">
-
-<h2>
-Yeni Sezona Özel
-</h2>
-
-<h3>
-%20 İndirim
-</h3>
-
-<p>
-
-Belirli ürünlerde geçerli.
-
-</p>
-
-<button>
-
-Kampanyayı İncele
-
-</button>
-
-</div>
-
-</section>
-
-<section class="instagram">
-
-<h2>
-
-Instagram'da NERIS
-
-</h2>
-
-<div class="instagram-grid">
-
-<div class="insta-box"></div>
-
-<div class="insta-box"></div>
-
-<div class="insta-box"></div>
-
-<div class="insta-box"></div>
-
-<div class="insta-box"></div>
-
-<div class="insta-box"></div>
-
-</div>
-
-</section>
-
-<section class="best-sellers">
-
-    <div class="section-title">
-
-        <h2>Çok Satanlar</h2>
-
-        <p>En çok tercih edilen ürünler</p>
-
-    </div>
-
-    <div class="product-grid" id="bestProducts">
-
-        <!-- Firebase'den gelecek -->
-
-    </div>
-
-</section>
-
-<section class="about">
-
-    <div class="about-content">
-
-        <h2>NERIS</h2>
-
-        <p>
-
-            NERIS, modern ve zarif kadın giyimini bir araya getiren
-            premium bir butik markasıdır.
-
-            Kaliteli kumaşlar, özgün tasarımlar ve güvenli alışveriş
-            anlayışıyla sizlere hizmet vermektedir.
-
-        </p>
-
-    </div>
-
-</section>
-
-<section class="reviews">
-
-    <h2>Müşteri Yorumları</h2>
-
-    <div class="review-grid">
-
-        <div class="review-card">
-
-            ⭐⭐⭐⭐⭐
-
-            <p>
-
-                Elbisenin kumaşı gerçekten çok kaliteli.
-
-            </p>
+        <!-- ALT BİLGİ -->
+        <div class="footer-copyright">
 
             <span>
-
-                Ayşe K.
-
+                © 2026 NERIS. Tüm hakları saklıdır.
             </span>
 
-        </div>
-
-        <div class="review-card">
-
-            ⭐⭐⭐⭐⭐
-
-            <p>
-
-                Kargo çok hızlı geldi.
-
-            </p>
+            <span class="footer-separator">|</span>
 
             <span>
-
-                Elif T.
-
-            </span>
-
-        </div>
-
-        <div class="review-card">
-
-            ⭐⭐⭐⭐⭐
-
-            <p>
-
-                Göründüğünden daha güzel.
-
-            </p>
-
-            <span>
-
-                Zeynep A.
-
+                Premium Kadın Giyim
             </span>
 
         </div>
 
     </div>
-
-</section>
-
-<section class="newsletter">
-
-    <h2>
-
-        Kampanyaları Kaçırma
-
-    </h2>
-
-    <p>
-
-        Yeni ürünlerden ve indirimlerden ilk sen haberdar ol.
-
-    </p>
-
-    <form>
-
-        <input
-            type="email"
-            placeholder="E-posta adresiniz">
-
-        <button>
-
-            Abone Ol
-
-        </button>
-
-    </form>
-
-</section>
-
-<section class="advantages">
-
-    <div class="advantage-card">
-
-        <i class="fa-solid fa-truck-fast"></i>
-
-        <h3>Hızlı Teslimat</h3>
-
-        <p>Türkiye'nin her yerine güvenli gönderim.</p>
-
-    </div>
-
-    <div class="advantage-card">
-
-        <i class="fa-solid fa-shield-halved"></i>
-
-        <h3>Güvenli Ödeme</h3>
-
-        <p>Shopier ile güvenli alışveriş deneyimi.</p>
-
-    </div>
-
-    <div class="advantage-card">
-
-        <i class="fa-solid fa-rotate-left"></i>
-
-        <h3>Kolay İade</h3>
-
-        <p>14 gün içinde kolay iade imkanı.</p>
-
-    </div>
-
-</section>
-
-<footer>
-
-<div class="footer-container">
-
-<div class="footer-column">
-
-<h3>NERIS</h3>
-
-<p>
-
-Modern kadın giyiminde kalite ve şıklığın adresi.
-
-</p>
-
-</div>
-
-<div class="footer-column">
-
-<h3>Kurumsal</h3>
-
-<ul>
-
-<li><a href="#">Hakkımızda</a></li>
-
-<li><a href="#">İletişim</a></li>
-
-<li><a href="#">Gizlilik Politikası</a></li>
-
-<li><a href="#">Mesafeli Satış Sözleşmesi</a></li>
-
-</ul>
-
-</div>
-
-<div class="footer-column">
-
-<h3>Kategoriler</h3>
-
-<ul>
-
-<li><a href="#">Elbise</a></li>
-
-<li><a href="#">Gömlek</a></li>
-
-<li><a href="#">Pantolon</a></li>
-
-<li><a href="#">Ceket</a></li>
-
-</ul>
-
-</div>
-
-<div class="footer-column">
-
-<h3>Bizi Takip Edin</h3>
-
-<div class="social-icons">
-
-<a href="#"><i class="fab fa-instagram"></i></a>
-
-<a href="#"><i class="fab fa-tiktok"></i></a>
-
-<a href="#"><i class="fab fa-facebook-f"></i></a>
-
-<a href="#"><i class="fab fa-x-twitter"></i></a>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="footer-bottom">
-
-    <p>
-
-        © 2026 NERIS. Tüm hakları saklıdır.
-
-    </p>
-
-</div>
 
 </footer>
 
-<div class="mobile-menu">
 
-<a href="#">
-<i class="fa-solid fa-house"></i>
-<span>Ana Sayfa</span>
-</a>
 
-<a href="#">
-<i class="fa-solid fa-shirt"></i>
-<span>Kategoriler</span>
-</a>
+  <!-- NERIS BİLGİ / İŞLEM PENCERELERİ -->
+  <div class="info-modal" id="infoModal" onclick="if(event.target===this)closeInfo()">
+    <div class="info-box">
+      <button class="info-close" onclick="closeInfo()" aria-label="Kapat">×</button>
+      <div id="infoContent"></div>
+    </div>
+  </div>
 
-<a href="#">
-<i class="fa-solid fa-heart"></i>
-<span>Favoriler</span>
-</a>
 
-<a href="#">
-<i class="fa-solid fa-cart-shopping"></i>
-<span>Sepet</span>
-</a>
+  <script>
+    function toggleSearch(){
+      const panel = document.getElementById('searchPanel');
+      panel.classList.toggle('open');
+      if(panel.classList.contains('open')){
+        setTimeout(()=>document.getElementById('siteSearch').focus(),50);
+      }
+    }
 
-<a href="#">
-<i class="fa-solid fa-user"></i>
-<span>Hesabım</span>
-</a>
+    function searchProducts(){
+      const input = document.getElementById('siteSearch');
+      const term = input.value.trim().toLowerCase();
+      const cards = document.querySelectorAll('#productsGrid .card');
+      let found = 0;
 
-</div>
+      cards.forEach(card=>{
+        const text = card.innerText.toLowerCase();
+        const visible = !term || text.includes(term);
+        card.style.display = visible ? '' : 'block';
+        if(visible) found++;
+      });
 
-<script type="module" src="js/firebase.js"></script>
+      document.getElementById('products').scrollIntoView({behavior:'smooth'});
+      if(term && !found){
+        alert('“'+input.value+'” için ürün bulunamadı.');
+      }
+    }
 
-<script type="module" src="js/app.js"></script>
+    function openInfo(type){
+      const content = document.getElementById('infoContent');
+      const data = {
+        story: {
+    title:'Neris Hikayesi',
+    body:`
+        <div style="text-align:center;">
 
-<div id="scrollTop" class="scroll-top">
-    <i class="fa-solid fa-arrow-up"></i>
-</div>
+            <div style="
+                color:#d4af37;
+                font-family:Georgia,serif;
+                font-size:28px;
+                letter-spacing:6px;
+                margin-bottom:25px;
+            ">
+                NERIS
+            </div>
 
-<div id="loading-screen">
-    <div class="loader"></div>
-    <h2>NERIS</h2>
-</div>
+            <p style="font-size:17px;line-height:1.9;color:#555;">
+                Neris, kadın giyimde zarafet ve güçlü bir stil anlayışını
+                bir araya getirmek amacıyla doğdu.
+            </p>
+
+            <p style="font-size:17px;line-height:1.9;color:#555;">
+                Tasarımlarımızda modern çizgileri, özenli detayları ve
+                kaliteli işçiliği bir arada sunmayı hedefliyoruz.
+            </p>
+
+            <p style="font-size:17px;line-height:1.9;color:#555;">
+                Her parçanın yalnızca bir kıyafet değil, kişinin kendi
+                stilini yansıtan özel bir dokunuş olduğuna inanıyoruz.
+            </p>
+
+            <div style="
+                width:60px;
+                height:1px;
+                background:#d4af37;
+                margin:30px auto;
+            "></div>
+
+            <p style="
+                font-family:Georgia,serif;
+                font-size:18px;
+                line-height:1.8;
+                color:#222;
+            ">
+                Neris'in dünyasında sadelik,
+                zarafet ve güçlü kadın stili bir araya gelir.
+            </p>
+
+        </div>
+    `
+},
+shipping: {
+    title: 'Sipariş ve Teslimat',
+    body: `
+        <div style="text-align:center;">
+
+            <div style="
+                color:#d4af37;
+                font-family:Georgia,serif;
+                font-size:24px;
+                letter-spacing:4px;
+                margin-bottom:25px;
+            ">
+                NERIS
+            </div>
+
+            <p style="font-size:15px;line-height:1.8;color:#b8b8b8;">
+                Siparişleriniz güvenli şekilde hazırlanır ve özenle paketlenir.
+            </p>
+
+            <p style="font-size:15px;line-height:1.8;color:#b8b8b8;">
+                Siparişiniz onaylandıktan sonra hazırlanma sürecine alınır
+                ve kargo firmasına teslim edilir.
+            </p>
+
+            <div style="
+                width:60px;
+                height:1px;
+                background:#d4af37;
+                margin:25px auto;
+            "></div>
+
+            <p style="
+                font-family:Georgia,serif;
+                font-size:18px;
+                color:#f5f5f5;
+                line-height:1.8;
+            ">
+                NERIS'te her sipariş,<br>
+                özenle hazırlanır.
+            </p>
+
+        </div>
+    `
+},
+distance: {
+    title: 'Mesafeli Satış Sözleşmesi',
+    body: `
+        <div style="
+            text-align:center;
+            color:#d4af37;
+            font-family:Georgia,serif;
+            font-size:24px;
+            letter-spacing:4px;
+            margin-bottom:25px;
+        ">
+            NERIS
+        </div>
+
+        <p style="
+            font-size:14px;
+            line-height:1.8;
+            color:#b8b8b8;
+        ">
+            Bu sözleşme, NERIS üzerinden gerçekleştirilen ürün satışlarında
+            alıcı ve satıcının hak ve yükümlülüklerini düzenlemek amacıyla
+            hazırlanmıştır.
+        </p>
+
+        <p style="
+            font-size:14px;
+            line-height:1.8;
+            color:#b8b8b8;
+        ">
+            Siparişin oluşturulmasıyla birlikte ürün, fiyat, ödeme,
+            teslimat ve iade koşulları alıcıya sunulan bilgiler kapsamında
+            değerlendirilir.
+        </p>
+
+        <div style="
+            width:60px;
+            height:1px;
+            background:#d4af37;
+            margin:25px auto;
+        "></div>
+
+        <p style="
+            font-size:13px;
+            line-height:1.8;
+            color:#999;
+            text-align:center;
+        ">
+            Sözleşmenin güncel ve hukuken geçerli tam metni,
+            satış işlemi sırasında müşteriye sunulacaktır.
+        </p>
+    `
+},
+privacy: {
+    title: 'KVKK ve Gizlilik',
+    body: `
+        <div style="text-align:center;">
+
+            <div style="
+                color:#d4af37;
+                font-family:Georgia,serif;
+                font-size:24px;
+                letter-spacing:4px;
+                margin-bottom:25px;
+            ">
+                NERIS
+            </div>
+
+            <p style="
+                font-size:14px;
+                line-height:1.8;
+                color:#b8b8b8;
+            ">
+                NERIS olarak müşterilerimizin kişisel bilgilerinin
+                güvenliği ve gizliliğine büyük önem veriyoruz.
+            </p>
+
+            <p style="
+                font-size:14px;
+                line-height:1.8;
+                color:#b8b8b8;
+            ">
+                Sipariş ve üyelik işlemleri sırasında paylaşılan kişisel
+                bilgiler yalnızca hizmetlerin güvenli ve doğru şekilde
+                sunulması amacıyla kullanılmaktadır.
+            </p>
+
+            <div style="
+                width:60px;
+                height:1px;
+                background:#d4af37;
+                margin:25px auto;
+            "></div>
+
+            <p style="
+                font-size:13px;
+                line-height:1.8;
+                color:#999;
+                text-align:center;
+            ">
+                Kişisel verileriniz yürürlükteki mevzuata uygun şekilde
+                korunur ve gerekli güvenlik önlemleri uygulanır.
+            </p>
+
+        </div>
+    `
+},
+returns: {
+    title: 'İptal ve İade Koşulları',
+    body: `
+        <div style="text-align:center;">
+
+            <div style="
+                color:#d4af37;
+                font-family:Georgia,serif;
+                font-size:24px;
+                letter-spacing:4px;
+                margin-bottom:25px;
+            ">
+                NERIS
+            </div>
+
+            <p style="
+                font-size:14px;
+                line-height:1.8;
+                color:#b8b8b8;
+            ">
+                NERIS ürünlerinde müşteri memnuniyetini ön planda
+                tutuyoruz. Satın aldığınız ürünlerle ilgili iade ve
+                değişim talepleriniz için bizimle iletişime geçebilirsiniz.
+            </p>
+
+            <p style="
+                font-size:14px;
+                line-height:1.8;
+                color:#b8b8b8;
+            ">
+                İade edilecek ürünlerin kullanılmamış, zarar görmemiş ve
+                yeniden satışa uygun durumda olması gerekmektedir.
+            </p>
+
+            <div style="
+                width:60px;
+                height:1px;
+                background:#d4af37;
+                margin:25px auto;
+            "></div>
+
+            <p style="
+                font-size:13px;
+                line-height:1.8;
+                color:#999;
+                text-align:center;
+            ">
+                İade ve değişim işlemleri yürürlükteki tüketici
+                mevzuatına ve NERIS satış koşullarına uygun şekilde
+                gerçekleştirilir.
+            </p>
+
+        </div>
+    `
+},
+preinfo: {
+    title: 'Ön Bilgilendirme Formu',
+    body: `
+        <div style="text-align:center;">
+
+            <div style="
+                color:#d4af37;
+                font-family:Georgia,serif;
+                font-size:24px;
+                letter-spacing:4px;
+                margin-bottom:25px;
+            ">
+                NERIS
+            </div>
+
+            <p style="
+                font-size:14px;
+                line-height:1.8;
+                color:#b8b8b8;
+            ">
+                Bu form, satın alma işlemi öncesinde müşteriye
+                ürün, fiyat, ödeme ve teslimat koşulları hakkında
+                gerekli bilgileri sunmak amacıyla hazırlanmıştır.
+            </p>
+
+            <p style="
+                font-size:14px;
+                line-height:1.8;
+                color:#b8b8b8;
+            ">
+                Sipariş verilmeden önce ürünün özellikleri, satış
+                bedeli, teslimat koşulları ve iade hakları hakkında
+                gerekli bilgilendirme müşteriye sunulur.
+            </p>
+
+            <div style="
+                width:60px;
+                height:1px;
+                background:#d4af37;
+                margin:25px auto;
+            "></div>
+
+            <p style="
+                font-size:13px;
+                line-height:1.8;
+                color:#999;
+                text-align:center;
+            ">
+                Ön bilgilendirme formunun güncel ve hukuken geçerli
+                tam metni satış işlemi sırasında müşteriye sunulacaktır.
+            </p>
+
+        </div>
+    `
+},
+        tracking: {
+          title:'Sipariş Takip',
+          body:'Siparişinizin durumunu görüntülemek için sipariş numaranızı girin.',
+          form:'<div class="info-form"><input id="orderNo" placeholder="Sipariş numarası"><button onclick="trackOrder()">SİPARİŞİ SORGULA</button></div>'
+        },
+        contact: {
+          title:'Bize Ulaşın',
+          body:'Neris hakkında bilgi almak veya destek talebi oluşturmak için bize ulaşabilirsiniz.',
+          form:'<div class="info-form"><input placeholder="Ad Soyad"><input type="email" placeholder="E-posta"><textarea placeholder="Mesajınız"></textarea><button onclick="alert(\'Mesaj formu hazır. Gönderim altyapısını bir sonraki adımda bağlayabiliriz.\')">GÖNDER</button></div>'
+        },
+        login: {
+          title:'Neris Hesabım',
+          body:'Hesabınıza giriş yaparak siparişlerinizi, favorilerinizi ve kişisel bilgilerinizi yönetebilirsiniz.',
+          form:'<div class="info-form"><input type="email" placeholder="E-posta"><input type="password" placeholder="Şifre"><button onclick="alert(\'Giriş sistemi için Firebase Authentication bağlantısını kuracağız.\')">GİRİŞ YAP</button></div>'
+        },
+        favorites: {
+          title:'Favorilerim',
+          body:'Favoriye eklediğiniz ürünler burada görünecek.<br><br>Şu anda favori listeniz boş.'
+        },
+        cart: {
+          title:'Sepetim',
+          body:'Sepetiniz şu anda boş.<br><br>Ürünleri sepete ekleme ve ödeme akışını sonraki adımda bağlayacağız.'
+        }
+      };
+      const item = data[type] || data.story;
+      content.innerHTML = '<h2>'+item.title+'</h2><p>'+item.body+'</p>' + (item.form || '');
+      document.getElementById('infoModal').classList.add('open');
+    }
+
+    function closeInfo(){
+      document.getElementById('infoModal').classList.remove('open');
+    }
+
+    function trackOrder(){
+      const no = document.getElementById('orderNo').value.trim();
+      if(!no){
+        alert('Lütfen sipariş numaranızı girin.');
+        return;
+      }
+      alert('Sipariş takip altyapısı hazır. Sipariş veritabanı bağlandığında “'+no+'” numarasının gerçek durumunu göstereceğiz.');
+    }
+
+    document.addEventListener('keydown', e=>{
+      if(e.key==='Escape'){
+        closeInfo();
+        document.getElementById('searchPanel').classList.remove('open');
+      }
+    });
+  </script>
+
+  <!-- FIREBASE -->
+  <script type="module">
+
+    import { initializeApp }
+      from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+    import {
+      getFirestore,
+      collection,
+      getDocs
+    }
+      from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+    const firebaseConfig = {
+
+      apiKey: "AIzaSyBcoeTk7aZhocmMQVPMHjVK-NfG0JUiS7I",
+
+      authDomain: "nerissite-dc8ec.firebaseapp.com",
+
+      projectId: "nerissite-dc8ec",
+
+      storageBucket: "nerissite-dc8ec.firebasestorage.app",
+
+      messagingSenderId: "943518451048",
+
+      appId: "1:943518451048:web:e07e8594f5c1cc53c1c2dd"
+
+    };
+
+
+    const app = initializeApp(firebaseConfig);
+
+    const db = getFirestore(app);
+
+
+    async function loadProducts(){
+
+      try{
+
+        const querySnapshot =
+          await getDocs(collection(db,"products"));
+
+        const container =
+          document.getElementById("productsGrid");
+
+
+        if(querySnapshot.empty){
+
+          return;
+
+        }
+
+
+        container.innerHTML = "";
+
+
+        querySnapshot.forEach((doc)=>{
+
+          const p = doc.data();
+
+
+          const card = document.createElement("div");
+
+          card.className = "card";
+
+
+          card.innerHTML = `
+
+            <div class="badge">NEW</div>
+
+            <div class="card-image">
+
+              <img
+                src="${p.img || 'https://picsum.photos/500/650'}"
+                alt="${p.name || 'Neris Ürün'}"
+              >
+
+            </div>
+
+            <div class="card-content">
+
+              <h3>${p.name || 'Ürün'}</h3>
+
+              <p>₺${p.price || '0'}</p>
+
+              <a
+                href="${p.link || '#'}"
+                target="_blank"
+                class="buy"
+              >
+                Satın Al
+              </a>
+
+            </div>
+
+          `;
+
+
+          container.appendChild(card);
+
+        });
+
+
+      }catch(error){
+
+        console.error("Ürünler yüklenirken hata:",error);
+
+      }
+
+    }
+
+
+    loadProducts();
+
+  </script>
 
 </body>
 </html>
