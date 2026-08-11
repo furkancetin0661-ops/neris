@@ -171,6 +171,270 @@
         text-align: left;
       }
     }
+    /* =====================================================
+   NERIS PREMIUM ACCOUNT DESIGN
+   ===================================================== */
+
+:root {
+    --neris-black: #050505;
+    --neris-card: #0b0b0b;
+    --neris-border: #242424;
+    --neris-text: #f4f1eb;
+    --neris-muted: #8d8d8d;
+    --neris-gold: #c9a45c;
+}
+
+/* GENEL */
+body {
+    background: var(--neris-black) !important;
+    color: var(--neris-text) !important;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ÜST LOGO */
+.logo {
+    color: var(--neris-gold) !important;
+    letter-spacing: 5px !important;
+    font-family: Georgia, "Times New Roman", serif !important;
+    font-weight: 600 !important;
+}
+
+/* ANA İÇERİK */
+.account-container {
+    max-width: 1100px !important;
+    margin: 0 auto !important;
+    padding: 75px 30px 120px !important;
+}
+
+/* BAŞLIK */
+.title {
+    font-family: Georgia, "Times New Roman", serif !important;
+    font-size: 52px !important;
+    font-weight: 400 !important;
+    letter-spacing: -1px !important;
+    margin-bottom: 12px !important;
+    color: #f5f2ec !important;
+}
+
+.subtitle {
+    color: #8d8d8d !important;
+    font-size: 14px !important;
+    letter-spacing: .3px !important;
+    margin-bottom: 55px !important;
+}
+
+/* GRID */
+.account-grid {
+    display: grid !important;
+    grid-template-columns: 235px 1fr !important;
+    gap: 55px !important;
+    align-items: start !important;
+}
+
+/* SOL MENÜ */
+.card.menu {
+    background: transparent !important;
+    border: 0 !important;
+    padding: 0 !important;
+}
+
+.menu button {
+    width: 100% !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-bottom: 1px solid #202020 !important;
+    color: #a4a4a4 !important;
+    text-align: left !important;
+    padding: 20px 4px !important;
+    font-size: 13px !important;
+    letter-spacing: .8px !important;
+    transition: all .3s ease !important;
+    cursor: pointer !important;
+}
+
+.menu button:first-child {
+    border-top: 1px solid #202020 !important;
+}
+
+.menu button:hover {
+    color: #f5f2ec !important;
+    padding-left: 10px !important;
+}
+
+.menu button.active {
+    color: var(--neris-gold) !important;
+    padding-left: 10px !important;
+}
+
+/* SAĞ KART */
+.card:not(.menu) {
+    background: #090909 !important;
+    border: 1px solid #242424 !important;
+    padding: 42px !important;
+    min-height: 300px !important;
+}
+
+/* BÖLÜM BAŞLIĞI */
+.section-title {
+    font-family: Georgia, "Times New Roman", serif !important;
+    font-size: 31px !important;
+    font-weight: 400 !important;
+    color: #f5f2ec !important;
+    letter-spacing: -.4px !important;
+    margin: 0 0 32px !important;
+}
+
+/* HESAP BİLGİLERİ */
+.info-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 20px 0 !important;
+    border-bottom: 1px solid #202020 !important;
+}
+
+.info-row .label {
+    color: #777 !important;
+    font-size: 12px !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase !important;
+}
+
+.info-row .value {
+    color: #eee !important;
+    font-size: 14px !important;
+}
+
+/* SİPARİŞ LİSTESİ */
+#ordersList {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 18px !important;
+}
+
+/* SİPARİŞ KARTI */
+.order-card {
+    background: #0d0d0d !important;
+    border: 1px solid #252525 !important;
+    padding: 28px !important;
+    transition: border-color .3s ease, transform .3s ease !important;
+}
+
+.order-card:hover {
+    border-color: #51462f !important;
+    transform: translateY(-2px) !important;
+}
+
+.order-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding-bottom: 20px !important;
+    border-bottom: 1px solid #202020 !important;
+    margin-bottom: 20px !important;
+}
+
+.order-number {
+    color: #777 !important;
+    font-size: 11px !important;
+    letter-spacing: 1.5px !important;
+    text-transform: uppercase !important;
+}
+
+.order-status {
+    color: var(--neris-gold) !important;
+    font-size: 10px !important;
+    letter-spacing: 1.5px !important;
+    text-transform: uppercase !important;
+}
+
+.order-product {
+    color: #f3f0ea !important;
+    font-family: Georgia, "Times New Roman", serif !important;
+    font-size: 22px !important;
+    margin-bottom: 18px !important;
+}
+
+.order-details {
+    display: flex !important;
+    gap: 25px !important;
+    color: #888 !important;
+    font-size: 12px !important;
+}
+
+.order-total {
+    margin-left: auto !important;
+    color: #eee !important;
+}
+
+.order-total strong {
+    color: var(--neris-gold) !important;
+    font-size: 16px !important;
+    font-weight: 400 !important;
+}
+
+/* BOŞ ALAN */
+.empty {
+    color: #777 !important;
+    border: 1px solid #202020 !important;
+    padding: 45px 25px !important;
+    text-align: center !important;
+    font-size: 13px !important;
+    letter-spacing: .3px !important;
+}
+
+/* MESAJ */
+#message {
+    margin-top: 20px !important;
+    font-size: 13px !important;
+}
+
+/* MOBİL */
+@media (max-width: 700px) {
+
+    .account-container {
+        padding: 45px 18px 80px !important;
+    }
+
+    .title {
+        font-size: 38px !important;
+    }
+
+    .subtitle {
+        margin-bottom: 35px !important;
+    }
+
+    .account-grid {
+        grid-template-columns: 1fr !important;
+        gap: 30px !important;
+    }
+
+    .card:not(.menu) {
+        padding: 25px !important;
+    }
+
+    .section-title {
+        font-size: 26px !important;
+    }
+
+    .order-header {
+        align-items: flex-start !important;
+        gap: 15px !important;
+        flex-direction: column !important;
+    }
+
+    .order-details {
+        flex-wrap: wrap !important;
+        gap: 12px !important;
+    }
+
+    .order-total {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding-top: 12px !important;
+        border-top: 1px solid #202020 !important;
+    }
+}
   </style>
 </head>
 
