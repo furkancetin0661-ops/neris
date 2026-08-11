@@ -235,17 +235,113 @@
 
     </main>
 
-    <script>
-        document.getElementById("loginForm").addEventListener("submit", function(e) {
-            e.preventDefault();
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+        getAuth,
+        signInWithEmailAndPassword,
+        sendPasswordResetEmail
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-            const message = document.getElementById("message");
+    const firebaseConfig = {
+        apiKey: "AIzaSyAQ0ses6c9fJnk5xDsh37-0-fLcCj-MVQw",
+        authDomain: "neris-78944.firebaseapp.com",
+        projectId: "neris-78944",
+        storageBucket: "neris-78944.firebasestorage.app",
+        messagingSenderId: "58960639184",
+        appId: "1:58960639184:web:dc25f186f8887f64f1dad5",
+        measurementId: "G-CVD06X8B82"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const loginForm = document.getElementById("loginForm");
+    const message = document.getElementById("message");
+
+    loginForm.addEventListener("submit", async function(e) {
+        e.preventDefault();
+
+        const emailInput = loginForm.querySelector('input[type="email"]');
+        const passwordInput = loginForm.querySelector('input[type="password"]');
+
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+
+        if (!email || !password) {
+            message.style.display = "block";
+            message.textContent = "Lütfen e-posta ve şifrenizi girin.";
+            return;
+        }
+
+        try {
+            const userCredential = await signInWithEmailAndPassword(
+                auth,
+                email,
+                password
+            );
 
             message.style.display = "block";
-            message.textContent =
-                "Giriş sistemi bağlantısı bir sonraki aşamada etkinleştirilecek.";
+            message.textContent = "Giriş başarılı. Yönlendiriliyorsunuz...";
+
+            localStorage.setItem("nerisUser", JSON.stringify({
+                uid: userCredential.user.uid,
+                email: userCredential.user.email
+            }));
+
+            setTimeout(() => {
+                window.location.href = "index.html";
+            }, 800);
+
+        } catch (error) {
+            message.style.display = "block";
+
+            if (error.code === "auth/invalid-credential") {
+                message.textContent = "E-posta veya şifre hatalı.";
+            } else if (error.code === "auth/user-not-found") {
+                message.textContent = "Bu e-posta ile kayıtlı hesap bulunamadı.";
+            } else if (error.code === "auth/wrong-password") {
+                message.textContent = "Şifre hatalı.";
+            } else if (error.code === "auth/invalid-email") {
+                message.textContent = "Geçerli bir e-posta adresi girin.";
+            } else {
+                message.textContent = "Giriş sırasında bir hata oluştu.";
+            }
+        }
+    });
+
+    const forgotLink = document.querySelector(".forgot");
+
+    if (forgotLink) {
+        forgotLink.addEventListener("click", async function(e) {
+            e.preventDefault();
+
+            const emailInput = loginForm.querySelector('input[type="email"]');
+            const email = emailInput.value.trim();
+
+            if (!email) {
+                message.style.display = "block";
+                message.textContent =
+                    "Şifre sıfırlama bağlantısı için önce e-posta adresinizi yazın.";
+                emailInput.focus();
+                return;
+            }
+
+            try {
+                await sendPasswordResetEmail(auth, email);
+
+                message.style.display = "block";
+                message.textContent =
+                    "Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.";
+
+            } catch (error) {
+                message.style.display = "block";
+                message.textContent =
+                    "Şifre sıfırlama bağlantısı gönderilemedi. E-posta adresini kontrol edin.";
+            }
         });
-    </script>
+    }
+</script>
 
 </body>
 </html>
