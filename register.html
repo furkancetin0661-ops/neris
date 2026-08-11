@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NERIS | Kayıt Ol</title>
+
+    <meta name="description" content="Neris hesabınızı oluşturun.">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #050505;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+        }
+
+        .register-page {
+            width: 100%;
+            max-width: 440px;
+        }
+
+        .register-box {
+            background: #0d0d0d;
+            border: 1px solid #292929;
+            padding: 42px;
+            box-shadow: 0 20px 60px rgba(0,0,0,.45);
+        }
+
+        .logo {
+            text-align: center;
+            color: #dcb52f;
+            font-family: Georgia, serif;
+            font-size: 30px;
+            font-weight: bold;
+            letter-spacing: 5px;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            text-align: center;
+            font-family: Georgia, serif;
+            font-size: 28px;
+            margin: 0 0 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            background: #151515;
+            border: 1px solid #333;
+            color: #fff;
+            outline: none;
+            font-size: 14px;
+        }
+
+        input:focus {
+            border-color: #dcb52f;
+        }
+
+        .register-button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 5px;
+            border: none;
+            background: #dcb52f;
+            color: #080808;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            transition: .2s;
+        }
+
+        .register-button:hover {
+            background: #edca4d;
+        }
+
+        .register-button:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+        }
+
+        .message {
+            display: none;
+            margin-top: 18px;
+            padding: 13px;
+            border: 1px solid #333;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .message.error {
+            display: block;
+            color: #ff8f8f;
+            border-color: #6d2929;
+            background: #211010;
+        }
+
+        .message.success {
+            display: block;
+            color: #b9e7b9;
+            border-color: #315b31;
+            background: #102010;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 22px;
+            color: #999;
+            font-size: 13px;
+        }
+
+        .login-link a,
+        .home-link {
+            color: #dcb52f;
+            text-decoration: none;
+        }
+
+        .home-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 500px) {
+            .register-box {
+                padding: 30px 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="register-page">
+
+    <div class="register-box">
+
+        <div class="logo">NERIS</div>
+
+        <h1>Hesap Oluştur</h1>
+
+        <div class="subtitle">
+            Neris dünyasına hoş geldiniz
+        </div>
+
+        <form id="registerForm">
+
+            <div class="form-group">
+                <label for="name">Ad Soyad</label>
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="Adınız ve soyadınız"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="email">E-posta</label>
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="E-posta adresiniz"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Şifre</label>
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="En az 6 karakter"
+                    minlength="6"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="passwordConfirm">Şifre Tekrar</label>
+                <input
+                    type="password"
+                    id="passwordConfirm"
+                    placeholder="Şifrenizi tekrar girin"
+                    minlength="6"
+                    required
+                >
+            </div>
+
+            <button
+                type="submit"
+                class="register-button"
+                id="registerButton"
+            >
+                KAYIT OL
+            </button>
+
+        </form>
+
+        <div id="message" class="message"></div>
+
+        <div class="login-link">
+            Zaten hesabınız var mı?
+            <a href="login.html">Giriş Yap</a>
+        </div>
+
+        <a href="index.html" class="home-link">
+            ← Ana Sayfaya Dön
+        </a>
+
+    </div>
+
+</div>
+
+<script type="module">
+
+    import {
+        initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+    import {
+        getAuth,
+        createUserWithEmailAndPassword,
+        updateProfile
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+
+    // NERIS FIREBASE
+    const firebaseConfig = {
+        apiKey: "AIzaSyAQ0ses6c9fJnk5xDsh37-0-fLcCj-MVQw",
+        authDomain: "neris-78944.firebaseapp.com",
+        projectId: "neris-78944",
+        storageBucket: "neris-78944.firebasestorage.app",
+        messagingSenderId: "58960639184",
+        appId: "1:58960639184:web:dc25f186f8887f64f1dad5",
+        measurementId: "G-CVD06X8B82"
+    };
+
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+
+    const registerForm = document.getElementById("registerForm");
+    const message = document.getElementById("message");
+    const registerButton = document.getElementById("registerButton");
+
+
+    function showMessage(text, type) {
+
+        message.textContent = text;
+
+        message.className = "message " + type;
+
+    }
+
+
+    registerForm.addEventListener("submit", async function(e) {
+
+        e.preventDefault();
+
+
+        const name =
+            document.getElementById("name").value.trim();
+
+        const email =
+            document.getElementById("email").value.trim();
+
+        const password =
+            document.getElementById("password").value;
+
+        const passwordConfirm =
+            document.getElementById("passwordConfirm").value;
+
+
+        if (password !== passwordConfirm) {
+
+            showMessage(
+                "Şifreler birbiriyle aynı değil.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        if (password.length < 6) {
+
+            showMessage(
+                "Şifreniz en az 6 karakter olmalıdır.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        registerButton.disabled = true;
+
+        registerButton.textContent = "HESAP OLUŞTURULUYOR...";
+
+
+        try {
+
+            const userCredential =
+                await createUserWithEmailAndPassword(
+                    auth,
+                    email,
+                    password
+                );
+
+
+            const user = userCredential.user;
+
+
+            if (name) {
+
+                await updateProfile(user, {
+                    displayName: name
+                });
+
+            }
+
+
+            showMessage(
+                "Hesabınız başarıyla oluşturuldu. Ana sayfaya yönlendiriliyorsunuz...",
+                "success"
+            );
+
+
+            setTimeout(function() {
+
+                window.location.href = "index.html";
+
+            }, 1200);
+
+
+        } catch (error) {
+
+            console.error(error);
+
+
+            let errorMessage =
+                "Kayıt sırasında bir hata oluştu.";
+
+
+            if (error.code === "auth/email-already-in-use") {
+
+                errorMessage =
+                    "Bu e-posta adresiyle zaten bir hesap bulunuyor.";
+
+            }
+
+            else if (error.code === "auth/invalid-email") {
+
+                errorMessage =
+                    "Geçerli bir e-posta adresi girin.";
+
+            }
+
+            else if (error.code === "auth/weak-password") {
+
+                errorMessage =
+                    "Şifreniz çok zayıf. En az 6 karakter kullanın.";
+
+            }
+
+
+            showMessage(errorMessage, "error");
+
+
+            registerButton.disabled = false;
+
+            registerButton.textContent = "KAYIT OL";
+
+        }
+
+    });
+
+</script>
+
+</body>
+</html>
