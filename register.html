@@ -243,9 +243,12 @@
 
 <script type="module">
 
-    import {
-        initializeApp
-    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
     import {
         getAuth,
@@ -268,6 +271,7 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
 
     const registerForm = document.getElementById("registerForm");
@@ -341,8 +345,14 @@
 
             const user = userCredential.user;
 
+await setDoc(doc(db, "kullanıcılar", user.uid), {
+  adSoyad: name,
+  email: email,
+  rol: "user",
+  olusturmaTarihi: serverTimestamp()
+});
 
-            if (name) {
+if (name) {
 
                 await updateProfile(user, {
                     displayName: name
