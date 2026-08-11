@@ -2529,25 +2529,34 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
 auth.onAuthStateChanged(function(user) {
-  const loginLink = document.getElementById("loginLink");
+    const loginLink = document.getElementById("loginLink");
 
-  if (!loginLink) return;
+    if (!loginLink) return;
 
-  if (user) {
-    loginLink.innerHTML = "♙ ÇIKIŞ YAP";
-    loginLink.href = "#";
+    if (user) {
+        // Giriş yapan kullanıcının adını göster
+        const userName = user.displayName || user.email.split("@")[0];
 
-    loginLink.onclick = function(e) {
-      e.preventDefault();
+        loginLink.innerHTML = "♙ " + userName;
+        loginLink.href = "#";
 
-      auth.signOut().then(function() {
-        window.location.reload();
-      });
-    };
-  } else {
-    loginLink.innerHTML = "♙ GİRİŞ YAP";
-    loginLink.href = "login.html";
-  }
+        loginLink.onclick = function(e) {
+            e.preventDefault();
+
+            if (confirm("Hesabınızdan çıkış yapmak istiyor musunuz?")) {
+                auth.signOut().then(function() {
+                    window.location.reload();
+                });
+            }
+        };
+
+    } else {
+        // Giriş yapılmamışsa
+        loginLink.innerHTML = "♙ GİRİŞ YAP";
+        loginLink.href = "login.html";
+
+        loginLink.onclick = null;
+    }
 });
 </script>
 </body>
