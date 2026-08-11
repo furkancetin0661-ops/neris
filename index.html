@@ -1664,7 +1664,7 @@
         <span class="nav-icon">⌕</span> ARAMA
       </button>
       <span class="topbar-separator"></span>
-      <button class="nav-action" onclick="openInfo('login')">
+<button id="loginLink" class="nav-action" onclick="openInfo('login')">
         <span class="nav-icon">♙</span> GİRİŞ YAP
       </button>
       <span class="topbar-separator"></span>
@@ -2510,6 +2510,45 @@ preinfo: {
     loadProducts();
 
   </script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAQ0ses6c9fJnk5xDsh37-0-fLcCj-MVQw",
+  authDomain: "neris-78944.firebaseapp.com",
+  projectId: "neris-78944",
+  storageBucket: "neris-78944.firebasestorage.app",
+  messagingSenderId: "58960639184",
+  appId: "1:58960639184:web:dc25f186f8887f64f1dad5",
+  measurementId: "G-CVD06X8B82"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+
+auth.onAuthStateChanged(function(user) {
+  const loginLink = document.getElementById("loginLink");
+
+  if (!loginLink) return;
+
+  if (user) {
+    loginLink.innerHTML = "♙ ÇIKIŞ YAP";
+    loginLink.href = "#";
+
+    loginLink.onclick = function(e) {
+      e.preventDefault();
+
+      auth.signOut().then(function() {
+        window.location.reload();
+      });
+    };
+  } else {
+    loginLink.innerHTML = "♙ GİRİŞ YAP";
+    loginLink.href = "login.html";
+  }
+});
+</script>
 </body>
 </html>
