@@ -1,6 +1,7 @@
 // Firebase SDK
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 // Firebase Ayarları
 const firebaseConfig = {
@@ -19,4 +20,8 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // Dışa Aktar
-export { db };
+// Authentication
+const auth = getAuth(app);
+
+// Dışa Aktar
+export { db, auth };
