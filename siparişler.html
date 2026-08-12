@@ -2,18 +2,606 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NERIS | Siparişlerim</title>
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Neris | Siparişlerim</title>
+
 <link rel="stylesheet" href="css/style.css">
+
+<style>
+
+body{
+    margin:0;
+    background:#080808;
+    color:#fff;
+    font-family:Arial, sans-serif;
+}
+
+.orders-page{
+    max-width:1100px;
+    margin:0 auto;
+    padding:80px 25px;
+}
+
+.orders-header{
+    text-align:center;
+    margin-bottom:55px;
+}
+
+.orders-header h1{
+    font-family:Georgia,serif;
+    font-size:46px;
+    margin:0 0 12px;
+    letter-spacing:1px;
+}
+
+.orders-header p{
+    color:#aaa;
+    font-size:15px;
+}
+
+.gold-line{
+    width:55px;
+    height:2px;
+    background:#d4af37;
+    margin:25px auto;
+}
+
+/* GİRİŞ YAPILMADI */
+
+.login-message{
+    text-align:center;
+    padding:60px 20px;
+    border:1px solid #292929;
+    background:#0d0d0d;
+}
+
+.login-message h2{
+    font-family:Georgia,serif;
+    font-size:26px;
+    margin-bottom:15px;
+}
+
+.login-message p{
+    color:#aaa;
+}
+
+.login-button{
+    display:inline-block;
+    margin-top:20px;
+    padding:13px 35px;
+    border:1px solid #d4af37;
+    color:#d4af37;
+    text-decoration:none;
+    transition:.3s;
+}
+
+.login-button:hover{
+    background:#d4af37;
+    color:#000;
+}
+
+/* SİPARİŞ YOK */
+
+.empty-orders{
+    text-align:center;
+    padding:70px 20px;
+    border:1px solid #292929;
+    background:#0d0d0d;
+}
+
+.empty-orders h2{
+    font-family:Georgia,serif;
+    font-size:28px;
+}
+
+.empty-orders p{
+    color:#999;
+    margin-bottom:25px;
+}
+
+.shop-button{
+    display:inline-block;
+    padding:13px 35px;
+    border:1px solid #d4af37;
+    color:#d4af37;
+    text-decoration:none;
+    transition:.3s;
+}
+
+.shop-button:hover{
+    background:#d4af37;
+    color:#000;
+}
+
+/* SİPARİŞ KARTI */
+
+.order-card{
+    border:1px solid #292929;
+    background:#0d0d0d;
+    margin-bottom:25px;
+    padding:25px;
+}
+
+.order-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:1px solid #252525;
+    padding-bottom:18px;
+    margin-bottom:20px;
+}
+
+.order-number{
+    font-family:Georgia,serif;
+    font-size:20px;
+}
+
+.order-date{
+    color:#888;
+    font-size:13px;
+}
+
+.order-status{
+    color:#d4af37;
+    border:1px solid #d4af37;
+    padding:7px 14px;
+    font-size:12px;
+}
+
+.order-product{
+    display:flex;
+    gap:20px;
+    align-items:center;
+}
+
+.order-product img{
+    width:110px;
+    height:140px;
+    object-fit:cover;
+    background:#181818;
+}
+
+.product-info{
+    flex:1;
+}
+
+.product-info h3{
+    margin:0 0 10px;
+    font-family:Georgia,serif;
+    font-size:20px;
+}
+
+.product-info p{
+    color:#aaa;
+    margin:6px 0;
+}
+
+.order-bottom{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-top:1px solid #252525;
+    margin-top:20px;
+    padding-top:20px;
+}
+
+.total-price{
+    color:#d4af37;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.loading{
+    text-align:center;
+    color:#aaa;
+    padding:50px;
+}
+
+/* MOBİL */
+
+@media(max-width:700px){
+
+    .orders-page{
+        padding:50px 15px;
+    }
+
+    .orders-header h1{
+        font-size:34px;
+    }
+
+    .order-top{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:12px;
+    }
+
+    .order-product{
+        align-items:flex-start;
+    }
+
+    .order-product img{
+        width:85px;
+        height:110px;
+    }
+
+    .order-bottom{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:15px;
+    }
+
+}
+
+</style>
 </head>
+
 
 <body>
 
-<div style="padding:80px 20px; text-align:center;">
-    <h1>Siparişlerim</h1>
-    <p>Henüz bir siparişiniz bulunmuyor.</p>
-    <a href="index.html">← Ana Sayfaya Dön</a>
+<div class="orders-page">
+
+    <div class="orders-header">
+
+        <h1>Siparişlerim</h1>
+
+        <p>
+            Neris üzerinden verdiğiniz siparişler
+        </p>
+
+        <div class="gold-line"></div>
+
+    </div>
+
+
+    <div id="content">
+
+        <div class="loading">
+            Siparişleriniz yükleniyor...
+        </div>
+
+    </div>
+
 </div>
+
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+import {
+    getFirestore,
+    collection,
+    query,
+    where,
+    getDocs
+}
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+import {
+    getAuth,
+    onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+
+/* FIREBASE */
+
+const firebaseConfig = {
+
+    apiKey: "AIzaSyAQ0ses6c9FJnK5xDsh37-0-fLcCj-MVQw",
+
+    authDomain: "neris-78944.firebaseapp.com",
+
+    projectId: "neris-78944",
+
+    storageBucket: "neris-78944.firebasestorage.app",
+
+    messagingSenderId: "58960639184",
+
+    appId: "1:58960639184:web:dc25f186f8887f64f1dad5",
+
+    measurementId: "G-CVD0X6X882"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+const auth = getAuth(app);
+
+const content =
+document.getElementById("content");
+
+
+/* KULLANICI KONTROLÜ */
+
+onAuthStateChanged(auth, async (user) => {
+
+    if(!user){
+
+        content.innerHTML = `
+
+            <div class="login-message">
+
+                <h2>Giriş Yapmalısınız</h2>
+
+                <p>
+                    Siparişlerinizi görmek için
+                    hesabınıza giriş yapın.
+                </p>
+
+                <a
+                    href="giriş.html"
+                    class="login-button"
+                >
+                    GİRİŞ YAP
+                </a>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    await loadOrders(user.uid);
+
+});
+
+
+/* SİPARİŞLERİ GETİR */
+
+async function loadOrders(userId){
+
+    try{
+
+        const ordersQuery = query(
+
+            collection(db,"siparişler"),
+
+            where("kullaniciId","==",userId)
+
+        );
+
+
+        const snapshot =
+        await getDocs(ordersQuery);
+
+
+        if(snapshot.empty){
+
+            content.innerHTML = `
+
+                <div class="empty-orders">
+
+                    <h2>Henüz bir siparişiniz yok.</h2>
+
+                    <p>
+                        Neris koleksiyonunu keşfedin
+                        ve ilk siparişinizi oluşturun.
+                    </p>
+
+                    <a
+                        href="index.html#products"
+                        class="shop-button"
+                    >
+                        ALIŞVERİŞE BAŞLA
+                    </a>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        content.innerHTML = "";
+
+
+        snapshot.forEach((orderDoc) => {
+
+            const order =
+            orderDoc.data();
+
+
+            const orderId =
+            orderDoc.id;
+
+
+            const tarih =
+            order.tarih ||
+            order.olusturmaTarihi ||
+            order.createdAt ||
+            "";
+
+
+            let formattedDate = "";
+
+
+            if(tarih){
+
+                try{
+
+                    formattedDate =
+                    new Date(tarih)
+                    .toLocaleDateString(
+                        "tr-TR"
+                    );
+
+                }catch(e){
+
+                    formattedDate = tarih;
+
+                }
+
+            }
+
+
+            const durum =
+            order.durum ||
+            order.status ||
+            "Hazırlanıyor";
+
+
+            const toplam =
+            order.toplam ||
+            order.total ||
+            order.fiyat ||
+            0;
+
+
+            const urunAdi =
+            order.urunAdi ||
+            order.productName ||
+            order.ad ||
+            "Neris Ürünü";
+
+
+            const resim =
+            order.resim ||
+            order.productImage ||
+            "https://picsum.photos/300/400";
+
+
+            const beden =
+            order.beden ||
+            order.size ||
+            "-";
+
+
+            const adet =
+            order.adet ||
+            order.quantity ||
+            1;
+
+
+            const card = document.createElement("div");
+
+            card.className = "order-card";
+
+
+            card.innerHTML = `
+
+                <div class="order-top">
+
+                    <div>
+
+                        <div class="order-number">
+
+                            Sipariş #${orderId}
+
+                        </div>
+
+                        ${
+                            formattedDate
+                            ?
+                            `<div class="order-date">
+                                ${formattedDate}
+                            </div>`
+                            :
+                            ""
+                        }
+
+                    </div>
+
+
+                    <div class="order-status">
+
+                        ${durum}
+
+                    </div>
+
+                </div>
+
+
+                <div class="order-product">
+
+                    <img
+                        src="${resim}"
+                        alt="${urunAdi}"
+                    >
+
+
+                    <div class="product-info">
+
+                        <h3>
+                            ${urunAdi}
+                        </h3>
+
+                        <p>
+                            Beden: ${beden}
+                        </p>
+
+                        <p>
+                            Adet: ${adet}
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="order-bottom">
+
+                    <span>
+                        Sipariş toplamı
+                    </span>
+
+
+                    <span class="total-price">
+
+                        ₺${toplam}
+
+                    </span>
+
+                </div>
+
+            `;
+
+
+            content.appendChild(card);
+
+        });
+
+
+    }catch(error){
+
+        console.error(
+            "Siparişler yüklenirken hata:",
+            error
+        );
+
+
+        content.innerHTML = `
+
+            <div class="empty-orders">
+
+                <h2>Siparişler yüklenemedi.</h2>
+
+                <p>
+                    Bir bağlantı veya veritabanı
+                    sorunu oluştu.
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+</script>
 
 </body>
 </html>
