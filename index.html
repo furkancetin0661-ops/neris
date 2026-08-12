@@ -2537,8 +2537,8 @@ import {
 
       try{
 
-        const querySnapshot =
-          await getDocs(collection(db,"products"));
+const querySnapshot =
+    await getDocs(collection(db, "Ürünler"));
 
         const container =
           document.getElementById("productsGrid");
@@ -2573,31 +2573,32 @@ import {
 
             <div class="card-image">
 
-            <button class="favorite-btn" data-id="${p.id}" type="button">♡</button>
+    <div class="badge">${p.rozet || "NEW"}</div>
 
-              <img
-                src="${p.img || 'https://picsum.photos/500/650'}"
-                alt="${p.name || 'Neris Ürün'}"
-              >
+    <button class="favorite-btn" data-id="${p.id}" type="button">♡</button>
 
-            </div>
+    <img
+        src="${p.resim || 'https://picsum.photos/500/650'}"
+        alt="${p.reklam || 'Neris Ürün'}"
+    >
 
-            <div class="card-content">
+</div>
 
-              <h3>${p.name || 'Ürün'}</h3>
+<div class="card-content">
 
-              <p>₺${p.price || '0'}</p>
+    <h3>${p.reklam || "Ürün"}</h3>
 
-              <a
-                href="${p.link || '#'}"
-                target="_blank"
-                class="buy"
-              >
-                Satın Al
-              </a>
+    <p>₺${p.fiyat || "0"}</p>
 
-            </div>
+    <a
+        href="${p["Bağlantı"] || '#'}"
+        target="_blank"
+        class="buy"
+    >
+        SATIN AL
+    </a>
 
+</div>
           `;
 
 
@@ -2624,7 +2625,8 @@ import {
     e.preventDefault();
     e.stopPropagation();
 
-    const user = auth.currentUser;
+
+    const user = firebase.auth().currentUser;
 
     if (!user) {
         alert("Favorilere eklemek için önce giriş yapmalısınız.");
