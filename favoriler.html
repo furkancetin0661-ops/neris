@@ -317,21 +317,37 @@ const message =
 
 onAuthStateChanged(auth, async (user) => {
 
-    if (!user) {
-
-        message.innerHTML = `
-            <div>
-                Favorilerinizi görmek için giriş yapmalısınız.
-                <br>
-                <a href="giriş.html">Giriş Yap</a>
-            </div>
-        `;
-
+    // Önce Firebase kullanıcısını kontrol et
+    if (user) {
+        await loadFavorites(user.uid);
         return;
     }
 
-    await loadFavorites(user.uid);
+    // Firebase kullanıcıyı bulamazsa localStorage'daki
+    // nerisUser bilgisini kontrol et
+    const savedUser = localStorage.getItem("nerisUser");
 
+    if (savedUser) {
+        try {
+            const localUser = JSON.parse(savedUser);
+
+            if (localUser.uid) {
+                await loadFavorites(localUser.uid);
+                return;
+            }
+        } catch (error) {
+            console.error("Kullanıcı bilgisi okunamadı:", error);
+        }
+    }
+
+    // Hiçbir şekilde giriş yapılmamışsa
+    message.innerHTML = `
+        <div>
+            Favorilerinizi görmek için giriş yapmalısınız.
+            <br>
+            <a href="giriş.html">Giriş Yap</a>
+        </div>
+    `;
 });
 
 
