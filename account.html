@@ -706,17 +706,30 @@ async function loadOrders(user) {
             orderCard.className = "order-card";
 
             orderCard.innerHTML = `
-                <div class="order-header">
-                    <strong>Sipariş #${docSnapshot.id.substring(0, 8)}</strong>
-                    <span>${order.durum || "Hazırlanıyor"}</span>
-                </div>
+    <div class="order-header">
+        <span class="order-number">
+            Sipariş #${docSnapshot.id.substring(0, 8)}
+        </span>
 
-                <div class="order-info">
-                    <p><strong>Ürün:</strong> ${order.urunAdi || "Ürün bilgisi yok"}</p>
-                    <p><strong>Adet:</strong> ${order.adet || 1}</p>
-                    <p><strong>Toplam:</strong> ${order.toplam || order.fiyat || "—"} TL</p>
-                </div>
-            `;
+        <span class="order-status">
+            ${order.durum || "Hazırlanıyor"}
+        </span>
+    </div>
+
+    <div class="order-product">
+        ${order.urunAdi || "Ürün bilgisi yok"}
+    </div>
+
+    <div class="order-details">
+        <span>${order.adet || 1} adet</span>
+
+        <span class="order-total">
+            <strong>
+                ${(order.toplam || order.fiyat || 0).toLocaleString("tr-TR")} TL
+            </strong>
+        </span>
+    </div>
+`;
 
             ordersList.appendChild(orderCard);
         });
