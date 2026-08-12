@@ -2502,33 +2502,35 @@ preinfo: {
       from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
     import {
-      getFirestore,
-      collection,
-      getDocs
-    }
-      from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+    getFirestore,
+    collection,
+    getDocs,
+    doc,
+    setDoc,
+    deleteDoc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
+import {
+    getAuth,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
     const firebaseConfig = {
-
-      apiKey: "AIzaSyBcoeTk7aZhocmMQVPMHjVK-NfG0JUiS7I",
-
-      authDomain: "nerissite-dc8ec.firebaseapp.com",
-
-      projectId: "nerissite-dc8ec",
-
-      storageBucket: "nerissite-dc8ec.firebasestorage.app",
-
-      messagingSenderId: "943518451048",
-
-      appId: "1:943518451048:web:e07e8594f5c1cc53c1c2dd"
-
-    };
+    apiKey: "AIzaSyAQ0ses6c9fJnk5xDsh37-0-fLcCj-MVQw",
+    authDomain: "neris-78944.firebaseapp.com",
+    projectId: "neris-78944",
+    storageBucket: "neris-78944.firebasestorage.app",
+    messagingSenderId: "58960639184",
+    appId: "1:58960639184:web:dc25f186f8887f64f1dad5",
+    measurementId: "G-CVD0X6X882"
+};
 
 
     const app = initializeApp(firebaseConfig);
 
     const db = getFirestore(app);
+    const auth = getAuth(app);
 
 
     async function loadProducts(){
