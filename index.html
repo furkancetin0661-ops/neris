@@ -1717,6 +1717,24 @@
     margin-left: 5px;
     font-size: 10px;
 }
+    .hero {
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.hero-image {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    z-index: 0 !important;
+}
+
+.hero-text {
+    position: relative !important;
+    z-index: 2 !important;
+}
   </style>
   <script type="application/ld+json">
 {
@@ -1801,6 +1819,7 @@
 
   <!-- HERO -->
   <section class="hero">
+    <img src="kahraman-elbise.png" class="hero-image">
 
     <div class="hero-text">
       <h1>Yeni Sezon</h1>
