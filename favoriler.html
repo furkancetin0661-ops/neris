@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Neris | Favorilerim</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    background:#090909;
+    color:#fff;
+    font-family:Arial, sans-serif;
+}
+
+header{
+    height:90px;
+    background:#050505;
+    border-bottom:1px solid #222;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 6%;
+}
+
+.logo{
+    color:#d4af37;
+    font-family:Georgia,serif;
+    font-size:32px;
+    font-weight:bold;
+    letter-spacing:4px;
+}
+
+nav{
+    display:flex;
+    gap:30px;
+}
+
+nav a{
+    color:#fff;
+    text-decoration:none;
+    font-size:14px;
+}
+
+nav a:hover{
+    color:#d4af37;
+}
+
+.container{
+    width:90%;
+    max-width:1250px;
+    margin:70px auto;
+}
+
+.title{
+    text-align:center;
+    margin-bottom:50px;
+}
+
+.title h1{
+    font-family:Georgia,serif;
+    font-size:42px;
+    margin-bottom:12px;
+}
+
+.title p{
+    color:#999;
+    letter-spacing:1px;
+}
+
+.gold-line{
+    width:45px;
+    height:2px;
+    background:#d4af37;
+    margin:20px auto;
+}
+
+.products{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:28px;
+}
+
+.card{
+    background:#111;
+    border:1px solid #222;
+    position:relative;
+    overflow:hidden;
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+    border-color:#d4af37;
+}
+
+.card-image{
+    position:relative;
+    width:100%;
+    height:430px;
+    background:#1a1a1a;
+    overflow:hidden;
+}
+
+.card-image img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+.favorite-remove{
+    position:absolute;
+    right:15px;
+    top:15px;
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    border:none;
+    background:#d4af37;
+    color:#111;
+    font-size:22px;
+    cursor:pointer;
+    z-index:2;
+}
+
+.card-content{
+    padding:22px;
+}
+
+.card-content h3{
+    font-family:Georgia,serif;
+    font-size:20px;
+    margin-bottom:12px;
+}
+
+.price{
+    color:#d4af37;
+    font-size:17px;
+    margin-bottom:20px;
+}
+
+.buy{
+    display:block;
+    text-align:center;
+    border:1px solid #d4af37;
+    padding:15px;
+    color:#d4af37;
+    text-decoration:none;
+    font-size:13px;
+    font-weight:bold;
+    letter-spacing:2px;
+    transition:.3s;
+}
+
+.buy:hover{
+    background:#d4af37;
+    color:#111;
+}
+
+.message{
+    text-align:center;
+    padding:80px 20px;
+    color:#999;
+    font-size:17px;
+}
+
+.message a{
+    display:inline-block;
+    margin-top:25px;
+    color:#d4af37;
+    text-decoration:none;
+}
+
+.loading{
+    text-align:center;
+    color:#999;
+    padding:80px 20px;
+}
+
+@media(max-width:900px){
+    .products{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:600px){
+
+    header{
+        height:auto;
+        padding:20px;
+        flex-direction:column;
+        gap:20px;
+    }
+
+    nav{
+        gap:15px;
+        flex-wrap:wrap;
+        justify-content:center;
+    }
+
+    .container{
+        width:94%;
+        margin:40px auto;
+    }
+
+    .title h1{
+        font-size:32px;
+    }
+
+    .products{
+        grid-template-columns:1fr;
+    }
+
+    .card-image{
+        height:430px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">NERIS</div>
+
+    <nav>
+        <a href="index.html">Ana Sayfa</a>
+        <a href="index.html#products">Ürünler</a>
+        <a href="favoriler.html">Favorilerim</a>
+        <a href="hesap.html">Hesabım</a>
+    </nav>
+
+</header>
+
+
+<main class="container">
+
+    <div class="title">
+        <h1>Favorilerim</h1>
+        <p>Beğendiğiniz Neris ürünleri</p>
+        <div class="gold-line"></div>
+    </div>
+
+    <div id="message" class="loading">
+        Favorileriniz yükleniyor...
+    </div>
+
+    <div id="products" class="products"></div>
+
+</main>
+
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+    getAuth,
+    onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+    getFirestore,
+    collection,
+    query,
+    where,
+    getDocs,
+    getDoc,
+    doc,
+    deleteDoc
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+const firebaseConfig = {
+
+    apiKey: "AIzaSyA0ses6c9FJnK5xDsh37-0-fLcCj-MVQw",
+
+    authDomain: "neris-78944.firebaseapp.com",
+
+    projectId: "neris-78944",
+
+    storageBucket: "neris-78944.firebasestorage.app",
+
+    messagingSenderId: "58960639184",
+
+    appId: "1:58960639184:web:dc25f18f6887f64f1dad5",
+
+    measurementId: "G-CVD06X8B82"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+const auth = getAuth(app);
+
+
+const productsContainer =
+    document.getElementById("products");
+
+const message =
+    document.getElementById("message");
+
+
+onAuthStateChanged(auth, async (user) => {
+
+    if (!user) {
+
+        message.innerHTML = `
+            <div>
+                Favorilerinizi görmek için giriş yapmalısınız.
+                <br>
+                <a href="giriş.html">Giriş Yap</a>
+            </div>
+        `;
+
+        return;
+    }
+
+    await loadFavorites(user.uid);
+
+});
+
+
+async function loadFavorites(userId){
+
+    try{
+
+        const favoritesQuery = query(
+            collection(db, "favoriler"),
+            where("kullaniciId", "==", userId)
+        );
+
+        const favoritesSnapshot =
+            await getDocs(favoritesQuery);
+
+
+        if(favoritesSnapshot.empty){
+
+            message.innerHTML = `
+                <div>
+                    Henüz favori ürününüz bulunmuyor.
+                    <br>
+                    <a href="index.html#products">
+                        Ürünleri Keşfet
+                    </a>
+                </div>
+            `;
+
+            return;
+        }
+
+
+        productsContainer.innerHTML = "";
+
+        message.style.display = "none";
+
+
+        for(const favoriteDoc of favoritesSnapshot.docs){
+
+            const favoriteData =
+                favoriteDoc.data();
+
+            const productId =
+                favoriteData.urunId;
+
+
+            if(!productId) continue;
+
+
+            const productRef =
+                doc(db, "Ürünler", productId);
+
+            const productSnapshot =
+                await getDoc(productRef);
+
+
+            if(!productSnapshot.exists()){
+
+                continue;
+
+            }
+
+
+            const product =
+                productSnapshot.data();
+
+
+            createProductCard(
+                product,
+                productId,
+                favoriteDoc.id
+            );
+
+        }
+
+
+        if(productsContainer.children.length === 0){
+
+            message.style.display = "block";
+
+            message.innerHTML = `
+                <div>
+                    Favorilerinizde gösterilecek ürün bulunamadı.
+                    <br>
+                    <a href="index.html#products">
+                        Ürünleri Keşfet
+                    </a>
+                </div>
+            `;
+
+        }
+
+    }
+    catch(error){
+
+        console.error(
+            "Favoriler yüklenemedi:",
+            error
+        );
+
+        message.style.display = "block";
+
+        message.innerHTML = `
+            Favoriler yüklenirken bir hata oluştu.
+        `;
+
+    }
+
+}
+
+
+function createProductCard(
+    product,
+    productId,
+    favoriteId
+){
+
+    const card =
+        document.createElement("div");
+
+    card.className = "card";
+
+
+    const productName =
+        product.reklam ||
+        product.name ||
+        product.ad ||
+        "Neris Ürünü";
+
+
+    const productPrice =
+        product.fiyat ||
+        product.price ||
+        "0";
+
+
+    const productImage =
+        product.resim ||
+        product.img ||
+        product.image ||
+        "https://picsum.photos/500/650";
+
+
+    const productLink =
+        product["Bağlantı"] ||
+        product.link ||
+        "#";
+
+
+    card.innerHTML = `
+
+        <div class="card-image">
+
+            <button
+                class="favorite-remove"
+                title="Favorilerden çıkar"
+            >
+                ♥
+            </button>
+
+            <img
+                src="${productImage}"
+                alt="${productName}"
+            >
+
+        </div>
+
+
+        <div class="card-content">
+
+            <h3>
+                ${productName}
+            </h3>
+
+            <div class="price">
+                ₺${productPrice}
+            </div>
+
+            <a
+                href="${productLink}"
+                target="_blank"
+                class="buy"
+            >
+                SATIN AL
+            </a>
+
+        </div>
+
+    `;
+
+
+    const removeButton =
+        card.querySelector(".favorite-remove");
+
+
+    removeButton.addEventListener(
+        "click",
+        async () => {
+
+            try{
+
+                await deleteDoc(
+                    doc(
+                        db,
+                        "favoriler",
+                        favoriteId
+                    )
+                );
+
+                card.remove();
+
+
+                if(
+                    productsContainer.children.length === 0
+                ){
+
+                    message.style.display = "block";
+
+                    message.innerHTML = `
+                        <div>
+                            Henüz favori ürününüz bulunmuyor.
+                            <br>
+                            <a href="index.html#products">
+                                Ürünleri Keşfet
+                            </a>
+                        </div>
+                    `;
+
+                }
+
+            }
+            catch(error){
+
+                console.error(
+                    "Favoriden çıkarılamadı:",
+                    error
+                );
+
+                alert(
+                    "Ürün favorilerden çıkarılamadı."
+                );
+
+            }
+
+        }
+    );
+
+
+    productsContainer.appendChild(card);
+
+}
+
+</script>
+
+</body>
+</html>
