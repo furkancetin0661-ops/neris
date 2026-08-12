@@ -2656,7 +2656,7 @@ const querySnapshot =
             button.innerHTML = "♡";
 
         } else {
-            const productRef = doc(db, "products", productId);
+            const productRef = doc(db, "Ürünler", productId);
             const productSnap = await getDoc(productRef);
 
             if (!productSnap.exists()) {
@@ -2707,7 +2707,7 @@ auth.onAuthStateChanged(function(user) {
 
     if (!loginLink) return;
 
-    if (user) {
+    if (!user) {
 
         const userName = user.displayName || user.email.split("@")[0];
 
