@@ -2558,7 +2558,7 @@ const querySnapshot =
     e.stopPropagation();
 
 
-    const user = firebase.auth().currentUser;
+    const user = auth.currentUser;
 
     if (!user) {
         alert("Favorilere eklemek için önce giriş yapmalısınız.");
