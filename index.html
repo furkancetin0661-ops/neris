@@ -2556,7 +2556,10 @@ import {
 
         querySnapshot.forEach((doc)=>{
 
-          const p = doc.data();
+          const p = {
+    ...doc.data(),
+    id: doc.id
+};
 
 
           const card = document.createElement("div");
@@ -2613,6 +2616,67 @@ import {
 
 
     loadProducts();
+    document.addEventListener("click", async (e) => {
+    const button = e.target.closest(".favorite-btn");
+
+    if (!button) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const user = auth.currentUser;
+
+    if (!user) {
+        alert("Favorilere eklemek için önce giriş yapmalısınız.");
+        return;
+    }
+
+    const productId = button.dataset.id;
+
+    if (!productId) {
+        console.error("Ürün ID bulunamadı.");
+        return;
+    }
+
+    const favoriteRef = doc(
+        db,
+        "favoriler",
+        `${user.uid}_${productId}`
+    );
+
+    try {
+        const favoriteSnap = await getDoc(favoriteRef);
+
+        if (favoriteSnap.exists()) {
+            await deleteDoc(favoriteRef);
+
+            button.classList.remove("active");
+            button.innerHTML = "♡";
+
+        } else {
+            const productRef = doc(db, "products", productId);
+            const productSnap = await getDoc(productRef);
+
+            if (!productSnap.exists()) {
+                console.error("Ürün bulunamadı.");
+                return;
+            }
+
+            await setDoc(favoriteRef, {
+                kullaniciId: user.uid,
+                urunId: productId,
+                eklenmeTarihi: new Date().toISOString()
+            });
+
+            button.classList.add("active");
+            button.innerHTML = "♥";
+        }
+
+    } catch (error) {
+        console.error("Favori işlemi başarısız:", error);
+        alert("Favori işlemi sırasında bir hata oluştu.");
+    }
+});
 
   </script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
