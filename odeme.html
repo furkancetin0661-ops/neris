@@ -2,51 +2,362 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>NERİS | Ödeme</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NERIS | Ödeme</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
+            margin: 0;
             background: #000;
-            color: white;
-            font-family: Arial;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 60px auto;
+            padding: 20px;
+        }
+
+        h1 {
             text-align: center;
-            padding-top: 100px;
+            color: #d4af37;
+            letter-spacing: 4px;
+        }
+
+        .checkout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
         }
 
         .box {
             background: #111;
-            padding: 40px;
-            border-radius: 10px;
-            width: 300px;
-            margin: auto;
+            border: 1px solid #292929;
+            padding: 30px;
+        }
+
+        h2 {
+            color: #d4af37;
+            font-size: 20px;
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 6px;
+            color: #ccc;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 13px;
+            background: #080808;
+            color: white;
+            border: 1px solid #444;
+            outline: none;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #d4af37;
+        }
+
+        .summary-item {
+            border-bottom: 1px solid #333;
+            padding: 12px 0;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 18px;
+        }
+
+        .total {
+            color: #d4af37;
+            font-size: 22px;
+            font-weight: bold;
         }
 
         button {
-            margin-top: 20px;
-            padding: 12px 20px;
-            border: none;
-            background: gold;
-            color: black;
+            width: 100%;
+            margin-top: 25px;
+            padding: 15px;
+            border: 1px solid #d4af37;
+            background: #d4af37;
+            color: #000;
             font-weight: bold;
             cursor: pointer;
-            border-radius: 5px;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background: #fff;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            color: #d4af37;
+            text-decoration: none;
+        }
+
+        .warning {
+            margin-top: 15px;
+            color: #aaa;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 700px) {
+            .checkout {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                margin: 20px auto;
+            }
         }
     </style>
 </head>
 
 <body>
 
-<div class="box">
-    <h2>Ödeme Sayfası</h2>
-    <p>Siparişinizi tamamlamak üzeresiniz</p>
+<div class="container">
 
-    <button onclick="odemeYap()">Ödemeye Geç</button>
+    <h1>NERIS</h1>
+
+    <div class="checkout">
+
+        <!-- MÜŞTERİ BİLGİLERİ -->
+        <div class="box">
+
+            <h2>Teslimat Bilgileri</h2>
+
+            <form id="checkoutForm">
+
+                <label>Ad Soyad</label>
+                <input
+                    type="text"
+                    id="customerName"
+                    required
+                    placeholder="Adınız Soyadınız">
+
+                <label>E-posta</label>
+                <input
+                    type="email"
+                    id="customerEmail"
+                    required
+                    placeholder="ornek@mail.com">
+
+                <label>Telefon</label>
+                <input
+                    type="tel"
+                    id="customerPhone"
+                    required
+                    placeholder="05XX XXX XX XX">
+
+                <label>Adres</label>
+                <textarea
+                    id="customerAddress"
+                    required
+                    placeholder="Teslimat adresiniz"></textarea>
+
+                <label>İl / İlçe</label>
+                <input
+                    type="text"
+                    id="customerCity"
+                    required
+                    placeholder="Ankara / Altındağ">
+
+                <button type="submit">
+                    ÖDEMEYE GEÇ
+                </button>
+
+            </form>
+
+            <p class="warning">
+                Ödeme işlemi güvenli ödeme altyapısı üzerinden gerçekleştirilecektir.
+            </p>
+
+        </div>
+
+
+        <!-- SİPARİŞ ÖZETİ -->
+        <div class="box">
+
+            <h2>Sipariş Özeti</h2>
+
+            <div id="orderItems"></div>
+
+            <div class="summary-row">
+                <span>Ara Toplam</span>
+                <span id="subtotal">0₺</span>
+            </div>
+
+            <div class="summary-row">
+                <span>Kargo</span>
+                <span id="shipping">0₺</span>
+            </div>
+
+            <div class="summary-row total">
+                <span>Toplam</span>
+                <span id="total">0₺</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <a href="index.html" class="back">
+        ← Alışverişe Devam Et
+    </a>
+
 </div>
 
+
 <script>
-function odemeYap() {
-    alert("Shopier bağlanacak buraya");
+
+const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+const orderItems = document.getElementById("orderItems");
+const subtotalEl = document.getElementById("subtotal");
+const shippingEl = document.getElementById("shipping");
+const totalEl = document.getElementById("total");
+
+let subtotal = 0;
+
+
+/* SEPETİ GÖSTER */
+if (cart.length === 0) {
+
+    orderItems.innerHTML = `
+        <p style="color:#aaa;">
+            Sepetiniz boş.
+        </p>
+    `;
+
+} else {
+
+    cart.forEach(item => {
+
+        const itemTotal = Number(item.price) * Number(item.quantity);
+
+        subtotal += itemTotal;
+
+        orderItems.innerHTML += `
+            <div class="summary-item">
+                <strong>${item.name}</strong>
+                <br>
+                <small>
+                    ${item.quantity} adet × ${item.price}₺
+                </small>
+                <br>
+                <span>${itemTotal}₺</span>
+            </div>
+        `;
+
+    });
+
 }
+
+
+/* KARGO */
+let shipping = 0;
+
+if (subtotal > 0 && subtotal < 3000) {
+    shipping = 100;
+}
+
+
+/* TOPLAMLAR */
+subtotalEl.textContent = subtotal + "₺";
+
+shippingEl.textContent =
+    shipping === 0 && subtotal > 0
+        ? "Ücretsiz"
+        : shipping + "₺";
+
+totalEl.textContent =
+    (subtotal + shipping) + "₺";
+
+
+/* FORM */
+document.getElementById("checkoutForm").addEventListener("submit", function(e) {
+
+    e.preventDefault();
+
+    if (cart.length === 0) {
+
+        alert("Sepetiniz boş.");
+        return;
+
+    }
+
+    const order = {
+
+        customer: {
+            name: document.getElementById("customerName").value.trim(),
+            email: document.getElementById("customerEmail").value.trim(),
+            phone: document.getElementById("customerPhone").value.trim(),
+            address: document.getElementById("customerAddress").value.trim(),
+            city: document.getElementById("customerCity").value.trim()
+        },
+
+        products: cart,
+
+        subtotal: subtotal,
+
+        shipping: shipping,
+
+        total: subtotal + shipping,
+
+        status: "Ödeme bekleniyor",
+
+        createdAt: new Date().toISOString()
+
+    };
+
+
+    /*
+       ŞİMDİLİK TEST
+       Sipariş bilgilerini tarayıcıya kaydediyoruz.
+    */
+
+    localStorage.setItem(
+        "pendingOrder",
+        JSON.stringify(order)
+    );
+
+
+    alert(
+        "Bilgileriniz alındı. Şimdi ödeme sistemine yönlendirileceksiniz."
+    );
+
+
+    /*
+       SHOPIER LİNKİNİ BURAYA
+       SHOPIER ÜRÜNLERİ HAZIR OLDUĞUNDA
+       BURAYI GERÇEK LİNKE BAĞLAYACAĞIZ.
+    */
+
+    // window.location.href = "SHOPIER_LINKIN_BURAYA";
+
+});
+
 </script>
 
 </body>
