@@ -2548,7 +2548,42 @@ const querySnapshot =
     }
 
 
-    loadProducts();
+   loadProducts().then(() => {
+    loadFavorites();
+});
+    async function loadFavorites() {
+    const user = auth.currentUser;
+
+    if (!user) return;
+
+    const buttons = document.querySelectorAll(".favorite-btn");
+
+    for (const button of buttons) {
+        const productId = button.dataset.id;
+
+        if (!productId) continue;
+
+        const favoriteRef = doc(
+            db,
+            "favoriler",
+            `${user.uid}_${productId}`
+        );
+
+        try {
+            const favoriteSnap = await getDoc(favoriteRef);
+
+            if (favoriteSnap.exists()) {
+                button.classList.add("active");
+                button.innerHTML = "♥";
+            } else {
+                button.classList.remove("active");
+                button.innerHTML = "♡";
+            }
+        } catch (error) {
+            console.error("Favoriler yüklenemedi:", error);
+        }
+    }
+}
     document.addEventListener("click", async (e) => {
     const button = e.target.closest(".favorite-btn");
 
