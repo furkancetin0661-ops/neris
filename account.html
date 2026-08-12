@@ -435,15 +435,107 @@ body {
         border-top: 1px solid #202020 !important;
     }
 }
+    /* ================================
+   PREMIUM NERIS HEADER
+================================ */
+
+.account-header {
+    height: 88px;
+    padding: 0 6vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.10);
+    background: #050505;
+}
+
+.account-logo {
+    color: #d4af37;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 25px;
+    font-weight: 600;
+    letter-spacing: 7px;
+    text-decoration: none;
+}
+
+.home-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: #e8e8e8;
+    text-decoration: none;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    padding: 12px 0;
+    transition: color .3s ease;
+}
+
+.home-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 5px;
+    width: 0;
+    height: 1px;
+    background: #d4af37;
+    transition: width .35s ease;
+}
+
+.home-link:hover {
+    color: #d4af37;
+}
+
+.home-link:hover::after {
+    width: 100%;
+}
+
+.home-arrow {
+    font-size: 16px;
+    transition: transform .3s ease;
+}
+
+.home-link:hover .home-arrow {
+    transform: translateX(-4px);
+}
+
+/* MOBİL */
+@media (max-width: 700px) {
+
+    .account-header {
+        height: 72px;
+        padding: 0 22px;
+    }
+
+    .account-logo {
+        font-size: 20px;
+        letter-spacing: 5px;
+    }
+
+    .home-link {
+        font-size: 11px;
+        letter-spacing: .7px;
+    }
+}
   </style>
 </head>
 
 <body>
 
-  <header class="header">
-    <a href="index.html" class="logo">NERIS</a>
-    <a href="index.html" class="back">← Ana Sayfaya Dön</a>
-  </header>
+  <header class="account-header">
+
+    <a href="index.html" class="account-logo">
+        NERIS
+    </a>
+
+    <a href="index.html" class="home-link">
+        <span class="home-arrow">←</span>
+        <span>Ana Sayfa</span>
+    </a>
+
+</header>
 
   <main class="container">
 
