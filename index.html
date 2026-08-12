@@ -421,8 +421,41 @@
 }
 
 .card-image{
-  height:390px;
-  overflow:hidden;
+    height:390px;
+    overflow:hidden;
+}
+    .favorite-btn{
+    position:absolute;
+    top:14px;
+    right:14px;
+    width:44px;
+    height:44px;
+    border:1px solid rgba(255,255,255,.35);
+    border-radius:50%;
+    background:rgba(0,0,0,.55);
+    color:#fff;
+    font-size:23px;
+    line-height:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    z-index:10;
+    transition:all .3s ease;
+    backdrop-filter:blur(8px);
+}
+
+.favorite-btn:hover{
+    background:#d4af37;
+    border-color:#d4af37;
+    color:#000;
+    transform:scale(1.08);
+}
+
+.favorite-btn.active{
+    background:#d4af37;
+    border-color:#d4af37;
+    color:#000;
 }
 
 .card-image img{
@@ -2534,6 +2567,8 @@ preinfo: {
             <div class="badge">NEW</div>
 
             <div class="card-image">
+
+            <button class="favorite-btn" data-id="${p.id}" type="button">♡</button>
 
               <img
                 src="${p.img || 'https://picsum.photos/500/650'}"
