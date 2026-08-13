@@ -554,7 +554,7 @@ body {
           Favorilerim
         </button>
 
-        <button onclick="logout()">
+        <button type="button" onclick="logout(event)">
           Çıkış Yap
         </button>
 
@@ -683,7 +683,7 @@ body {
 
       if (!user) {
 
-        window.location.href = "login.html";
+        window.location.href = "giris.html";
 
         return;
 
@@ -706,30 +706,48 @@ body {
     });
 
 
-    // ÇIKIŞ
+    // ÇIKIŞ — MOBİL VE MASAÜSTÜ
+    // Tek dokunuşla Firebase oturumunu kapatır ve ana sayfaya döner.
+    window.logout = async function(event) {
 
-    window.logout = async function() {
-
-      const confirmLogout =
-        confirm("Hesabınızdan çıkış yapmak istiyor musunuz?");
-
-      if (!confirmLogout) return;
-
-
-      try {
-
-        await signOut(auth);
-
-        window.location.href = "index.html";
-
-      } catch (error) {
-
-        alert("Çıkış yapılırken bir hata oluştu.");
-
-        console.error(error);
-
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
       }
 
+      const logoutButton = event?.currentTarget || document.querySelector('.menu button[onclick*="logout"]');
+
+      if (logoutButton) {
+        logoutButton.disabled = true;
+        logoutButton.style.pointerEvents = "none";
+        logoutButton.style.opacity = "0.65";
+      }
+
+      try {
+        await signOut(auth);
+
+        // Sitede kullanıcı adı tutuluyorsa onu da temizle.
+        try {
+          localStorage.removeItem("nerisUserName");
+          sessionStorage.removeItem("nerisUserName");
+        } catch (storageError) {
+          console.warn("Yerel kullanıcı bilgisi temizlenemedi:", storageError);
+        }
+
+        // Çıkış tamamlandıktan sonra ana sayfaya dön.
+        window.location.replace("index.html");
+
+      } catch (error) {
+        console.error("Çıkış yapılamadı:", error);
+
+        if (logoutButton) {
+          logoutButton.disabled = false;
+          logoutButton.style.pointerEvents = "";
+          logoutButton.style.opacity = "";
+        }
+
+        alert("Çıkış yapılırken bir hata oluştu. Lütfen tekrar deneyin.");
+      }
     };
 
 
