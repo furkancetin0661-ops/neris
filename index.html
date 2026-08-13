@@ -829,24 +829,6 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .buy:
 .products-empty button{background:#d4af37;border:1px solid #d4af37;color:#080808;padding:13px 26px;font-size:10px;font-weight:600;letter-spacing:1.5px;cursor:pointer}
 @media(max-width:768px){.products-empty{padding:52px 16px}.products-empty strong{font-size:22px}}
 
-/* NERIS — SAYFA AÇILIŞ ANİMASYONU */
-#nerisPageLoader{
-  position:fixed;inset:0;background:#050505;z-index:9999999;
-  display:flex;align-items:center;justify-content:center;
-  opacity:1;visibility:visible;pointer-events:all;
-  transition:opacity .7s cubic-bezier(.22,.61,.36,1),visibility 0s linear 0s;
-}
-#nerisPageLoader.hide{
-  opacity:0;visibility:hidden;pointer-events:none;
-  transition:opacity .7s cubic-bezier(.22,.61,.36,1),visibility 0s linear .7s;
-}
-.neris-loader-content{text-align:center;transform:translateY(12px);opacity:0;animation:nerisLoaderContent .65s cubic-bezier(.22,.61,.36,1) .05s forwards}
-.neris-loader-logo{font-family:'Playfair Display',serif;color:#d4af37;font-size:38px;font-weight:500;letter-spacing:9px}
-.neris-loader-line{width:54px;height:1px;background:#d4af37;margin:18px auto 0;transform:scaleX(0);transform-origin:center;animation:nerisLoaderLine .65s ease .25s forwards}
-@keyframes nerisLoaderContent{to{transform:translateY(0);opacity:1}}
-@keyframes nerisLoaderLine{to{transform:scaleX(1)}}
-@media(max-width:768px){.neris-loader-logo{font-size:30px;letter-spacing:7px}.neris-loader-line{margin-top:14px;width:44px}}
-
 </style>
   <script type="application/ld+json">
 {
@@ -898,13 +880,6 @@ document.addEventListener("keydown", function(event) {
 </head>
 
 <body>
-  <!-- NERIS SAYFA AÇILIŞ PERDESİ -->
-  <div id="nerisPageLoader" aria-hidden="true">
-    <div class="neris-loader-content">
-      <div class="neris-loader-logo">NERIS</div>
-      <div class="neris-loader-line"></div>
-    </div>
-  </div>
 
   <!-- ÜST BİLGİ BAR -->
   <div class="topbar">
@@ -927,6 +902,8 @@ document.addEventListener("keydown", function(event) {
     <div class="account-dropdown" id="accountDropdown">
         <a href="account.html">Hesabım</a>
         <a href="siparişler.html">Siparişlerim</a>
+        <a href="favoriler.html">Favorilerim</a>
+
         <div class="account-divider"></div>
 
         <button id="logoutButton">Çıkış Yap</button>
@@ -1209,19 +1186,6 @@ document.addEventListener("keydown", function(event) {
 
 
   <script>
-
-    /* NERIS SAYFA AÇILIŞ ANİMASYONU */
-    function hideNerisPageLoader(){
-      const loader=document.getElementById('nerisPageLoader');
-      if(loader) loader.classList.add('hide');
-    }
-    window.addEventListener('load',function(){
-      setTimeout(hideNerisPageLoader,650);
-    });
-    setTimeout(hideNerisPageLoader,4000);
-    window.addEventListener('pageshow',function(){
-      setTimeout(hideNerisPageLoader,120);
-    });
 
     /* NERIS PREMIUM ALERT + PAGE TRANSITION */
     let premiumAlertCallback = null;
@@ -2035,24 +1999,14 @@ if (logoutButton) {
 
     logoutButton.addEventListener("click", function() {
 
-        const finishLogout=()=>{
+        auth.signOut().then(function() {
             try{localStorage.removeItem('nerisUserName');}catch(e){}
             const loginButton=document.getElementById('loginLink');
             const nameEl=document.getElementById('accountName');
             if(nameEl) nameEl.textContent='GİRİŞ YAP';
             if(loginButton) loginButton.dataset.loggedIn='false';
             if(accountDropdown) accountDropdown.classList.remove('active');
-            const layer=document.getElementById('pageTransition');
-            if(layer){
-              layer.classList.add('active');
-              setTimeout(()=>window.location.reload(),380);
-            }else{
-              window.location.reload();
-            }
-        };
-        auth.signOut().then(finishLogout).catch(function(error){
-          console.error('Çıkış yapılamadı:',error);
-          showPremiumAlert('Çıkış Yapılamadı','Lütfen tekrar deneyin.');
+            window.location.reload();
         });
 
     });
