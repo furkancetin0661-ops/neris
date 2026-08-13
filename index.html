@@ -184,6 +184,10 @@ button,input,textarea{font:inherit}
   .mobile-account-buttons a{height:64px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:17px;font-weight:700}
   .mobile-account-buttons a:first-child{background:#222;color:#fff}
   .mobile-account-buttons a:last-child{background:#f1f1f1;color:#222}
+  .mobile-account-buttons button{height:64px;border:0;background:#222;color:#fff;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit}
+  .mobile-account-buttons button:active{transform:scale(.98)}
+  .mobile-account-buttons.logged-in button{background:#111;color:#d4af37}
+  .mobile-account-buttons.logged-in button span{max-width:145px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
   .hero{min-height:calc(100svh - 72px);height:calc(100svh - 72px);max-height:none;background:linear-gradient(rgba(0,0,0,.15),rgba(0,0,0,.45)),url("hero.png") center top/cover no-repeat}
   .hero-image{object-position:center top}
@@ -971,9 +975,9 @@ document.addEventListener("keydown", function(event) {
   </div>
   <div class="mobile-menu-bottom">
     <a href="#" onclick="openInfo('tracking'); closeMobileMenu(); return false;" class="mobile-order-btn">🚚 &nbsp; SİPARİŞ TAKİP</a>
-    <div class="mobile-account-buttons">
-      <a href="giris.html" onclick="event.preventDefault(); navigateWithTransition('giris.html')">♙ &nbsp; GİRİŞ YAP</a>
-      <a href="register.html">♙+ &nbsp; ÜYE OL</a>
+    <div class="mobile-account-buttons" id="mobileAccountButtons">
+      <button id="mobileLoginLink" type="button" onclick="handleMobileLoginClick(event)">♙ &nbsp; <span id="mobileAccountName">GİRİŞ YAP</span></button>
+      <a id="mobileRegisterLink" href="register.html">♙+ &nbsp; ÜYE OL</a>
     </div>
   </div>
 </div>
@@ -1290,6 +1294,25 @@ document.addEventListener("keydown", function(event) {
         setTimeout(function(){ window.scrollTo({top:0,left:0,behavior:'instant'}); }, 30);
       }
     });
+
+    function handleMobileLoginClick(event){
+      if(event) event.preventDefault();
+      const authUser = window.nerisAuth ? window.nerisAuth.currentUser : null;
+      const loginButton = document.getElementById('loginLink');
+      const loggedIn = !!authUser || loginButton?.dataset.loggedIn === 'true';
+
+      if(loggedIn){
+        // Mobilde kullanıcı giriş yaptıktan sonra adı görünür; hesabın ana ekranına geçiş yapar.
+        closeMobileMenu();
+        navigateWithTransition('account.html');
+        return false;
+      }
+
+      closeMobileMenu();
+      navigateWithTransition('giris.html');
+      return false;
+    }
+    window.handleMobileLoginClick = handleMobileLoginClick;
 
     function handleLoginClick(event){
       if(event) event.preventDefault();
@@ -2085,6 +2108,9 @@ function syncAccountUI(user){
   const profileName=document.getElementById('accountProfileName');
   const profileEmail=document.getElementById('accountProfileEmail');
   const avatar=document.getElementById('accountAvatar');
+  const mobileNameEl=document.getElementById('mobileAccountName');
+  const mobileButtons=document.getElementById('mobileAccountButtons');
+  const mobileRegister=document.getElementById('mobileRegisterLink');
   if(!loginButton || !nameEl) return;
   if(user){
     const userName=(user.displayName && user.displayName.trim())
@@ -2093,6 +2119,9 @@ function syncAccountUI(user){
     const email=user.email || 'NERIS hesabınız';
     const initials=userName.trim().split(/\s+/).filter(Boolean).slice(0,2).map(x=>x.charAt(0).toUpperCase()).join('') || 'N';
     nameEl.textContent=userName;
+    if(mobileNameEl) mobileNameEl.textContent=userName;
+    if(mobileButtons) mobileButtons.classList.add('logged-in');
+    if(mobileRegister) mobileRegister.style.display='none';
     if(profileName) profileName.textContent=userName;
     if(profileEmail) profileEmail.textContent=email;
     if(avatar) avatar.textContent=initials;
@@ -2101,6 +2130,9 @@ function syncAccountUI(user){
     loginButton.dataset.loggedIn='true';
   }else{
     nameEl.textContent='GİRİŞ YAP';
+    if(mobileNameEl) mobileNameEl.textContent='GİRİŞ YAP';
+    if(mobileButtons) mobileButtons.classList.remove('logged-in');
+    if(mobileRegister) mobileRegister.style.display='flex';
     if(profileName) profileName.textContent='HESABIM';
     if(profileEmail) profileEmail.textContent='Hesabınızla giriş yaptığınızda bilgileriniz burada görünür';
     if(avatar) avatar.textContent='N';
