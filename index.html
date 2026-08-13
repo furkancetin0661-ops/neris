@@ -22,2429 +22,234 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;width:100%;overflow-x:hidden}
+body{margin:0;width:100%;min-width:0;font-family:Poppins,sans-serif;background:#0a0a0a;color:#fff;overflow-x:hidden}
+a{color:inherit}
+img{max-width:100%}
+button,input,textarea{font:inherit}
 
-    *{
-      box-sizing:border-box;
-    }
+/* TOPBAR */
+.topbar{width:100%;height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 50px;background:#050505;border-bottom:1px solid rgba(212,175,55,.16);color:#bdbdbd;font-size:11px;letter-spacing:1.2px;position:relative;z-index:1001}
+.topbar-left,.topbar-right{display:flex;align-items:center;gap:22px}
+.topbar a,.topbar button{color:#bdbdbd;text-decoration:none;background:none;border:0;padding:0;font:inherit;letter-spacing:inherit;cursor:pointer;transition:.25s ease}
+.topbar a:hover,.topbar button:hover{color:#d4af37}
+.topbar-separator{width:1px;height:12px;background:rgba(255,255,255,.18)}
+.nav-action{display:inline-flex;align-items:center;gap:7px;cursor:pointer}
+.nav-action .nav-icon{font-size:16px;line-height:1}
 
-    html{
-      scroll-behavior:smooth;
-    }
-
-    body{
-      margin:0;
-      font-family:Poppins,sans-serif;
-      background:#0a0a0a;
-      color:#fff;
-    }
-
-
-/* =========================
-   NERIS ÜST BİLGİ BAR
-========================= */
-.topbar{
-  width:100%;
-  height:42px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 50px;
-  background:#050505;
-  border-bottom:1px solid rgba(212,175,55,.16);
-  color:#bdbdbd;
-  font-size:11px;
-  letter-spacing:1.2px;
-  position:relative;
-  z-index:1001;
-}
-.topbar-left,.topbar-right{
-  display:flex;
-  align-items:center;
-  gap:22px;
-}
-.topbar a,.topbar button{
-  color:#bdbdbd;
-  text-decoration:none;
-  background:none;
-  border:0;
-  padding:0;
-  font:inherit;
-  letter-spacing:inherit;
-  cursor:pointer;
-  transition:.25s ease;
-}
-.topbar a:hover,.topbar button:hover{
-  color:#d4af37;
-}
-.topbar-separator{
-  width:1px;
-  height:12px;
-  background:rgba(255,255,255,.18);
-}
-.nav-action{
-  display:inline-flex;
-  align-items:center;
-  gap:7px;
-  cursor:pointer;
-}
-.nav-action .nav-icon{
-  font-size:16px;
-  line-height:1;
-}
-.navbar{
-  top:0;
-}
-.search-panel{
-  display:none;
-  position:absolute;
-  right:50px;
-  top:calc(100% + 10px);
-  width:min(430px,calc(100vw - 30px));
-  background:#101010;
-  border:1px solid rgba(212,175,55,.28);
-  box-shadow:0 18px 45px rgba(0,0,0,.55);
-  padding:14px;
-  z-index:1100;
-}
+/* SEARCH */
+.search-panel{display:none;position:fixed;right:50px;top:58px;width:min(430px,calc(100vw - 30px));background:#101010;border:1px solid rgba(212,175,55,.45);box-shadow:0 18px 45px rgba(0,0,0,.55);padding:14px;z-index:1100}
 .search-panel.open{display:flex;gap:8px}
-.search-panel input{
-  flex:1;
-  min-width:0;
-  background:#080808;
-  color:#fff;
-  border:1px solid #333;
-  padding:12px 13px;
-  outline:none;
-  font-family:Poppins,sans-serif;
-}
+.search-panel input{flex:1;min-width:0;background:#080808;color:#fff;border:1px solid #333;padding:12px 13px;outline:none;font-family:Poppins,sans-serif}
 .search-panel input:focus{border-color:#d4af37}
-.search-panel button{
-  background:#d4af37;
-  color:#050505;
-  border:0;
-  padding:0 16px;
-  cursor:pointer;
-  font-weight:600;
-}
-.info-modal{
-  display:none;
-  position:fixed !important;
-  inset:0 !important;
+.search-panel button{background:#d4af37;color:#050505;border:0;padding:0 18px;cursor:pointer;font-weight:600}
 
-  width:100vw !important;
-  height:100vh !important;
+/* NAVBAR */
+.navbar{position:sticky;top:0;z-index:1000;width:100%;min-height:82px;padding:20px 50px;display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,.9);border-bottom:1px solid rgba(255,255,255,.1);backdrop-filter:blur(12px);box-shadow:0 5px 25px rgba(0,0,0,.35)}
+.logo{flex:1;font-family:'Playfair Display',serif;font-size:32px;font-weight:700;letter-spacing:4px;color:#d4af37;text-decoration:none}
+.menu{flex:1;display:flex;justify-content:center;align-items:center;gap:10px}
+.menu a{position:relative;margin:0 10px;color:#fff;text-decoration:none;font-size:14px;font-weight:500;padding:8px 0;transition:.3s}
+.menu a:hover{color:#d4af37}
+.menu a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:2px;background:#d4af37;transition:.3s}
+.menu a:hover::after{width:100%}
+.icons{flex:1;display:flex;justify-content:flex-end;align-items:center;gap:18px}
+.icons span{cursor:pointer;font-size:19px;transition:.3s}
+.icons span:hover{color:#d4af37;transform:scale(1.08)}
+.mobile-menu-btn{display:none}
 
-  background:#101010 !important;
+/* HERO */
+.hero{min-height:80vh;background:linear-gradient(rgba(0,0,0,.48),rgba(0,0,0,.58)),url("hero.png") center top/cover no-repeat;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden}
+.hero-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.hero-text{position:absolute;left:7%;top:50%;transform:translateY(-50%);z-index:2;padding:20px;text-align:left;width:420px}
+.hero-text h1{margin:0 0 14px;font-family:'Playfair Display',serif;font-size:58px;font-weight:700;line-height:1.05;letter-spacing:2px;color:#252525}
+.hero-text p{margin:0 0 28px;color:#252525;font-size:22px;font-weight:500}
+.hero-btn{display:inline-flex;align-items:center;justify-content:center;margin-top:0;padding:14px 35px;background:linear-gradient(45deg,#d4af37,#f5dea5);color:#000;text-decoration:none;border-radius:8px;font-weight:600;transition:.3s}
+.hero-btn:hover{transform:scale(1.05);box-shadow:0 10px 25px rgba(212,175,55,.35)}
 
-  z-index:999999 !important;
+/* CATEGORIES */
+.categories{max-width:1280px;margin:0 auto;padding:80px 35px}
+.categories-title{text-align:center;margin-bottom:40px}
+.categories-title span{color:#d4af37;font-size:11px;letter-spacing:3px}
+.categories-title h2{margin:10px 0 0;font-family:'Playfair Display',serif;font-size:40px;font-weight:500}
+.category-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.category-card{position:relative;height:430px;overflow:hidden;text-decoration:none;background:#111}
+.category-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s ease}
+.category-card::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85),rgba(0,0,0,.05))}
+.category-card:hover img{transform:scale(1.07)}
+.category-overlay{position:absolute;z-index:2;left:25px;bottom:25px;color:#fff}
+.category-overlay h3{margin:0 0 7px;font-family:'Playfair Display',serif;font-size:25px;font-weight:500}
+.category-overlay span{color:#d4af37;font-size:12px;letter-spacing:1px}
 
-  align-items:stretch !important;
-  justify-content:stretch !important;
+/* BENEFITS */
+.benefits{display:grid;grid-template-columns:repeat(4,1fr);max-width:1200px;margin:0 auto;padding:55px 40px;background:#0b0b0b;border-top:1px solid rgba(212,175,55,.15);border-bottom:1px solid rgba(212,175,55,.15)}
+.benefit{text-align:center;padding:10px 30px;position:relative}
+.benefit:not(:last-child)::after{content:"";position:absolute;right:0;top:15%;width:1px;height:70%;background:rgba(212,175,55,.25)}
+.benefit-icon{width:46px;height:46px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;border:1px solid #d4af37;border-radius:50%;color:#d4af37;font-size:20px}
+.benefit h3{margin:0 0 10px;color:#fff;font-family:'Playfair Display',serif;font-size:18px;font-weight:500}
+.benefit p{margin:0;color:#999;font-size:13px;line-height:1.6}
 
-  padding:0 !important;
-}
+/* PRODUCTS */
+.products{max-width:1280px;margin:0 auto;padding:80px 35px}
+.products-title{text-align:center;margin-bottom:45px}
+.products-title h2{font-family:'Playfair Display',serif;font-size:42px;font-weight:500;letter-spacing:1px;margin:0 0 12px}
+.products-title p{color:#888;font-size:14px;letter-spacing:1px}
+.products-title::after{content:"";display:block;width:45px;height:2px;background:#d4af37;margin:20px auto 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,300px));justify-content:center;gap:30px;max-width:1400px;margin:0 auto}
+.card{background:#111;border:1px solid rgba(255,255,255,.06);overflow:hidden;position:relative;transition:.4s ease}
+.card:hover{transform:translateY(-8px);border-color:rgba(212,175,55,.35);box-shadow:0 18px 45px rgba(0,0,0,.55)}
+.card-image{height:390px;overflow:hidden;position:relative}
+.card-image img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+.card:hover .card-image img{transform:scale(1.06)}
+.badge{position:absolute;top:14px;left:14px;background:#d4af37;color:#080808;padding:6px 12px;font-size:10px;letter-spacing:1.5px;font-weight:600;z-index:5}
+.favorite-btn{position:absolute;top:14px;right:14px;width:44px;height:44px;border:1px solid rgba(255,255,255,.35);border-radius:50%;background:rgba(0,0,0,.55);color:#fff;font-size:23px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;transition:.3s;backdrop-filter:blur(8px)}
+.favorite-btn:hover,.favorite-btn.active{background:#d4af37;border-color:#d4af37;color:#000}
+.card-content{padding:20px}
+.card h3{font-family:'Playfair Display',serif;font-size:18px;font-weight:500;margin:0 0 10px}
+.card p{color:#d4af37;font-size:15px;margin:0}
+.buy{display:block;width:100%;padding:13px 20px;margin-top:16px;text-align:center;text-decoration:none;color:#d4af37;background:transparent;border:1px solid #d4af37;font-size:13px;font-weight:500;letter-spacing:2px;text-transform:uppercase;transition:.35s}
+.buy:hover{background:#d4af37;color:#000}
+
+/* FOOTER */
+.footer{margin-top:40px;background:#0b0b0b;color:#fff;padding:70px 7% 30px;border-top:1px solid rgba(212,175,55,.25)}
+.footer-container{width:100%;max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1fr 1.2fr 1.2fr 1fr 1fr;gap:50px;align-items:start}
+.footer-column{display:flex;flex-direction:column}
+.footer-column h3{color:#d4af37;font-size:13px;letter-spacing:2px;margin:0 0 22px;font-weight:600}
+.footer-column a{color:#bdbdbd;text-decoration:none;font-size:13px;margin-bottom:13px;transition:.3s}
+.footer-column a:hover{color:#d4af37;padding-left:4px}
+.footer-brand{text-align:center;padding-top:5px}
+.footer-logo{font-family:'Playfair Display',serif;color:#d4af37;font-size:38px;letter-spacing:8px;margin-bottom:10px}
+.footer-brand p{color:#999;font-size:11px;letter-spacing:4px;margin:5px 0}
+.footer-brand-small{font-size:9px!important;letter-spacing:3px!important;color:#666!important}
+.footer-bottom{width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;margin:55px auto 0;padding-top:30px;border-top:1px solid rgba(255,255,255,.08)}
+.footer-instagram{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-width:190px;padding:14px 26px;border:1px solid rgba(212,175,55,.55);color:#d4af37;text-decoration:none;font-size:13px;letter-spacing:1.8px;transition:.3s}
+.footer-instagram:hover{background:#d4af37;color:#080808;border-color:#d4af37;transform:translateY(-2px)}
+.instagram-icon{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8}
+.footer-line{width:60px;height:1px;background:#d4af37;margin:25px auto}
+.footer-copyright{display:flex;justify-content:center;align-items:center;gap:15px;color:#777;font-size:11px;letter-spacing:.5px}
+.footer-separator{color:#d4af37}
+
+/* ACCOUNT */
+.account-menu-wrapper{position:relative;display:inline-block}
+.account-dropdown{display:none;position:absolute;top:calc(100% + 12px);right:0;min-width:190px;background:#0b0b0b;border:1px solid #3b3b3b;box-shadow:0 15px 35px rgba(0,0,0,.55);z-index:9999;padding:8px 0}
+.account-dropdown.active{display:block}
+.account-dropdown a,.account-dropdown #logoutButton{display:block;width:100%;padding:13px 18px;color:#f5f5f5;background:transparent;border:0;text-decoration:none;text-align:left;font-family:inherit;font-size:13px;cursor:pointer}
+.account-dropdown a:hover,.account-dropdown #logoutButton:hover{background:#181818;color:#d9b52b}
+.account-divider{height:1px;background:#292929;margin:6px 12px}
+.account-arrow{margin-left:5px;font-size:10px}
+
+/* INFO MODAL */
+.info-modal{display:none;position:fixed;inset:0;width:100vw;height:100vh;background:#101010;z-index:999999;align-items:stretch;justify-content:stretch;padding:0}
 .info-modal.open{display:flex}
-.info-box{
-  width:100% !important;
-  max-width:100% !important;
-
-  height:100vh !important;
-  max-height:100vh !important;
-
-  overflow-y:auto !important;
-  overflow-x:hidden !important;
-
-  background:#101010 !important;
-
-  border:none !important;
-  box-shadow:none !important;
-
-  padding:45px 25px 40px !important;
-
-  position:relative !important;
-  box-sizing:border-box !important;
-}
-.info-box h2{
-  margin:0 0 15px;
-  font-family:'Playfair Display',serif;
-  font-size:30px;
-  color:#fff;
-}
+.info-box{width:100%;max-width:100%;height:100vh;max-height:100vh;overflow-y:auto;overflow-x:hidden;background:#101010;border:none;box-shadow:none;padding:45px 25px 40px;position:relative}
+.info-box h2{margin:0 0 15px;font-family:'Playfair Display',serif;font-size:30px;color:#fff}
 .info-box p{color:#aaa;line-height:1.8;font-size:14px}
-.info-close{
-  position:absolute;
-  top:14px;
-  right:16px;
-  background:none;
-  border:0;
-  color:#aaa;
-  font-size:25px;
-  cursor:pointer;
-}
-.info-close:hover{color:#d4af37}
-.info-form{
-  display:grid;
-  gap:10px;
-  margin-top:20px;
-}
-.info-form input,.info-form textarea{
-  width:100%;
-  padding:12px;
-  background:#080808;
-  border:1px solid #333;
-  color:#fff;
-  font-family:Poppins,sans-serif;
-  outline:none;
-}
+.info-close{position:absolute;top:14px;right:16px;background:none;border:0;color:#aaa;font-size:25px;cursor:pointer}
+.info-form{display:grid;gap:10px;margin-top:20px}
+.info-form input,.info-form textarea{width:100%;padding:12px;background:#080808;border:1px solid #333;color:#fff;font-family:Poppins,sans-serif;outline:none}
 .info-form textarea{min-height:110px;resize:vertical}
-.info-form button{
-  padding:12px;
-  border:1px solid #d4af37;
-  background:#d4af37;
-  color:#000;
-  font-weight:600;
-  cursor:pointer;
-}
-@media(max-width:700px){
-  .topbar{
-    height:auto;
-    min-height:42px;
-    padding:9px 14px;
-    font-size:9px;
-  }
-  .topbar-left,.topbar-right{gap:10px}
-  .topbar-left .optional-link{display:none}
-  .topbar-separator{display:none}
-  .search-panel{right:15px}
-}
-
-    /* =========================
-       NAVBAR
-    ========================= */
-
-    .navbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      width:100%;
-      padding:20px 50px;
-      background:rgba(0,0,0,0.82);
-      border-bottom:1px solid rgba(255,255,255,0.1);
-      backdrop-filter:blur(12px);
-      position:sticky;
-      top:0;
-      z-index:1000;
-      box-shadow:0 5px 25px rgba(0,0,0,0.35);
-    }
-
-    .logo{
-      flex:1;
-      font-family:'Playfair Display',serif;
-      font-size:32px;
-      font-weight:700;
-      letter-spacing:4px;
-      color:#d4af37;
-      text-decoration:none;
-    }
-
-    .menu{
-      flex:1;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      gap:10px;
-    }
-
-    .menu a{
-      position:relative;
-      margin:0 10px;
-      color:#fff;
-      text-decoration:none;
-      font-size:14px;
-      font-weight:500;
-      transition:0.3s;
-      padding:8px 0;
-    }
-
-    .menu a:hover{
-      color:#d4af37;
-    }
-
-    .menu a::after{
-      content:"";
-      position:absolute;
-      left:0;
-      bottom:0;
-      width:0;
-      height:2px;
-      background:#d4af37;
-      transition:0.3s;
-    }
-
-    .menu a:hover::after{
-      width:100%;
-    }
-
-    .icons{
-      flex:1;
-      display:flex;
-      justify-content:flex-end;
-      align-items:center;
-      gap:18px;
-    }
-
-    .icons span{
-      cursor:pointer;
-      font-size:19px;
-      transition:0.3s;
-    }
-
-    .icons span:hover{
-      color:#d4af37;
-      transform:scale(1.08);
-    }
-
-    /* =========================
-       HERO
-    ========================= */
-
-    .hero{
-      min-height:80vh;
-      background:
-        linear-gradient(rgba(0,0,0,0.48),rgba(0,0,0,0.58)),
-        url("hero.png")
-        center top / cover no-repeat;
-
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      position:relative;
-    }
-
-    .hero-text{
-    position:absolute !important;
-    left:7% !important;
-    top:50% !important;
-    transform:translateY(-50%) !important;
-    z-index:5 !important;
-    padding:20px !important;
-    text-align:left !important;
-}
-
-    .hero h1{
-      margin:0 0 15px;
-      font-family:'Playfair Display',serif;
-      font-size:64px;
-      font-weight:600;
-      letter-spacing:2px;
-    }
-
-    .hero p{
-      margin:0;
-      color:#ddd;
-      font-size:18px;
-    }
-
-    .hero-btn{
-      display:inline-block;
-      margin-top:28px;
-      padding:14px 35px;
-      background:linear-gradient(45deg,#d4af37,#f5dea5);
-      color:#000;
-      text-decoration:none;
-      border-radius:8px;
-      font-weight:600;
-      transition:0.3s;
-    }
-
-    .hero-btn:hover{
-      transform:scale(1.05);
-      box-shadow:0 10px 25px rgba(212,175,55,0.35);
-    }
-
-    /* =========================
-       GÜVEN BAR
-    ========================= */
-
-    .trust{
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      gap:50px;
-      padding:22px 20px;
-      background:#111;
-      border-bottom:1px solid #222;
-      font-size:14px;
-      color:#ddd;
-    }
-
-    /* =========================
-       PRODUCTS
-    ========================= */
-
-    .products{
-  max-width:1280px;
-  margin:0 auto;
-  padding:80px 35px;
-}
-
-.products-title{
-  text-align:center;
-  margin-bottom:45px;
-}
-
-.products-title h2{
-  font-family:'Playfair Display',serif;
-  font-size:42px;
-  font-weight:500;
-  letter-spacing:1px;
-  margin-bottom:12px;
-}
-
-.products-title p{
-  color:#888;
-  font-size:14px;
-  letter-spacing:1px;
-}
-
-.products-title::after{
-  content:"";
-  display:block;
-  width:45px;
-  height:2px;
-  background:#d4af37;
-  margin:20px auto 0;
-}
-
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(260px,300px));
-    justify-content:center;
-    gap:30px;
-    max-width:1400px;
-    margin:0 auto;
-}
-
-.card{
-  background:#111;
-  border:1px solid rgba(255,255,255,0.06);
-  border-radius:0;
-  overflow:hidden;
-  position:relative;
-  transition:all .4s ease;
-}
-
-.card:hover{
-  transform:translateY(-8px);
-  border-color:rgba(212,175,55,.35);
-  box-shadow:0 18px 45px rgba(0,0,0,.55);
-}
-
-.card-image{
-    height:390px;
-    overflow:hidden;
-}
-    .favorite-btn{
-    position:absolute;
-    top:14px;
-    right:14px;
-    width:44px;
-    height:44px;
-    border:1px solid rgba(255,255,255,.35);
-    border-radius:50%;
-    background:rgba(0,0,0,.55);
-    color:#fff;
-    font-size:23px;
-    line-height:1;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
-    z-index:10;
-    transition:all .3s ease;
-    backdrop-filter:blur(8px);
-}
-
-.favorite-btn:hover{
-    background:#d4af37;
-    border-color:#d4af37;
-    color:#000;
-    transform:scale(1.08);
-}
-
-.favorite-btn.active{
-    background:#d4af37;
-    border-color:#d4af37;
-    color:#000;
-}
-
-.card-image img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  transition:transform .6s ease;
-}
-
-.card:hover .card-image img{
-  transform:scale(1.06);
-}
-
-.badge{
-  top:14px;
-  left:14px;
-  background:#d4af37;
-  color:#080808;
-  padding:6px 12px;
-  border-radius:0;
-  font-size:10px;
-  letter-spacing:1.5px;
-  font-weight:600;
-}
-
-.card-content{
-  padding:20px;
-}
-
-.card h3{
-  font-family:'Playfair Display',serif;
-  font-size:18px;
-  font-weight:500;
-  margin:0 0 10px;
-}
-
-.card p{
-  color:#d4af37;
-  font-size:15px;
-  margin:0;
-}
-
-.buy{
-    display:block;
-    width:100%;
-    box-sizing:border-box;
-    padding:13px 20px;
-    margin-top:16px;
-    text-align:center;
-    text-decoration:none;
-    color:#d4af37;
-    background:transparent;
-    border:1px solid #d4af37;
-    border-radius:0;
-    font-size:13px;
-    font-weight:500;
-    letter-spacing:2px;
-    text-transform:uppercase;
-    transition:all 0.35s ease;
-}
-
-.buy:hover{
-    background:#d4af37;
-    color:#000;
-    box-shadow:0 8px 25px rgba(212,175,55,0.25);
-}
-
-    /* =========================
-       FOOTER
-    ========================= */
-
-    .footer{
-      margin-top:40px;
-      padding:60px 20px;
-      text-align:center;
-      background:#050505;
-      border-top:1px solid #222;
-    }
-
-    .footer h2{
-      margin:0 0 10px;
-      font-family:'Playfair Display',serif;
-      letter-spacing:4px;
-    }
-
-    .footer p{
-      color:#888;
-    }
-
-    .footer a{
-      color:#d4af37;
-      text-decoration:none;
-    }
-
-    /* =========================
-       MOBİL
-    ========================= */
-
-    @media(max-width:900px){
-
-      .navbar{
-        padding:18px 20px;
-      }
-
-      .logo{
-        font-size:25px;
-      }
-
-      .menu a{
-        margin:0 6px;
-        font-size:12px;
-      }
-
-      .grid{
-        grid-template-columns:repeat(2,1fr);
-      }
-
-      .hero h1{
-        font-size:46px;
-      }
-    }
-
-    @media(max-width:600px){
-
-      .navbar{
-        padding:16px;
-      }
-
-      .topbar-right .nav-action{
-        font-size:9px;
-      }
-
-      .menu{
-        display:none;
-      }
-
-      .logo{
-        font-size:25px;
-      }
-
-      .icons{
-        flex:0;
-      }
-
-      .hero{
-        min-height:70vh;
-      }
-
-      .hero h1{
-        font-size:38px;
-      }
-
-      .hero p{
-        font-size:15px;
-      }
-
-      .trust{
-        flex-direction:column;
-        gap:12px;
-      }
-
-      .products{
-        padding:45px 15px;
-      }
-
-      .grid{
-        grid-template-columns:1fr 1fr;
-        gap:12px;
-      }
-
-      .card-image{
-        height:260px;
-      }
-
-      .card-content{
-        padding:12px;
-      }
-
-      .card h3{
-        font-size:14px;
-      }
-
-      .buy{
-        padding:11px 5px;
-        font-size:13px;
-      }
-    }
-/* NERIS PREMIUM KATEGORİLER */
-
-.categories{
-  max-width:1280px;
-  margin:0 auto;
-  padding:80px 35px;
-}
-
-.categories-title{
-  text-align:center;
-  margin-bottom:40px;
-}
-
-.categories-title span{
-  color:#d4af37;
-  font-size:11px;
-  letter-spacing:3px;
-}
-
-.categories-title h2{
-  margin:10px 0 0;
-  font-family:'Playfair Display',serif;
-  font-size:40px;
-  font-weight:500;
-}
-
-.category-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:20px;
-}
-
-.category-card{
-  position:relative;
-  height:430px;
-  overflow:hidden;
-  text-decoration:none;
-  background:#111;
-}
-
-.category-card img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-  transition:transform .6s ease;
-}
-
-.category-card::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(
-    to top,
-    rgba(0,0,0,.85),
-    rgba(0,0,0,.05)
-  );
-}
-
-.category-card:hover img{
-  transform:scale(1.07);
-}
-
-.category-overlay{
-  position:absolute;
-  z-index:2;
-  left:25px;
-  bottom:25px;
-  color:#fff;
-}
-
-.category-overlay h3{
-  margin:0 0 7px;
-  font-family:'Playfair Display',serif;
-  font-size:25px;
-  font-weight:500;
-}
-
-.category-overlay span{
-  color:#d4af37;
-  font-size:12px;
-  letter-spacing:1px;
-}
-
-@media(max-width:900px){
-  .category-grid{
-    grid-template-columns:repeat(2,1fr);
-  }
-}
-
-@media(max-width:600px){
-  .categories{
-    padding:55px 15px;
-  }
-
-  .category-grid{
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-  }
-
-  .category-card{
-    height:280px;
-  }
-
-  .categories-title h2{
-    font-size:32px;
-  }
- }
-/* NERIS AVANTAJLAR */
-
-.benefits{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    max-width:1200px;
-    margin:0 auto;
-    padding:55px 40px;
-    background:#0b0b0b;
-    border-top:1px solid rgba(212,175,55,0.15);
-    border-bottom:1px solid rgba(212,175,55,0.15);
-}
-
-.benefit{
-    text-align:center;
-    padding:10px 30px;
-    position:relative;
-}
-
-.benefit:not(:last-child)::after{
-    content:"";
-    position:absolute;
-    right:0;
-    top:15%;
-    width:1px;
-    height:70%;
-    background:rgba(212,175,55,0.25);
-}
-
-.benefit-icon{
-    width:46px;
-    height:46px;
-    margin:0 auto 18px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border:1px solid #d4af37;
-    border-radius:50%;
-    color:#d4af37;
-    font-size:20px;
-}
-
-.benefit h3{
-    margin:0 0 10px;
-    color:#fff;
-    font-family:'Playfair Display',serif;
-    font-size:18px;
-    font-weight:500;
-}
-
-.benefit p{
-    margin:0;
-    color:#999;
-    font-size:13px;
-    line-height:1.6;
-}
-
-/* MOBİL */
-
+.info-form button{padding:12px;border:1px solid #d4af37;background:#d4af37;color:#000;font-weight:600;cursor:pointer}
+body.modal-open{overflow:hidden!important}
+
+/* MOBILE MENU */
+.mobile-menu{display:none}
 @media(max-width:768px){
-
-    .benefits{
-        grid-template-columns:1fr 1fr;
-        padding:35px 15px;
-        gap:30px 0;
-    }
-
-    .benefit{
-        padding:10px 15px;
-    }
-
-    .benefit:nth-child(2)::after{
-        display:none;
-    }
-
-    .benefit h3{
-        font-size:16px;
-    }
-
-    .benefit p{
-        font-size:12px;
-    }
-}
-/* ================================
-   NERIS PREMIUM FOOTER
-================================ */
-
-.footer{
-    background:#0b0b0b;
-    color:#fff;
-    padding:70px 7% 30px;
-    border-top:1px solid rgba(212,175,55,.25);
-}
-
-.footer-container{
-    max-width:1400px;
-    margin:0 auto;
-    display:grid;
-    grid-template-columns:1fr 1.2fr 1.2fr 1fr 1fr;
-    gap:50px;
-    align-items:start;
-}
-
-.footer-column{
-    display:flex;
-    flex-direction:column;
-}
-
-.footer-column h3{
-    color:#d4af37;
-    font-size:13px;
-    letter-spacing:2px;
-    margin:0 0 22px;
-    font-weight:600;
-}
-
-.footer-column a{
-    color:#bdbdbd;
-    text-decoration:none;
-    font-size:13px;
-    margin-bottom:13px;
-    transition:.3s ease;
-}
-
-.footer-column a:hover{
-    color:#d4af37;
-    padding-left:4px;
-}
-
-
-/* NERIS LOGO */
-
-.footer-brand{
-    text-align:center;
-    padding-top:5px;
-}
-
-.footer-logo{
-    font-family:'Playfair Display',serif;
-    color:#d4af37;
-    font-size:38px;
-    letter-spacing:8px;
-    margin-bottom:10px;
-}
-
-.footer-brand p{
-    color:#999;
-    font-size:11px;
-    letter-spacing:4px;
-    margin:5px 0;
-}
-
-.footer-brand-small{
-    font-size:9px !important;
-    letter-spacing:3px !important;
-    color:#666 !important;
-}
-
-
-/* ALT FOOTER */
-
-.footer-bottom{
-    max-width:1400px;
-    margin:55px auto 0;
-    padding-top:30px;
-    border-top:1px solid rgba(255,255,255,.08);
-    text-align:center;
-}
-
-
-/* INSTAGRAM */
-
-/* NERIS INSTAGRAM */
-
-.footer-instagram{
-    position:relative;
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:11px;
-
-    min-width:190px;
-    padding:13px 24px;
-
-    color:#d4af37;
-    background:transparent;
-
-    border:1px solid rgba(212,175,55,.45);
-    border-radius:2px;
-
-    text-decoration:none;
-
-    font-size:12px;
-    font-weight:500;
-    letter-spacing:2px;
-
-    overflow:hidden;
-    transition:all .4s ease;
-}
-
-
-/* Instagram ikonu */
-
-.footer-instagram span:first-child{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    width:20px;
-    height:20px;
-
-    font-size:20px;
-    line-height:1;
-
-    transition:transform .4s ease;
-}
-
-
-/* Üzerine gelince */
-
-.footer-instagram:hover{
-    color:#0b0b0b;
-    background:#d4af37;
-
-    border-color:#d4af37;
-
-    box-shadow:
-        0 0 15px rgba(212,175,55,.18),
-        0 0 35px rgba(212,175,55,.08);
-
-    transform:translateY(-2px);
-}
-
-
-.footer-instagram:hover span:first-child{
-    transform:scale(1.15) rotate(5deg);
-}
-
-
-/* Altın ışık efekti */
-
-.footer-instagram::before{
-    content:"";
-
-    position:absolute;
-    top:0;
-    left:-120%;
-
-    width:70%;
-    height:100%;
-
-    background:linear-gradient(
-        90deg,
-        transparent,
-        rgba(255,255,255,.18),
-        transparent
-    );
-
-    transform:skewX(-20deg);
-    transition:left .6s ease;
-}
-
-
-.footer-instagram:hover::before{
-    left:150%;
-}
-
-
-/* ALT ÇİZGİ */
-
-.footer-line{
-    width:60px;
-    height:1px;
-    background:#d4af37;
-    margin:25px auto;
-}
-
-
-/* TELİF */
-
-.footer-copyright{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:15px;
-    color:#777;
-    font-size:11px;
-    letter-spacing:.5px;
-}
-
-.footer-separator{
-    color:#d4af37;
-}
-
-
-/* TABLET */
-
-@media(max-width:900px){
-
-    .footer{
-        padding:55px 25px 25px;
-    }
-
-    .footer-container{
-        grid-template-columns:repeat(2,1fr);
-        gap:40px 25px;
-    }
-
-    .footer-brand{
-        grid-column:1 / -1;
-        grid-row:1;
-        margin-bottom:10px;
-    }
-
-    .footer-column{
-        text-align:center;
-    }
-
-}
-
-
-/* TELEFON */
-
-@media(max-width:600px){
-
-    .footer{
-        padding:45px 20px 25px;
-    }
-
-    .footer-container{
-        grid-template-columns:1fr 1fr;
-        gap:35px 15px;
-    }
-
-    .footer-brand{
-        grid-column:1 / -1;
-    }
-
-    .footer-logo{
-        font-size:30px;
-        letter-spacing:6px;
-    }
-
-    .footer-column h3{
-        font-size:11px;
-        letter-spacing:1.5px;
-    }
-
-    .footer-column a{
-        font-size:11px;
-        margin-bottom:10px;
-    }
-
-    .footer-bottom{
-        margin-top:40px;
-    }
-
-    .footer-copyright{
-        flex-direction:column;
-        gap:8px;
-        line-height:1.6;
-    }
-
-    .footer-separator{
-        display:none;
-    }
-
-}
-
-@media(max-width:480px){
-
-    .footer-container{
-        grid-template-columns:1fr;
-        text-align:center;
-    }
-
-    .footer-brand{
-        grid-column:auto;
-    }
-
-    .footer-column h3{
-        margin-bottom:15px;
-    }
-
-    .footer-column a:hover{
-        padding-left:0;
-    }
-
-}
-.footer-instagram{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-    padding:14px 26px;
-    border:1px solid rgba(212,175,55,.55);
-    color:#d4af37;
-    text-decoration:none;
-    font-size:13px;
-    letter-spacing:1.8px;
-    transition:all .3s ease;
-}
-
-.instagram-icon{
-    width:18px;
-    height:18px;
-    fill:none;
-    stroke:currentColor;
-    stroke-width:1.8;
-}
-
-.footer-instagram:hover{
-    background:#d4af37;
-    color:#080808;
-    border-color:#d4af37;
-    transform:translateY(-2px);
-}
-.payment-logos{
-    width:100%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:32px;
-    margin:28px auto;
-    padding:0;
-    flex-wrap:nowrap;
-    box-sizing:border-box;
-}
-
-.payment-logos img{
-    display:block;
-    width:90px;
-    height:32px;
-    object-fit:contain;
-    flex:0 0 90px;
-}
-
-.payment-logos span{
-    font-family:Arial,sans-serif;
-    font-size:15px;
-    font-weight:700;
-    letter-spacing:1px;
-    color:#bdbdbd;
-    opacity:.9;
-    transition:.3s ease;
-}
-
-.payment-logos span:hover{
-    color:#d4af37;
-    transform:translateY(-2px);
-}
-/* FOOTER MERKEZLEME */
-.footer-bottom {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    box-sizing: border-box;
-}
-
-.footer-bottom > * {
-    margin-left: auto;
-    margin-right: auto;
-}
-/* FOOTER ANA DÜZEN */
-.footer-container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    align-items: start;
-    text-align: center;
-    box-sizing: border-box;
-}
-
-/* Tüm footer bölümleri eşit genişlikte */
-.footer-container .footer-column,
-.footer-container .footer-brand {
-    width: 100%;
-    box-sizing: border-box;
-    text-align: center;
-}
-    /* =========================================
-   NERIS MOBIL DUZEN
-   ========================================= */
-
-@media (max-width: 768px) {
-
-    html,
-    body {
-        width: 100%;
-        max-width: 100%;
-        overflow-x: hidden;
-    }
-
-    * {
-        box-sizing: border-box;
-    }
-
-    /* ÜST BAR */
-    /* MOBİL ÜST BİLGİ MENÜSÜ */
-.topbar {
-    display: flex !important;
-    width: 100% !important;
-    height: 42px !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    white-space: nowrap !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    padding: 0 18px !important;
-    gap: 20px !important;
-    box-sizing: border-box !important;
-    scrollbar-width: none !important;
-}
-
-.topbar::-webkit-scrollbar {
-    display: none !important;
-}
-
-.topbar-left,
-.topbar-right {
-    display: flex !important;
-    align-items: center !important;
-    flex-shrink: 0 !important;
-    gap: 20px !important;
-}
-
-.topbar a,
-.topbar button,
-.topbar span {
-    flex-shrink: 0 !important;
-    font-size: 10px !important;
-    letter-spacing: 1.5px !important;
-    white-space: nowrap !important;
-}
-
-.topbar-separator {
-    display: inline-block !important;
-    flex-shrink: 0 !important;
-}
-
-/* Ana header artık bunun altında */
-.main-header,
-.navbar {
-    height: 82px !important;
-    min-height: 82px !important;
-}
-
-    .topbar-left,
-    .topbar-right {
-        gap: 9px;
-    }
-
-    .topbar-left a,
-    .topbar-right button {
-        font-size: 9px !important;
-        letter-spacing: 1px !important;
-    }
-
-    /* ANA HEADER */
-    .main-header,
-    header {
-        width: 100%;
-        min-height: 88px;
-        padding: 0 24px !important;
-    }
-
-    /* MOBİL LOGO */
-    .logo {
-        font-size: 32px !important;
-        letter-spacing: 5px !important;
-    }
-
-    /* MASAÜSTÜ MENÜ */
-    .nav-menu,
-    .main-nav,
-    header nav {
-        display: none !important;
-    }
-
-    /* HERO */
-    .hero {
-        width: 100% !important;
-        height: 72vh !important;
-        min-height: 580px !important;
-        max-height: 720px !important;
-        overflow: hidden;
-      position: relative !important;
-    overflow: hidden !important;
-    }
-
-    .hero img,
-    .hero-image {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    object-position: 51% 0% !important;
-    display: block !important;
-}
-
-    .hero-content {
-    width: 100% !important;
-    padding: 20px 7% !important;
-    text-align: left !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    justify-content: center !important;
-    position: relative !important;
-    z-index: 5 !important;
-}
-
-    .hero h1 {
-    font-size: 58px !important;
-    line-height: 1.05 !important;
-    color: #ffffff !important;
-    text-shadow: 0 3px 8px rgba(0,0,0,0.8) !important;
-    font-weight: 700 !important;
-}
-
-    .hero p {
-    color: #ffffff !important;
-    text-shadow: 0 2px 6px rgba(0,0,0,0.8) !important;
-}
-
-    .hero button,
-    .hero .btn {
-        width: 88% !important;
-        min-height: 62px !important;
-        font-size: 17px !important;
-        border-radius: 12px !important;
-    }
-
-    /* KATEGORİLER */
-    .category-grid,
-    .categories-grid {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        gap: 14px !important;
-        padding: 40px 14px !important;
-    }
-
-    .category-card {
-        width: 100% !important;
-        min-width: 0 !important;
-    }
-
-    .category-card img {
-        width: 100% !important;
-        height: 350px !important;
-        object-fit: cover !important;
-    }
-
-    .category-card h3 {
-        font-size: 22px !important;
-    }
-
-    /* ÖZELLİKLER */
-    .feature-grid,
-    .features {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        gap: 35px 15px !important;
-        padding: 45px 15px !important;
-    }
-
-    .feature-item {
-        text-align: center !important;
-        width: 100% !important;
-    }
-
-    .feature-item h3 {
-        font-size: 20px !important;
-    }
-
-    .feature-item p {
-        font-size: 14px !important;
-        line-height: 1.5 !important;
-    }
-
-    /* ÜRÜNLER */
-    .product-grid,
-    .products-grid {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        gap: 14px !important;
-        padding: 40px 14px !important;
-    }
-
-    .product-card {
-        width: 100% !important;
-        min-width: 0 !important;
-    }
-
-    .product-card img {
-        width: 100% !important;
-        height: 280px !important;
-        object-fit: cover !important;
-    }
-
-    .product-card h3 {
-        font-size: 17px !important;
-    }
-
-    .product-card .price {
-        font-size: 16px !important;
-    }
-
-    /* FOOTER */
-    .footer-container {
-        width: 100% !important;
-        max-width: 100% !important;
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-        gap: 35px 15px !important;
-        padding: 50px 15px 30px !important;
-    }
-
-    .footer-container .footer-brand {
-        width: 100% !important;
-        grid-column: 1 / -1 !important;
-        text-align: center !important;
-    }
-
-    .footer-column {
-        width: 100% !important;
-        text-align: center !important;
-    }
-
-    .footer-column h3 {
-        font-size: 15px !important;
-    }
-
-    .footer-column a {
-        font-size: 14px !important;
-        line-height: 1.8 !important;
-    }
-}
-
-/* KÜÇÜK TELEFON */
-@media (max-width: 430px) {
-
-    .topbar {
-        padding: 8px 8px;
-    }
-
-    .topbar-left a,
-    .topbar-right button {
-        font-size: 8px !important;
-    }
-
-    .logo {
-        font-size: 30px !important;
-    }
-
-    .hero {
-        height: 70vh !important;
-        min-height: 560px !important;
-    }
-
-    .hero h1 {
-        font-size: 43px !important;
-    }
-
-    .hero p {
-        font-size: 17px !important;
-    }
-
-    .category-card img {
-        height: 320px !important;
-    }
-
-    .product-card img {
-        height: 250px !important;
-    }
-}
-    /* ================================
-   NERIS MOBİL TASARIM
-   ================================ */
-
-@media (max-width: 768px) {
-
-    html,
-    body {
-        width: 100%;
-        max-width: 100%;
-        overflow-x: hidden;
-    }
-
-    /* ÜST BİLGİ BARINI MOBİLDE GİZLE */
-    .topbar {
-        display: none !important;
-    }
-
-    /* ANA NAVBAR */
-    .navbar,
-    header,
-    .nav {
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-
-    /* Menü bağlantılarını gizle */
-    .nav-links,
-    .nav-menu,
-    .navigation,
-    .navbar-nav {
-        display: none !important;
-    }
-  /* MOBİL HAMBURGER MENÜ */
-.mobile-menu-btn {
-    display: none;
-}
-
-.mobile-menu {
-    display: none;
-}
-
-@media (max-width: 768px) {
-
-    .navbar {
-        position: relative !important;
-    }
-
-    .mobile-menu-btn {
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        width: 42px;
-        height: 42px;
-        padding: 0;
-        margin: 0;
-        border: none;
-        background: transparent;
-        color: #ffffff;
-        font-size: 27px;
-        cursor: pointer;
-        z-index: 2001;
-    }
-
-    .mobile-menu {
-        display: none;
-        position: absolute !important;
-        top: 100% !important;
-        left: 0 !important;
-        width: 100% !important;
-        background: #050505 !important;
-        z-index: 2000 !important;
-        flex-direction: column;
-        border-top: 1px solid rgba(212,175,55,.3);
-        box-shadow: 0 8px 20px rgba(0,0,0,.35);
-    }
-
-    .mobile-menu.active {
-        display: flex !important;
-    }
-
-    .mobile-menu a {
-        display: block !important;
-        width: 100%;
-        padding: 17px 24px;
-        color: #ffffff !important;
-        text-decoration: none !important;
-        font-size: 14px;
-        text-align: left;
-        border-bottom: 1px solid rgba(255,255,255,.08);
-        box-sizing: border-box;
-    }
-
-    .mobile-menu a:active {
-        background: rgba(212,175,55,.15);
-    }
-}
-
-    /* Ana header */
-    .main-header,
-    .navbar {
-        min-height: 82px !important;
-        height: 82px !important;
-        padding: 0 24px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-    }
-
-    /* NERIS LOGO */
-    .logo,
-    .brand,
-    .navbar-brand {
-        font-size: 34px !important;
-        letter-spacing: 5px !important;
-        margin: 0 !important;
-    }
-
-    /* Sepet */
-    .cart,
-    .cart-icon,
-    .nav-cart {
-        font-size: 28px !important;
-        margin: 0 !important;
-    }
-
-    /* HERO */
-    .hero {
-        width: 100% !important;
-        height: 680px !important;
-        min-height: 680px !important;
-        max-height: 680px !important;
-        margin: 0 !important;
-        background-position: center center !important;
-    }
-
-    .hero h1 {
-        font-size: 48px !important;
-        line-height: 1.1 !important;
-        text-align: center !important;
-        white-space: nowrap !important;
-    }
-
-    .hero p {
-        font-size: 18px !important;
-        text-align: center !important;
-    }
-
-    .hero button,
-    .hero a {
-        max-width: 355px !important;
-        width: 80% !important;
-        min-height: 64px !important;
-        font-size: 20px !important;
-    }
-
-    /* KATEGORİLER */
-    .categories,
-    .category-grid,
-    .categories-grid {
-        grid-template-columns: 1fr 1fr !important;
-        gap: 14px !important;
-        padding: 20px !important;
-    }
-
-    .category-card {
-        width: 100% !important;
-        min-width: 0 !important;
-    }
-
-    .category-card img {
-        width: 100% !important;
-        height: 300px !important;
-        object-fit: cover !important;
-    }
-
-    /* ÜRÜNLER */
-    .products-grid,
-    .product-grid {
-        grid-template-columns: 1fr 1fr !important;
-        gap: 12px !important;
-        padding: 16px !important;
-    }
-
-    .product-card {
-        width: 100% !important;
-        min-width: 0 !important;
-    }
-
-    .product-card img {
-        width: 100% !important;
-        height: 240px !important;
-        object-fit: cover !important;
-    }
-
-    /* FOOTER */
-    .footer-container {
-        grid-template-columns: 1fr 1fr !important;
-        gap: 30px 15px !important;
-        padding: 40px 20px !important;
-    }
-
-    .footer-brand {
-        grid-column: 1 / -1 !important;
-        width: 100% !important;
-    }
-
-}
-    .account-menu-wrapper {
-    position: relative;
-    display: inline-block;
-}
-
-.account-dropdown {
-    display: none;
-    position: absolute;
-    top: calc(100% + 12px);
-    right: 0;
-    min-width: 190px;
-    background: #0b0b0b;
-    border: 1px solid #3b3b3b;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.55);
-    z-index: 9999;
-    padding: 8px 0;
-}
-
-.account-dropdown.active {
-    display: block;
-}
-
-.account-dropdown a,
-.account-dropdown #logoutButton {
-    display: block;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 13px 18px;
-    color: #f5f5f5;
-    background: transparent;
-    border: none;
-    text-decoration: none;
-    text-align: left;
-    font-family: inherit;
-    font-size: 13px;
-    cursor: pointer;
-}
-
-.account-dropdown a:hover,
-.account-dropdown #logoutButton:hover {
-    background: #181818;
-    color: #d9b52b;
-}
-
-.account-divider {
-    height: 1px;
-    background: #292929;
-    margin: 6px 12px;
-}
-
-.account-arrow {
-    margin-left: 5px;
-    font-size: 10px;
-}
-    .hero {
-    position: relative !important;
-    overflow: hidden !important;
-}
-
-.hero-image {
-    position: absolute !important;
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    z-index: 0 !important;
-}
-
-.hero-text {
-    position: relative !important;
-    z-index: 2 !important;
-}
-    /* MASAÜSTÜ HERO YAZILARI - SOL TARAF */
-@media (min-width: 769px) {
-    .hero {
-        position: relative !important;
-    }
-
-    .hero-text {
-        position: absolute !important;
-        left: 7% !important;
-        right: auto !important;
-        top: 50% !important;
-        transform: translateY(-50%) !important;
-        width: 420px !important;
-        margin: 0 !important;
-        padding: 20px !important;
-        text-align: left !important;
-        z-index: 10 !important;
-    }
-
-.hero-text h1 {
-    font-size: 58px !important;
-    font-weight: 700 !important;
-    line-height: 1.05 !important;
-    margin: 0 0 14px !important;
-    color: #252525 !important;
-}
-
-.hero-text p {
-    font-size: 22px !important;
-    font-weight: 500 !important;
-    margin: 0 0 28px !important;
-    color: #252525 !important;
-}
-    color: #252525 !important;
-    font-size: 18px !important;
-    font-weight: 500 !important;
-    text-shadow: none !important;
-}
-    .hero-text a {
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-    }
-}
-    /* ===== MOBİL HERO DÜZENİ ===== */
-@media (max-width: 768px) {
-
-    .hero {
-        height: 720px !important;
-        min-height: 720px !important;
-        position: relative !important;
-        overflow: hidden !important;
-    }
-
-    .hero-image {
-        width: 100% !important;
-        height: 100% !important;
-        object-fit: cover !important;
-        object-position: center top !important;
-    }
-
-    .hero-text {
-    position: absolute !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 90px !important;
-    top: auto !important;
-    transform: none !important;
-    width: 100% !important;
-    padding: 0 15px !important;
-    margin: 0 !important;
-    text-align: center !important;
-    z-index: 20 !important;
-}
-
-.hero-text h1 {
-    font-size: 42px !important;
-    line-height: 1.05 !important;
-    margin: 0 0 10px !important;
-    color: #fff !important;
-    white-space: nowrap !important;
-    text-shadow: 0 2px 8px rgba(0,0,0,.55) !important;
-}
-
-.hero-text p {
-    font-size: 18px !important;
-    line-height: 1.3 !important;
-    margin: 0 0 20px !important;
-    color: #fff !important;
-    white-space: nowrap !important;
-    text-shadow: 0 2px 7px rgba(0,0,0,.55) !important;
-}
-
-.hero-text .hero-btn,
-.hero-text a {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 220px !important;
-    height: 58px !important;
-    padding: 0 !important;
-    margin: 0 auto !important;
-    font-size: 17px !important;
-    line-height: 1 !important;
-    white-space: nowrap !important;
-    border-radius: 10px !important;
-    box-sizing: border-box !important;
-}
-  /* MOBİL HERO SON AYAR */
-@media (max-width: 768px) {
-
-  .hero .hero-text {
-    position: absolute !important;
-    left: 0 !important;
-    right: 0 !important;
-    top: auto !important;
-    bottom: 70px !important;
-    transform: none !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 0 15px !important;
-    margin: 0 !important;
-    text-align: center !important;
-    z-index: 999 !important;
-  }
-
-  .hero .hero-text h1 {
-    font-size: 40px !important;
-    line-height: 1 !important;
-    margin: 0 0 12px !important;
-    white-space: nowrap !important;
-    color: #fff !important;
-    text-shadow: 0 2px 8px rgba(0,0,0,.6) !important;
-  }
-
-  .hero .hero-text p {
-    font-size: 18px !important;
-    line-height: 1.2 !important;
-    margin: 0 0 20px !important;
-    white-space: nowrap !important;
-    color: #fff !important;
-    text-shadow: 0 2px 7px rgba(0,0,0,.6) !important;
-  }
-
-  .hero .hero-text .hero-btn,
-  .hero .hero-text a.hero-btn {
-    width: 230px !important;
-    min-width: 230px !important;
-    max-width: 230px !important;
-    height: 58px !important;
-    min-height: 58px !important;
-    padding: 0 !important;
-    margin: 0 auto !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    white-space: nowrap !important;
-    word-break: keep-all !important;
-    overflow: hidden !important;
-    font-size: 17px !important;
-    line-height: 1 !important;
-    box-sizing: border-box !important;
-  }
-
-}
-  
-
-  .hero {
-    height: 720px !important;
-    min-height: 720px !important;
-    position: relative !important;
-    overflow: hidden !important;
-  }
-
-  .hero .hero-text {
-    position: absolute !important;
-    left: 20px !important;
-    right: 20px !important;
-    top: auto !important;
-    bottom: 35px !important;
-    transform: none !important;
-
-    width: auto !important;
-    max-width: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-
-    text-align: center !important;
-    z-index: 999 !important;
-  }
-
-  .hero .hero-text h1 {
-    font-size: 44px !important;
-    line-height: 1.05 !important;
-    margin: 0 0 12px !important;
-    white-space: nowrap !important;
-    color: #fff !important;
-    text-shadow: 0 3px 8px rgba(0,0,0,.65) !important;
-  }
-
-  .hero .hero-text p {
-    font-size: 19px !important;
-    line-height: 1.2 !important;
-    margin: 0 0 22px !important;
-    white-space: nowrap !important;
-    color: #fff !important;
-    text-shadow: 0 2px 6px rgba(0,0,0,.65) !important;
-  }
-
-  .hero .hero-text .hero-btn {
-    display: inline-block !important;
-    width: 220px !important;
-    min-width: 220px !important;
-    padding: 15px 20px !important;
-    margin: 0 auto !important;
-
-    font-size: 18px !important;
-    line-height: 1.2 !important;
-    white-space: nowrap !important;
-
-    border-radius: 10px !important;
-    box-sizing: border-box !important;
-  }
-}
-    /* NERIS MOBIL HERO - FINAL */
-@media (max-width: 768px) {
-
-  .hero {
-    height: 720px !important;
-    min-height: 720px !important;
-    overflow: hidden !important;
-  }
-
-  .hero .hero-text {
-    position: absolute !important;
-    left: 20px !important;
-    right: 20px !important;
-    top: auto !important;
-    bottom: 35px !important;
-    width: auto !important;
-    max-width: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    transform: none !important;
-    text-align: center !important;
-    z-index: 9999 !important;
-  }
-
-  .hero .hero-text h1 {
-    font-size: 42px !important;
-    line-height: 1 !important;
-    margin: 0 0 12px !important;
-    white-space: nowrap !important;
-    color: #fff !important;
-    text-shadow: 0 3px 8px rgba(0,0,0,.7) !important;
-  }
-
-  .hero .hero-text p {
-    font-size: 18px !important;
-    line-height: 1.2 !important;
-    margin: 0 0 22px !important;
-    white-space: nowrap !important;
-    color: #fff !important;
-    text-shadow: 0 2px 7px rgba(0,0,0,.7) !important;
-  }
-
-  .hero .hero-text a.hero-btn {
-    display: inline-flex !important;
-    width: 230px !important;
-    min-width: 230px !important;
-    max-width: 230px !important;
-    height: 58px !important;
-    min-height: 58px !important;
-
-    padding: 0 !important;
-    margin: 0 auto !important;
-
-    align-items: center !important;
-    justify-content: center !important;
-
-    font-size: 17px !important;
-    line-height: 1 !important;
-    white-space: nowrap !important;
-    word-break: normal !important;
-    overflow: hidden !important;
-
-    box-sizing: border-box !important;
-  }
-}
-    /* ================================
-   HAMBURGER SADECE MOBİLDE
-================================ */
-
-.mobile-menu-btn {
-    display: none !important;
-}
-
-.mobile-menu {
-    display: none !important;
-}
-
-@media (max-width: 768px) {
-
-    .mobile-menu-btn {
-        display: flex !important;
-    }
-
-    .mobile-menu {
-        display: none !important;
-    }
-
-    .mobile-menu.active {
-        display: flex !important;
-    }
-}
-    /* ==========================================
-   NERIS MOBIL YAN MENU
-========================================== */
-
-.mobile-menu {
-    display: none;
-}
-
-@media (max-width: 768px) {
-
-    .mobile-menu {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-
-        width: 78% !important;
-        height: 100vh !important;
-
-        background: #ffffff !important;
-        color: #222 !important;
-
-        z-index: 99999 !important;
-
-        flex-direction: column !important;
-
-        box-shadow: 8px 0 30px rgba(0,0,0,.25) !important;
-
-        overflow-y: auto !important;
-    }
-
-    .mobile-menu.active {
-        display: flex !important;
-    }
-
-    .mobile-menu-header {
-        height: 105px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-
-        padding: 0 22px !important;
-
-        border-bottom: 1px solid #ddd !important;
-    }
-
-    .mobile-menu-logo {
-        color: #c9a227 !important;
-        font-family: Georgia, serif !important;
-        font-size: 38px !important;
-        font-weight: 700 !important;
-        letter-spacing: 4px !important;
-        text-decoration: none !important;
-    }
-
-    .mobile-menu-close {
-        width: 70px !important;
-        height: 105px !important;
-
-        border: 0 !important;
-        background: #000 !important;
-        color: #fff !important;
-
-        font-size: 42px !important;
-        line-height: 1 !important;
-
-        cursor: pointer !important;
-    }
-
-    .mobile-menu-links {
-        display: flex !important;
-        flex-direction: column !important;
-
-        padding: 35px 22px 0 !important;
-    }
-
-    .mobile-menu-links a {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-
-        min-height: 90px !important;
-
-        color: #222 !important;
-        text-decoration: none !important;
-
-        font-size: 25px !important;
-        font-weight: 700 !important;
-        letter-spacing: .5px !important;
-
-        border-bottom: 1px solid #ddd !important;
-    }
-
-    .mobile-menu-links a span {
-        font-size: 42px !important;
-        font-weight: 300 !important;
-    }
-
-    .mobile-menu-bottom {
-        margin-top: auto !important;
-        padding: 35px 22px 25px !important;
-    }
-
-    .mobile-order-btn {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-
-        height: 70px !important;
-
-        border: 3px solid #222 !important;
-
-        color: #222 !important;
-        background: #fff !important;
-
-        text-decoration: none !important;
-
-        font-size: 23px !important;
-        font-weight: 700 !important;
-
-        margin-bottom: 22px !important;
-    }
-
-    .mobile-account-buttons {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr !important;
-    }
-
-    .mobile-account-buttons a {
-        height: 70px !important;
-
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-
-        text-decoration: none !important;
-
-        font-size: 18px !important;
-        font-weight: 700 !important;
-    }
-
-    .mobile-account-buttons a:first-child {
-        background: #222 !important;
-        color: #fff !important;
-    }
-
-    .mobile-account-buttons a:last-child {
-        background: #f1f1f1 !important;
-        color: #222 !important;
-    }
-}
-
-
-/* MASAÜSTÜNDE MOBİL MENÜ TAMAMEN GİZLİ */
-@media (min-width: 769px) {
-    .mobile-menu {
-        display: none !important;
-    }
-
-    .mobile-menu-btn {
-        display: none !important;
-    }
-}
-    /* MODAL AÇIKKEN ANA SAYFA KAYMASIN */
-body.modal-open {
-    overflow: hidden !important;
-    position: fixed !important;
-    width: 100% !important;
-}
-    /* ===== NERIS MOBİL ARAMA ===== */
-
-
-
-@media (max-width: 768px) {
-
-    #searchPanel {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        width: 100% !important;
-        height: auto !important;
-
-        padding: 90px 20px 25px !important;
-
-        background: #080808 !important;
-        border: 0 !important;
-        border-bottom: 1px solid #d4af37 !important;
-
-        box-shadow: 0 20px 60px rgba(0,0,0,.8) !important;
-
-        z-index: 999999 !important;
-
-        display: none !important;
-    }
-
-    #searchPanel.open {
-        display: flex !important;
-        gap: 10px !important;
-    }
-
-    #searchPanel input {
-        flex: 1 !important;
-        width: auto !important;
-        height: 52px !important;
-
-        background: #111 !important;
-        color: #fff !important;
-
-        border: 1px solid #444 !important;
-        padding: 0 16px !important;
-
-        font-size: 16px !important;
-    }
-
-    #searchPanel button {
-        height: 52px !important;
-        padding: 0 20px !important;
-
-        background: #d4af37 !important;
-        color: #000 !important;
-
-        border: 0 !important;
-        font-weight: 600 !important;
-    }
-}
-    @media (max-width: 768px) {
-
-    #searchPanel {
-        position: fixed !important;
-        top: 70px !important;
-        left: 15px !important;
-        right: 15px !important;
-        width: auto !important;
-
-        background: #0b0b0b !important;
-        border: 1px solid #d4af37 !important;
-        padding: 14px !important;
-
-        box-shadow: 0 20px 50px rgba(0,0,0,.8) !important;
-
-        z-index: 999999 !important;
-    }
-
-    #searchPanel.open {
-        display: flex !important;
-        gap: 8px !important;
-    }
-
-    #searchPanel input {
-        flex: 1 !important;
-        min-width: 0 !important;
-        height: 48px !important;
-        background: #111 !important;
-        color: white !important;
-        border: 1px solid #444 !important;
-        padding: 0 14px !important;
-        font-size: 16px !important;
-    }
-
-    #searchPanel button {
-        height: 48px !important;
-        background: #d4af37 !important;
-        color: #000 !important;
-        border: 0 !important;
-        padding: 0 18px !important;
-        font-weight: 600 !important;
-    }
-}
-  </style>
+  .topbar{display:none!important}
+  .navbar{position:sticky;top:0;min-height:72px;height:72px;padding:0 16px;background:#050505;z-index:10000}
+  .navbar>.logo{flex:1;text-align:center;font-size:28px;letter-spacing:4px}
+  .navbar>.menu{display:none}
+  .navbar>.icons{flex:0 0 auto;width:44px;justify-content:flex-end}
+  .mobile-menu-btn{display:flex!important;flex:0 0 44px;width:44px;height:44px;align-items:center;justify-content:center;padding:0;border:0;background:transparent;color:#fff;font-size:28px;cursor:pointer}
+  .icons span{font-size:20px}
+
+  .mobile-menu{position:fixed!important;display:none;flex-direction:column;top:0;left:0;width:min(88%,390px);height:100dvh;background:#fff;color:#222;z-index:99999;box-shadow:8px 0 30px rgba(0,0,0,.3);overflow-y:auto}
+  .mobile-menu.active{display:flex!important}
+  .mobile-menu-header{height:105px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;border-bottom:1px solid #ddd;flex:0 0 auto}
+  .mobile-menu-logo{color:#c9a227;font-family:Georgia,serif;font-size:38px;font-weight:700;letter-spacing:4px;text-decoration:none}
+  .mobile-menu-close{width:70px;height:105px;border:0;background:#000;color:#fff;font-size:42px;line-height:1;cursor:pointer}
+  .mobile-menu-links{display:flex;flex-direction:column;padding:20px 22px 0}
+  .mobile-menu-links a{display:flex;align-items:center;justify-content:space-between;min-height:82px;color:#222;text-decoration:none;font-size:22px;font-weight:700;letter-spacing:.5px;border-bottom:1px solid #ddd}
+  .mobile-menu-links a span{font-size:38px;font-weight:300}
+  .mobile-menu-bottom{margin-top:auto;padding:28px 22px 25px}
+  .mobile-order-btn{display:flex;align-items:center;justify-content:center;height:64px;border:2px solid #222;color:#222;background:#fff;text-decoration:none;font-size:20px;font-weight:700;margin-bottom:18px}
+  .mobile-account-buttons{display:grid;grid-template-columns:1fr 1fr}
+  .mobile-account-buttons a{height:64px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:17px;font-weight:700}
+  .mobile-account-buttons a:first-child{background:#222;color:#fff}
+  .mobile-account-buttons a:last-child{background:#f1f1f1;color:#222}
+
+  .hero{min-height:calc(100svh - 72px);height:calc(100svh - 72px);max-height:none;background:linear-gradient(rgba(0,0,0,.15),rgba(0,0,0,.45)),url("hero.png") center top/cover no-repeat}
+  .hero-image{object-position:center top}
+  .hero-text{left:0;right:0;top:auto;bottom:45px;transform:none;width:100%;padding:0 15px;text-align:center}
+  .hero-text h1{font-size:42px;line-height:1;margin:0 0 10px;color:#fff;text-shadow:0 3px 8px rgba(0,0,0,.7);white-space:nowrap}
+  .hero-text p{font-size:17px;line-height:1.2;margin:0 0 20px;color:#fff;text-shadow:0 2px 7px rgba(0,0,0,.7);white-space:nowrap}
+  .hero-text .hero-btn{width:min(230px,90vw);height:58px;margin:0 auto;padding:0;display:inline-flex;align-items:center;justify-content:center;font-size:17px;white-space:nowrap}
+
+  .categories{padding:55px 15px}
+  .categories-title{margin-bottom:28px}
+  .categories-title h2{font-size:32px}
+  .category-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .category-card{height:280px}
+  .category-overlay{left:14px;bottom:14px}
+  .category-overlay h3{font-size:18px}
+
+  .benefits{grid-template-columns:1fr 1fr;padding:35px 10px;gap:25px 0}
+  .benefit{padding:10px 12px}
+  .benefit:not(:last-child)::after{display:block}
+  .benefit:nth-child(2)::after{display:none}
+  .benefit h3{font-size:15px}
+  .benefit p{font-size:11px}
+
+  .products{padding:55px 12px}
+  .products-title h2{font-size:34px}
+  .products-title p{font-size:12px}
+  .grid{grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:none}
+  .card{min-width:0;width:100%}
+  .card-image{height:260px}
+  .card-content{padding:12px}
+  .card h3{font-size:15px}
+  .card p{font-size:13px}
+  .favorite-btn{width:38px;height:38px;top:9px;right:9px;font-size:20px}
+  .badge{top:9px;left:9px;padding:5px 9px;font-size:9px}
+  .buy{padding:11px 5px;font-size:11px;letter-spacing:1px}
+
+  .footer{padding:45px 20px 25px}
+  .footer-container{grid-template-columns:1fr 1fr;gap:35px 15px}
+  .footer-brand{grid-column:1/-1}
+  .footer-logo{font-size:30px;letter-spacing:6px}
+  .footer-column{text-align:center}
+  .footer-column h3{font-size:11px;letter-spacing:1.5px}
+  .footer-column a{font-size:11px;margin-bottom:10px}
+  .footer-copyright{flex-direction:column;gap:8px;line-height:1.6}
+  .footer-separator{display:none}
+
+  .search-panel{position:fixed;top:82px;left:12px;right:12px;width:auto;padding:12px;background:#0b0b0b;border:1px solid #d4af37;box-shadow:0 20px 50px rgba(0,0,0,.8);z-index:100001}
+  .search-panel input{height:48px;font-size:16px;padding:0 12px}
+  .search-panel button{height:48px;padding:0 15px}
+}
+
+@media(max-width:430px){
+  .navbar{padding:0 10px}
+  .navbar>.logo{font-size:26px;letter-spacing:3px}
+  .hero-text{bottom:35px}
+  .hero-text h1{font-size:38px}
+  .hero-text p{font-size:16px}
+  .category-card{height:250px}
+  .card-image{height:230px}
+  .mobile-menu-links a{font-size:20px;min-height:76px}
+}
+
+@media(min-width:769px){
+  .mobile-menu-btn,.mobile-menu{display:none!important}
+}
+</style>
   <script type="application/ld+json">
 {
-  "@context": "https://schema.org",
-  "@type": "OnlineStore",
-  "name": "Neris",
-  "url": "https://neris.com.tr/",
-  "description": "Neris, premium kadın giyim ve butik moda koleksiyonları sunar.",
-  "brand": {
-    "@type": "Brand",
-    "name": "Neris"
-  },
-  "sameAs": []
-}
-    function toggleMobileMenu() {
-    const menu = document.getElementById("mobileMenu");
-
-    if (!menu) return;
-
-    menu.classList.toggle("active");
-}
-
-function closeMobileMenu() {
-    const menu = document.getElementById("mobileMenu");
-
-    if (!menu) return;
-
-    menu.classList.remove("active");
+  "@context":"https://schema.org",
+  "@type":"OnlineStore",
+  "name":"Neris",
+  "url":"https://neris.com.tr/",
+  "description":"Neris, premium kadın giyim ve butik moda koleksiyonları sunar.",
+  "brand":{"@type":"Brand","name":"Neris"}
 }
 </script>
 </head>
@@ -2495,90 +300,45 @@ function closeMobileMenu() {
 
 <!-- NAVBAR -->
 <div class="navbar">
-
-  <!-- NAVBAR -->
-  <div class="navbar">
-    <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menüyü Aç">
-    ☰
-</button>
-
-    <a href="#" class="logo">NERIS</a>
-
-    <div class="menu">
-      <a href="#">Ana Sayfa</a>
-      <a href="#products">Ürünler</a>
-      <a href="#categories">Kategoriler</a>
-      <a href="#footer">İletişim</a>
-    </div>
-
-    <div class="icons">
-    <span>🛒</span>
-</div>
-
+  <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menüyü Aç">☰</button>
+  <a href="#" class="logo">NERIS</a>
+  <div class="menu">
+    <a href="#">Ana Sayfa</a>
+    <a href="#products">Ürünler</a>
+    <a href="#categories">Kategoriler</a>
+    <a href="#footer">İletişim</a>
   </div>
-  <!-- MOBİL MENÜ -->
-<div class="mobile-menu" id="mobileMenu">
-
-    <div class="mobile-menu-header">
-        <a href="#" class="mobile-menu-logo">NERIS</a>
-
-        <button class="mobile-menu-close"
-                onclick="toggleMobileMenu()"
-                aria-label="Menüyü Kapat">
-            ×
-        </button>
-    </div>
-
-    <div class="mobile-menu-links">
-
-        <a href="#" onclick="openInfo('story'); closeMobileMenu(); return false;">
-            HİKAYEMİZ
-            <span>›</span>
-        </a>
-
-        <a href="#" onclick="openInfo('tracking'); closeMobileMenu(); return false;">
-            SİPARİŞ TAKİP
-            <span>›</span>
-        </a>
-
-        <a href="#" onclick="openInfo('contact'); closeMobileMenu(); return false;">
-            BİZE ULAŞIN
-            <span>›</span>
-        </a>
-
-        <a href="#" onclick="
-    event.preventDefault();
-    document.getElementById('mobileMenu').classList.remove('active');
-    document.getElementById('searchPanel').classList.add('open');
-    setTimeout(function(){
-        var input = document.getElementById('siteSearch');
-        if(input) input.focus();
-    },150);
-    return false;
-">
-    ARAMA
-    <span>⌕</span>
-</a>
-    </div>
-
-    <div class="mobile-menu-bottom">
-
-        <a href="#" onclick="openInfo('tracking'); closeMobileMenu(); return false;"
-           class="mobile-order-btn">
-            🚚 &nbsp; SİPARİŞ TAKİP
-        </a>
-
-        <div class="mobile-account-buttons">
-            <a href="giris.html">♙ &nbsp; GİRİŞ YAP</a>
-            <a href="register.html">♙+ &nbsp; ÜYE OL</a>
-        </div>
-
-    </div>
-
+  <div class="icons"><span onclick="openInfo('cart')">🛒</span></div>
 </div>
 
+<!-- MOBİL MENÜ -->
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-menu-header">
+    <a href="#" class="mobile-menu-logo">NERIS</a>
+    <button class="mobile-menu-close" onclick="toggleMobileMenu()" aria-label="Menüyü Kapat">×</button>
+  </div>
+  <div class="mobile-menu-links">
+    <a href="#" onclick="openInfo('story'); closeMobileMenu(); return false;">HİKAYEMİZ <span>›</span></a>
+    <a href="#" onclick="openInfo('tracking'); closeMobileMenu(); return false;">SİPARİŞ TAKİP <span>›</span></a>
+    <a href="#" onclick="openInfo('contact'); closeMobileMenu(); return false;">BİZE ULAŞIN <span>›</span></a>
+    <a href="#" onclick="toggleSearch(); closeMobileMenu(); return false;">ARAMA <span>⌕</span></a>
+  </div>
+  <div class="mobile-menu-bottom">
+    <a href="#" onclick="openInfo('tracking'); closeMobileMenu(); return false;" class="mobile-order-btn">🚚 &nbsp; SİPARİŞ TAKİP</a>
+    <div class="mobile-account-buttons">
+      <a href="giris.html">♙ &nbsp; GİRİŞ YAP</a>
+      <a href="register.html">♙+ &nbsp; ÜYE OL</a>
+    </div>
+  </div>
+</div>
 
-  <!-- HERO -->
+<!-- SEARCH PANEL -->
+<div class="search-panel" id="searchPanel">
+  <input id="siteSearch" type="search" placeholder="Ürün ara..." onkeydown="if(event.key==='Enter') searchProducts()">
+  <button type="button" onclick="searchProducts()">ARA</button>
+</div>
+
+<!-- HERO -->
   <section class="hero">
     <picture>
     <source media="(min-width: 769px)" srcset="hero-desktop.png">
@@ -2857,7 +617,7 @@ function closeMobileMenu() {
       cards.forEach(card=>{
         const text = card.innerText.toLowerCase();
         const visible = !term || text.includes(term);
-        card.style.display = visible ? '' : 'block';
+        card.style.display = visible ? '' : 'none';
         if(visible) found++;
       });
 
@@ -3250,7 +1010,8 @@ function closeInfo(){
     document.addEventListener('keydown', e=>{
       if(e.key==='Escape'){
         closeInfo();
-        document.getElementById('searchPanel').classList.remove('open');
+        const searchPanel = document.getElementById('searchPanel');
+        if(searchPanel) searchPanel.classList.remove('open');
       }
     });
     function toggleMobileMenu() {
@@ -3494,6 +1255,10 @@ const querySnapshot =
 
 
 /* HESAP MENÜSÜ */
+const loginLink = document.getElementById("loginLink");
+const accountDropdown = document.getElementById("accountDropdown");
+const logoutButton = document.getElementById("logoutButton");
+const accountName = document.getElementById("accountName");
 if (loginLink) {
 
     loginLink.addEventListener("click", function(e) {
