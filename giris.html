@@ -65,7 +65,9 @@ form.addEventListener('submit',async e=>{
  btn.disabled=true;btn.textContent='GİRİŞ YAPILIYOR';msg.className='message';
  try{
    await setPersistence(auth, browserLocalPersistence);
-   await signInWithEmailAndPassword(auth,email,password);
+   const credential=await signInWithEmailAndPassword(auth,email,password);
+   const displayName=(credential.user.displayName&&credential.user.displayName.trim()) ? credential.user.displayName.trim() : email.split('@')[0];
+   try{localStorage.setItem('nerisUserName',displayName);}catch(e){}
    sessionStorage.setItem('nerisLoginRedirect','1');
    show('Giriş başarılı. Ana sayfaya yönlendiriliyorsunuz.');
    setTimeout(()=>window.location.replace('index.html?login=1'),450);
