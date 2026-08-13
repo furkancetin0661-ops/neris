@@ -378,6 +378,43 @@ body.modal-open{overflow:hidden!important}
         transition-delay: .32s;
     }
 }
+    /* =========================================
+   NERIS MENÜ KAPANIŞ ANİMASYONU
+========================================= */
+
+@media (max-width: 768px) {
+
+    /* Kapanırken linkler geri çekilsin */
+    .mobile-menu:not(.active) .mobile-menu-links a {
+        opacity: 0;
+        transform: translateX(-20px);
+        transition:
+            opacity .2s ease,
+            transform .25s ease;
+    }
+
+    /* Alt bölüm de geri çekilsin */
+    .mobile-menu:not(.active) .mobile-menu-bottom {
+        opacity: 0;
+        transform: translateY(15px);
+        transition:
+            opacity .2s ease,
+            transform .25s ease;
+    }
+
+    /* Kapatma butonu */
+    .mobile-menu-close {
+        transition:
+            transform .45s cubic-bezier(.68,-0.55,.27,1.55),
+            background .3s ease;
+    }
+
+    /* Çarpıya basıldığında dönüş efekti */
+    .mobile-menu-close:active {
+        transform: rotate(90deg) scale(.9);
+    }
+
+}
 </style>
   <script type="application/ld+json">
 {
