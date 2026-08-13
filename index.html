@@ -21,243 +21,7 @@
 <meta property="og:site_name" content="Neris">
 
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-  /* =====================================================
-   NERIS - SAYFA AÇILIŞ ANİMASYONU
-   ===================================================== */
 
-#nerisPageLoader{
-    position:fixed;
-    inset:0;
-    background:#050505;
-    z-index:99999999;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    opacity:1;
-    visibility:visible;
-    pointer-events:all;
-    transition:
-        opacity .8s cubic-bezier(.22,.61,.36,1),
-        visibility 0s linear .8s;
-}
-
-#nerisPageLoader.hide{
-    opacity:0;
-    visibility:hidden;
-    pointer-events:none;
-}
-
-.neris-loader-content{
-    text-align:center;
-    transform:translateY(15px);
-    opacity:0;
-    animation:nerisLoaderLogo 1s cubic-bezier(.22,.61,.36,1) .15s forwards;
-}
-
-.neris-loader-logo{
-    font-family:'Playfair Display',serif;
-    color:#d4af37;
-    font-size:38px;
-    font-weight:500;
-    letter-spacing:9px;
-}
-
-.neris-loader-line{
-    width:0;
-    height:1px;
-    background:#d4af37;
-    margin:18px auto 0;
-    animation:nerisLoaderLine .7s ease .55s forwards;
-}
-
-@keyframes nerisLoaderLogo{
-    from{
-        opacity:0;
-        transform:translateY(15px);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-
-@keyframes nerisLoaderLine{
-    from{
-        width:0;
-        opacity:0;
-    }
-    to{
-        width:42px;
-        opacity:1;
-    }
-}
-
-/* MOBİL */
-@media(max-width:768px){
-
-    .neris-loader-logo{
-        font-size:30px;
-        letter-spacing:7px;
-    }
-
-    .neris-loader-line{
-        margin-top:14px;
-    }
-}
-<style>
-/* PREMIUM ÇIKIŞ ANİMASYONU */
-.neris-logout-overlay{
-    position:fixed;
-    inset:0;
-    background:rgba(5,5,5,.96);
-    backdrop-filter:blur(10px);
-    -webkit-backdrop-filter:blur(10px);
-    z-index:9999999;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    opacity:0;
-    visibility:hidden;
-    pointer-events:none;
-    transition:
-        opacity .45s ease,
-        visibility 0s linear .45s;
-}
-
-.neris-logout-overlay.active{
-    opacity:1;
-    visibility:visible;
-    pointer-events:all;
-    transition:
-        opacity .45s ease,
-        visibility 0s;
-}
-
-.neris-logout-content{
-    text-align:center;
-    transform:translateY(18px);
-    opacity:0;
-    transition:
-        transform .55s cubic-bezier(.22,.61,.36,1),
-        opacity .45s ease;
-}
-
-.neris-logout-overlay.active .neris-logout-content{
-    transform:translateY(0);
-    opacity:1;
-}
-
-.neris-logout-logo{
-    font-family:'Playfair Display',serif;
-    color:#d4af37;
-    font-size:30px;
-    letter-spacing:7px;
-    margin-bottom:14px;
-}
-
-.neris-logout-line{
-    width:38px;
-    height:1px;
-    background:#d4af37;
-    margin:0 auto 18px;
-}
-
-.neris-logout-text{
-    color:#aaa;
-    font-size:12px;
-    letter-spacing:2px;
-}
-</style>
-
-<script>
-/* PREMIUM ÇIKIŞ */
-if (logoutButton) {
-
-    logoutButton.addEventListener("click", async function(e) {
-
-        e.preventDefault();
-        e.stopPropagation();
-
-        /* Menü hemen ve yumuşak şekilde kapansın */
-        if (accountDropdown) {
-            accountDropdown.classList.remove("active");
-        }
-
-        /* Çıkış ekranını oluştur */
-        let overlay = document.getElementById("nerisLogoutOverlay");
-
-        if (!overlay) {
-            overlay = document.createElement("div");
-            overlay.id = "nerisLogoutOverlay";
-            overlay.className = "neris-logout-overlay";
-
-            overlay.innerHTML = `
-                <div class="neris-logout-content">
-                    <div class="neris-logout-logo">NERIS</div>
-                    <div class="neris-logout-line"></div>
-                    <div class="neris-logout-text">
-                        Hesabınızdan güvenli şekilde çıkış yapılıyor
-                    </div>
-                </div>
-            `;
-
-            document.body.appendChild(overlay);
-        }
-
-        /* Animasyonu başlat */
-        requestAnimationFrame(() => {
-            overlay.classList.add("active");
-        });
-
-        /* Firebase çıkışı */
-        try {
-            await auth.signOut();
-
-            try {
-                localStorage.removeItem("nerisUserName");
-            } catch(e) {}
-
-            const loginButton = document.getElementById("loginLink");
-            const nameEl = document.getElementById("accountName");
-
-            if (nameEl) {
-                nameEl.textContent = "GİRİŞ YAP";
-            }
-
-            if (loginButton) {
-                loginButton.dataset.loggedIn = "false";
-            }
-
-            /* Favori kalplerini temizle */
-            document.querySelectorAll(".favorite-btn.active").forEach(button => {
-                button.classList.remove("active");
-                button.innerHTML = "♡";
-            });
-
-            /*
-             * Animasyon kullanıcı tarafından görülsün.
-             * Sonra sayfa yumuşak şekilde yenilensin.
-             */
-            setTimeout(() => {
-                window.location.reload();
-            }, 750);
-
-        } catch(error) {
-
-            console.error("Çıkış işlemi başarısız:", error);
-
-            overlay.classList.remove("active");
-
-            showPremiumAlert(
-                "Çıkış Yapılamadı",
-                "Hesabınızdan çıkış yapılırken bir sorun oluştu. Lütfen tekrar deneyin."
-            );
-        }
-
-    });
-
-}
-</script>
   <style>
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;width:100%;overflow-x:hidden}
@@ -1065,6 +829,24 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .buy:
 .products-empty button{background:#d4af37;border:1px solid #d4af37;color:#080808;padding:13px 26px;font-size:10px;font-weight:600;letter-spacing:1.5px;cursor:pointer}
 @media(max-width:768px){.products-empty{padding:52px 16px}.products-empty strong{font-size:22px}}
 
+/* NERIS — SAYFA AÇILIŞ ANİMASYONU */
+#nerisPageLoader{
+  position:fixed;inset:0;background:#050505;z-index:9999999;
+  display:flex;align-items:center;justify-content:center;
+  opacity:1;visibility:visible;pointer-events:all;
+  transition:opacity .7s cubic-bezier(.22,.61,.36,1),visibility 0s linear 0s;
+}
+#nerisPageLoader.hide{
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .7s cubic-bezier(.22,.61,.36,1),visibility 0s linear .7s;
+}
+.neris-loader-content{text-align:center;transform:translateY(12px);opacity:0;animation:nerisLoaderContent .65s cubic-bezier(.22,.61,.36,1) .05s forwards}
+.neris-loader-logo{font-family:'Playfair Display',serif;color:#d4af37;font-size:38px;font-weight:500;letter-spacing:9px}
+.neris-loader-line{width:54px;height:1px;background:#d4af37;margin:18px auto 0;transform:scaleX(0);transform-origin:center;animation:nerisLoaderLine .65s ease .25s forwards}
+@keyframes nerisLoaderContent{to{transform:translateY(0);opacity:1}}
+@keyframes nerisLoaderLine{to{transform:scaleX(1)}}
+@media(max-width:768px){.neris-loader-logo{font-size:30px;letter-spacing:7px}.neris-loader-line{margin-top:14px;width:44px}}
+
 </style>
   <script type="application/ld+json">
 {
@@ -1116,12 +898,13 @@ document.addEventListener("keydown", function(event) {
 </head>
 
 <body>
-  <div id="nerisPageLoader">
+  <!-- NERIS SAYFA AÇILIŞ PERDESİ -->
+  <div id="nerisPageLoader" aria-hidden="true">
     <div class="neris-loader-content">
-        <div class="neris-loader-logo">NERIS</div>
-        <div class="neris-loader-line"></div>
+      <div class="neris-loader-logo">NERIS</div>
+      <div class="neris-loader-line"></div>
     </div>
-</div>
+  </div>
 
   <!-- ÜST BİLGİ BAR -->
   <div class="topbar">
@@ -1144,8 +927,6 @@ document.addEventListener("keydown", function(event) {
     <div class="account-dropdown" id="accountDropdown">
         <a href="account.html">Hesabım</a>
         <a href="siparişler.html">Siparişlerim</a>
-        
-
         <div class="account-divider"></div>
 
         <button id="logoutButton">Çıkış Yap</button>
@@ -1429,6 +1210,19 @@ document.addEventListener("keydown", function(event) {
 
   <script>
 
+    /* NERIS SAYFA AÇILIŞ ANİMASYONU */
+    function hideNerisPageLoader(){
+      const loader=document.getElementById('nerisPageLoader');
+      if(loader) loader.classList.add('hide');
+    }
+    window.addEventListener('load',function(){
+      setTimeout(hideNerisPageLoader,650);
+    });
+    setTimeout(hideNerisPageLoader,4000);
+    window.addEventListener('pageshow',function(){
+      setTimeout(hideNerisPageLoader,120);
+    });
+
     /* NERIS PREMIUM ALERT + PAGE TRANSITION */
     let premiumAlertCallback = null;
     function showPremiumAlert(title, message){
@@ -1491,24 +1285,15 @@ document.addEventListener("keydown", function(event) {
     });
 
     function handleLoginClick(event){
-      if(event){
-        event.preventDefault();
-        event.stopPropagation();
-      }
-
-      const loginButton=document.getElementById('loginLink');
-      const dropdown=document.getElementById('accountDropdown');
-      const currentUser=window.nerisAuth ? window.nerisAuth.currentUser : null;
-      const loggedIn=!!currentUser || loginButton?.dataset.loggedIn === 'true';
-
+      if(event) event.preventDefault();
+      const currentUser = window.nerisAuth ? window.nerisAuth.currentUser : null;
+      const loggedIn = !!currentUser || document.getElementById('loginLink')?.dataset.loggedIn === 'true';
       if(loggedIn){
+        const dropdown=document.getElementById('accountDropdown');
         if(dropdown) dropdown.classList.toggle('active');
         return false;
       }
-
-      // Giriş ekranını doğrudan aç. Geçiş animasyonu burada devreye girerse
-      // tıklama bazı tarayıcılarda perde altında kalabiliyor.
-      window.location.href='giris.html';
+      navigateWithTransition('giris.html');
       return false;
     }
     window.addEventListener('focus', function(){
@@ -1539,24 +1324,6 @@ document.addEventListener("keydown", function(event) {
         });
       });
     });
-
-    // Firebase modülü herhangi bir nedenle geç yüklenirse bile kalp tıklaması
-    // giriş ekranını açabilsin. Modül çalışıyorsa asıl handler defaultPrevented
-    // bıraktığı için bu yedek handler devreye girmez.
-    document.addEventListener('click', function(e){
-      const button=e.target.closest('.favorite-btn');
-      if(!button || e.defaultPrevented) return;
-      e.preventDefault();
-      e.stopPropagation();
-      const auth=window.nerisAuth;
-      if(!auth || !auth.currentUser){
-        showPremiumConfirm(
-          'Favorilerinize Kaydedin',
-          'Favori ürünlerinizi kaydetmek için NERIS hesabınıza giriş yapmanız gerekiyor.',
-          function(){ window.location.href='giris.html'; }
-        );
-      }
-    }, true);
 
     function toggleSearch() {
     const panel = document.getElementById("searchPanel");
@@ -2077,7 +1844,6 @@ import {
     // Normal (non-module) UI kodunun da aynı Firebase oturumunu kullanabilmesi için
     // auth nesnesini güvenli şekilde window üzerinde paylaş.
     window.nerisAuth = auth;
-    window.nerisDb = db;
     let authInitialized = false;
     // Oturumun index.html'de de aynı tarayıcı oturumunda kalmasını garanti et.
     setPersistence(auth, browserLocalPersistence).catch((e)=>console.warn("Auth persistence:", e));
@@ -2164,17 +1930,7 @@ import {
       const container=document.getElementById('favoritesContent'); if(!container)return;
       if(!authInitialized){container.innerHTML='<div class="favorites-empty"><div class="favorites-icon">♡</div><h3>Hesabınız kontrol ediliyor</h3><p>Lütfen bir saniye bekleyin.</p></div>';return;}
       const user=auth.currentUser;
-      if(!user){
-        container.innerHTML=`<div class="login-required"><div class="login-required-icon">♡</div><h3>Favorilerinizi oluşturun</h3><p>Favori ürünlerinizi kaydetmek ve daha sonra görüntülemek için hesabınıza giriş yapın.</p><div class="login-required-actions"><a href="giris.html">GİRİŞ YAP</a><button type="button" onclick="closeInfo()">VAZGEÇ</button></div></div>`;
-        const loginAction=container.querySelector('.login-required-actions a');
-        if(loginAction){
-          loginAction.addEventListener('click',function(e){
-            e.preventDefault();
-            window.location.href='giris.html';
-          });
-        }
-        return;
-      }
+      if(!user){container.innerHTML='<div class="login-required"><div class="login-required-icon">♡</div><h3>Favorilerinizi oluşturun</h3><p>Favori ürünlerinizi kaydetmek ve daha sonra görüntülemek için hesabınıza giriş yapın.</p><div class="login-required-actions"><a href="giris.html" onclick="event.preventDefault(); navigateWithTransition('giris.html')">GİRİŞ YAP</a><button type="button" onclick="closeInfo()">VAZGEÇ</button></div></div>';return;}
       try{
         const fs=await getDocs(collection(db,'favoriler')); const favs=[];
         fs.forEach(d=>{const x=d.data();if(x.kullaniciId===user.uid&&x.urunId)favs.push(x)});
@@ -2186,56 +1942,74 @@ import {
       }catch(error){console.error('Favoriler yüklenemedi:',error);container.innerHTML='<div class="favorites-empty"><div class="favorites-icon">!</div><h3>Bir sorun oluştu</h3><p>Favorileriniz şu anda yüklenemiyor. Lütfen tekrar deneyin.</p></div>';}
     };
 
-    window.nerisToggleFavorite = async function(button){
-      if(!button) return;
-      const user=auth.currentUser;
+    document.addEventListener("click", async (e) => {
+    const button = e.target.closest(".favorite-btn");
 
-      if(!authInitialized || !user){
+    if (!button) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+
+    const user = auth.currentUser;
+
+    /* GİRİŞ YOKSA HİÇBİR ŞEKİLDE FAVORİ KAYDI YAPILMAZ */
+    if (!authInitialized || !user) {
         button.blur();
         showPremiumConfirm(
           "Favorilerinize Kaydedin",
           "Favori ürünlerinizi kaydetmek için NERIS hesabınıza giriş yapmanız gerekiyor.",
-          function(){ window.location.href='giris.html'; }
+          function(){ navigateWithTransition("giris.html"); }
         );
         return;
-      }
+    }
 
-      const productId=button.dataset.id;
-      if(!productId){
+    const productId = button.dataset.id;
+
+    if (!productId) {
         console.error("Ürün ID bulunamadı.");
         return;
-      }
+    }
 
-      const favoriteRef=doc(db,"favoriler",`${user.uid}_${productId}`);
-      try{
-        const favoriteSnap=await getDoc(favoriteRef);
-        if(favoriteSnap.exists()){
-          await deleteDoc(favoriteRef);
-          button.classList.remove("active");
-          button.innerHTML="♡";
-        }else{
-          await setDoc(favoriteRef,{
-            kullaniciId:user.uid,
-            urunId:productId,
-            eklenmeTarihi:new Date().toISOString()
-          });
-          button.classList.add("active");
-          button.innerHTML="♥";
+    const favoriteRef = doc(
+        db,
+        "favoriler",
+        `${user.uid}_${productId}`
+    );
+
+    try {
+        const favoriteSnap = await getDoc(favoriteRef);
+
+        if (favoriteSnap.exists()) {
+            await deleteDoc(favoriteRef);
+
+            button.classList.remove("active");
+            button.innerHTML = "♡";
+
+        } else {
+            const productRef = doc(db, "Ürünler", productId);
+            const productSnap = await getDoc(productRef);
+
+            if (!productSnap.exists() && productId !== 'siyah-elbise') {
+                console.error("Ürün bulunamadı.");
+                return;
+            }
+
+            await setDoc(favoriteRef, {
+                kullaniciId: user.uid,
+                urunId: productId,
+                eklenmeTarihi: new Date().toISOString()
+            });
+
+            button.classList.add("active");
+            button.innerHTML = "♥";
         }
-      }catch(error){
-        console.error("Favori işlemi başarısız:",error);
-        showPremiumAlert("İşlem Başarısız","Favori işlemi sırasında bir hata oluştu. Lütfen tekrar deneyin.");
-      }
-    };
 
-    document.addEventListener("click", async (e) => {
-      const button=e.target.closest(".favorite-btn");
-      if(!button) return;
-      if(e.defaultPrevented) return;
-      e.preventDefault();
-      e.stopPropagation();
-      await window.nerisToggleFavorite(button);
-    });
+    } catch (error) {
+        console.error("Favori işlemi başarısız:", error);
+        showPremiumAlert("İşlem Başarısız", "Favori işlemi sırasında bir hata oluştu. Lütfen tekrar deneyin.");
+    }
+});
 
   
 
@@ -2256,101 +2030,30 @@ if (loginLink) {
 }
 
 
-/* PREMIUM ÇIKIŞ YAP */
+/* ÇIKIŞ YAP */
 if (logoutButton) {
 
-    logoutButton.addEventListener("click", async function(e) {
+    logoutButton.addEventListener("click", function() {
 
-        e.preventDefault();
-        e.stopPropagation();
-
-        /* Hesap menüsünü kapat */
-        if (accountDropdown) {
-            accountDropdown.classList.remove("active");
-        }
-
-        /* Animasyon ekranını oluştur */
-        let overlay = document.getElementById("nerisLogoutOverlay");
-
-        if (!overlay) {
-
-            overlay = document.createElement("div");
-
-            overlay.id = "nerisLogoutOverlay";
-            overlay.className = "neris-logout-overlay";
-
-            overlay.innerHTML = `
-                <div class="neris-logout-content">
-                    <div class="neris-logout-logo">NERIS</div>
-
-                    <div class="neris-logout-line"></div>
-
-                    <div class="neris-logout-text">
-                        Hesabınızdan güvenli şekilde çıkış yapılıyor
-                    </div>
-                </div>
-            `;
-
-            document.body.appendChild(overlay);
-        }
-
-        /* Çıkış animasyonunu başlat */
-        requestAnimationFrame(function() {
-            overlay.classList.add("active");
+        const finishLogout=()=>{
+            try{localStorage.removeItem('nerisUserName');}catch(e){}
+            const loginButton=document.getElementById('loginLink');
+            const nameEl=document.getElementById('accountName');
+            if(nameEl) nameEl.textContent='GİRİŞ YAP';
+            if(loginButton) loginButton.dataset.loggedIn='false';
+            if(accountDropdown) accountDropdown.classList.remove('active');
+            const layer=document.getElementById('pageTransition');
+            if(layer){
+              layer.classList.add('active');
+              setTimeout(()=>window.location.reload(),380);
+            }else{
+              window.location.reload();
+            }
+        };
+        auth.signOut().then(finishLogout).catch(function(error){
+          console.error('Çıkış yapılamadı:',error);
+          showPremiumAlert('Çıkış Yapılamadı','Lütfen tekrar deneyin.');
         });
-
-        try {
-
-            /* Firebase çıkışı */
-            await auth.signOut();
-
-            /* Kayıtlı kullanıcı adını temizle */
-            try {
-                localStorage.removeItem("nerisUserName");
-            } catch (err) {}
-
-            /* Üst menüyü GİRİŞ YAP olarak güncelle */
-            const loginButton = document.getElementById("loginLink");
-            const nameEl = document.getElementById("accountName");
-
-            if (nameEl) {
-                nameEl.textContent = "GİRİŞ YAP";
-            }
-
-            if (loginButton) {
-                loginButton.dataset.loggedIn = "false";
-            }
-
-            /* Favori kalplerini sıfırla */
-            document.querySelectorAll(".favorite-btn.active").forEach(function(button) {
-                button.classList.remove("active");
-                button.innerHTML = "♡";
-            });
-
-            /* Animasyonun görünmesi için bekle */
-            setTimeout(function() {
-                window.location.reload();
-            }, 750);
-
-        } catch (error) {
-
-            console.error("Çıkış işlemi başarısız:", error);
-
-            overlay.classList.remove("active");
-
-            if (typeof showPremiumAlert === "function") {
-
-                showPremiumAlert(
-                    "Çıkış Yapılamadı",
-                    "Hesabınızdan çıkış yapılırken bir sorun oluştu. Lütfen tekrar deneyin."
-                );
-
-            } else {
-
-                alert("Çıkış yapılırken bir sorun oluştu.");
-
-            }
-        }
 
     });
 
@@ -2428,23 +2131,6 @@ onAuthStateChanged(auth,function(user){
   if(document.getElementById('favoritesContent')&&document.getElementById('infoModal')?.classList.contains('open')){
     window.loadFavoritesModal();
   }
-});
-    /* =====================================================
-   NERIS - SAYFA AÇILIŞ ANİMASYONU
-   ===================================================== */
-
-window.addEventListener("load", function(){
-
-    const loader = document.getElementById("nerisPageLoader");
-
-    if(!loader) return;
-
-    setTimeout(function(){
-
-        loader.classList.add("hide");
-
-    }, 650);
-
 });
 </script>
 </body>
