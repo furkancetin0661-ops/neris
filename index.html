@@ -982,19 +982,7 @@ document.addEventListener("keydown", function(event) {
 
     <div class="grid" id="productsGrid">
 
-      <!-- GÜVENLİK YEDEĞİ: Firebase yüklenmese bile Siyah Elbise görünür. -->
-      <div class="card legacy-black-dress" id="legacyBlackDress">
-        <div class="card-image">
-          <div class="badge">NEW</div>
-          <img src="hero.png" alt="Siyah Elbise">
-        </div>
-        <div class="card-content">
-          <h3>Siyah Elbise</h3>
-          <p class="product-price"><span class="price-currency">₺</span><span class="price-value">2399</span></p>
-          <a href="#" class="buy" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'}); return false;">SATIN AL</a>
-        </div>
-      </div>
-
+      
     </div>
 
   </section>
@@ -1239,6 +1227,15 @@ document.addEventListener("keydown", function(event) {
       const layer = document.getElementById('pageTransition');
       if(layer) layer.classList.remove('active');
       document.body.classList.remove('modal-open');
+    });
+
+    /* Sayfa yenilendiğinde tarayıcı eski scroll konumunu geri yüklemesin.
+       Geri/ileri navigasyonunda mevcut konumu bozmaz. */
+    window.addEventListener('load', function(){
+      const nav = performance.getEntriesByType('navigation')[0];
+      if (nav && nav.type === 'reload') {
+        setTimeout(function(){ window.scrollTo({top:0,left:0,behavior:'instant'}); }, 30);
+      }
     });
 
     function handleLoginClick(event){
@@ -1798,78 +1795,123 @@ import {
       const container = document.getElementById("productsGrid");
       if(!container) return;
 
-      const fallback = document.getElementById("legacyBlackDress");
-
       try{
-        const querySnapshot = await getDocs(collection(db, "Ürünler"));
 
+const querySnapshot =
+    await getDocs(collection(db, "Ürünler"));
+
+        if(querySnapshot.empty){
+          container.innerHTML = `
+            <div class="card">
+              <div class="card-image">
+                <div class="badge">NEW</div>
+                <img src="https://picsum.photos/500/650?random=1" alt="Siyah Elbise">
+              </div>
+              <div class="card-content">
+                <h3>Siyah Elbise</h3>
+                <p class="product-price"><span class="price-currency">₺</span><span class="price-value">899</span></p>
+                <a href="#" class="buy">SATIN AL</a>
+              </div>
+            </div>`;
+          return;
+        }
+
+
+        container.innerHTML = "";
         let hasBlackDress = false;
 
         querySnapshot.forEach((doc)=>{
-          const p = { ...doc.data(), id: doc.id };
-          const name = String(p.reklam || '').trim();
 
-          if(name.toLocaleLowerCase('tr-TR') === 'siyah elbise'){
+          const p = {
+    ...doc.data(),
+    id: doc.id
+};
+
+          if (String(p.reklam || '').trim().toLocaleLowerCase('tr-TR') === 'siyah elbise') {
             hasBlackDress = true;
-            if(fallback) fallback.remove();
           }
 
           const card = document.createElement("div");
+
           card.className = "card";
+
+
           card.innerHTML = `
+
+            
+
             <div class="card-image">
-              <div class="badge">${p.rozet || "NEW"}</div>
-              <button class="favorite-btn" data-id="${p.id}" type="button">♡</button>
-              <img src="${p.resim || 'hero.png'}" alt="${name || 'Neris Ürün'}">
-            </div>
-            <div class="card-content">
-              <h3>${name || "Ürün"}</h3>
-              <p class="product-price"><span class="price-currency">₺</span><span class="price-value">${p.fiyat || "0"}</span></p>
-              <a href="${p["Bağlantı"] || p["bağlantı"] || '#'}" target="_blank" class="buy">SATIN AL</a>
-            </div>`;
+
+    <div class="badge">${p.rozet || "NEW"}</div>
+
+    <button class="favorite-btn" data-id="${p.id}" type="button">♡</button>
+
+    <img
+        src="${p.resim || 'https://picsum.photos/500/650'}"
+        alt="${p.reklam || 'Neris Ürün'}"
+    >
+
+</div>
+
+<div class="card-content">
+
+    <h3>${p.reklam || "Ürün"}</h3>
+
+    <p class="product-price"><span class="price-currency">₺</span><span class="price-value">${p.fiyat || "0"}</span></p>
+
+    <a
+        href="${p["Bağlantı"] || p["bağlantı"] || '#'}"
+        target="_blank"
+        class="buy"
+    >
+        SATIN AL
+    </a>
+
+</div>
+          `;
+
 
           container.appendChild(card);
+
         });
 
-        // Firestore'da Siyah Elbise yoksa, güvenli yedek kartı ekranda tut.
-        if(!hasBlackDress && !document.getElementById('legacyBlackDress')){
-          const backup = document.createElement('div');
-          backup.className = 'card legacy-black-dress';
-          backup.id = 'legacyBlackDress';
-          backup.innerHTML = `
+        /* Eski Neris tasarımındaki Siyah Elbise kartını koru.
+           Firestore'da ürün yoksa da, ürünler arasında yoksa da kaybolmaz. */
+        if (!hasBlackDress) {
+          const fallback = document.createElement("div");
+          fallback.className = "card";
+          fallback.innerHTML = `
             <div class="card-image">
               <div class="badge">NEW</div>
-              <img src="hero.png" alt="Siyah Elbise">
+              <img src="https://picsum.photos/500/650?random=1" alt="Siyah Elbise">
             </div>
             <div class="card-content">
               <h3>Siyah Elbise</h3>
-              <p class="product-price"><span class="price-currency">₺</span><span class="price-value">2399</span></p>
-              <a href="#" class="buy" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'}); return false;">SATIN AL</a>
+              <p class="product-price"><span class="price-currency">₺</span><span class="price-value">899</span></p>
+              <a href="#" class="buy">SATIN AL</a>
             </div>`;
-          container.insertBefore(backup, container.firstChild);
+          container.insertBefore(fallback, container.firstChild);
         }
 
+
       }catch(error){
-        console.error("Ürünler yüklenirken hata:", error);
-        // Firebase erişilemese bile statik Siyah Elbise kartı görünür kalır.
-        if(!document.getElementById('legacyBlackDress')){
-          const backup = document.createElement('div');
-          backup.className = 'card legacy-black-dress';
-          backup.id = 'legacyBlackDress';
-          backup.innerHTML = `
+        console.error("Ürünler yüklenirken hata:",error);
+        container.innerHTML = `
+          <div class="card">
             <div class="card-image">
               <div class="badge">NEW</div>
-              <img src="hero.png" alt="Siyah Elbise">
+              <img src="https://picsum.photos/500/650?random=1" alt="Siyah Elbise">
             </div>
             <div class="card-content">
               <h3>Siyah Elbise</h3>
-              <p class="product-price"><span class="price-currency">₺</span><span class="price-value">2399</span></p>
-              <a href="#" class="buy" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'}); return false;">SATIN AL</a>
-            </div>`;
-          container.insertBefore(backup, container.firstChild);
-        }
+              <p class="product-price"><span class="price-currency">₺</span><span class="price-value">899</span></p>
+              <a href="#" class="buy">SATIN AL</a>
+            </div>
+          </div>`;
       }
+
     }
+
 
    loadProducts().then(() => {
     loadFavorites();
@@ -2001,17 +2043,13 @@ const accountDropdown = document.getElementById("accountDropdown");
 const logoutButton = document.getElementById("logoutButton");
 const accountName = document.getElementById("accountName");
 
-/* GİRİŞ YAP — TEK VE SAĞLAM YÖNLENDİRME */
+/* GİRİŞ / HESAP MENÜSÜ
+   HTML'deki handleLoginClick() tek giriş noktasıdır.
+   Kullanıcı giriş yaptıysa isim alanı dropdown'u açar; giriş yoksa
+   premium geçişle giris.html'e gider. */
 if (loginLink) {
-    loginLink.setAttribute('href', 'giris.html');
-    loginLink.addEventListener('click', function(e) {
-        e.preventDefault();
-        if (typeof navigateWithTransition === 'function') {
-            navigateWithTransition('giris.html');
-        } else {
-            window.location.href = 'giris.html';
-        }
-    });
+    loginLink.setAttribute('type', 'button');
+    loginLink.removeAttribute('href');
 }
 
 
