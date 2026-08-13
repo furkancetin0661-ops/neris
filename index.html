@@ -951,7 +951,7 @@ document.addEventListener("keydown", function(event) {
   <div class="mobile-menu-bottom">
     <a href="#" onclick="openInfo('tracking'); closeMobileMenu(); return false;" class="mobile-order-btn">🚚 &nbsp; SİPARİŞ TAKİP</a>
     <div class="mobile-account-buttons">
-      <a href="giriş.html" onclick="event.preventDefault(); navigateWithTransition('giriş.html')">♙ &nbsp; GİRİŞ YAP</a>
+      <a href="giris.html" onclick="event.preventDefault(); navigateWithTransition("giris.html")">♙ &nbsp; GİRİŞ YAP</a>
       <a href="register.html">♙+ &nbsp; ÜYE OL</a>
     </div>
   </div>
@@ -1230,7 +1230,7 @@ document.addEventListener("keydown", function(event) {
         if(dropdown) dropdown.classList.toggle('active');
         return false;
       }
-      navigateWithTransition('giriş.html');
+      navigateWithTransition("giris.html");
       return false;
     }
     document.addEventListener('DOMContentLoaded',()=>{
@@ -1784,13 +1784,24 @@ const querySnapshot =
     await getDocs(collection(db, "Ürünler"));
 
         if(querySnapshot.empty){
-          container.innerHTML = '<div class="products-empty"><span>NERIS</span><strong>Yeni koleksiyon hazırlanıyor</strong><p>Çok yakında yeni ürünlerle buluşacağız.</p></div>';
+          container.innerHTML = `
+            <div class="card">
+              <div class="card-image">
+                <div class="badge">NEW</div>
+                <img src="https://picsum.photos/500/650?random=1" alt="Siyah Elbise">
+              </div>
+              <div class="card-content">
+                <h3>Siyah Elbise</h3>
+                <p class="product-price"><span class="price-currency">₺</span><span class="price-value">899</span></p>
+                <a href="#" class="buy">SATIN AL</a>
+              </div>
+            </div>`;
           return;
         }
 
 
         container.innerHTML = "";
-
+        let hasBlackDress = false;
 
         querySnapshot.forEach((doc)=>{
 
@@ -1799,6 +1810,9 @@ const querySnapshot =
     id: doc.id
 };
 
+          if (String(p.reklam || '').trim().toLocaleLowerCase('tr-TR') === 'siyah elbise') {
+            hasBlackDress = true;
+          }
 
           const card = document.createElement("div");
 
@@ -1829,7 +1843,7 @@ const querySnapshot =
     <p class="product-price"><span class="price-currency">₺</span><span class="price-value">${p.fiyat || "0"}</span></p>
 
     <a
-        href="${p["Bağlantı"] || '#'}"
+        href="${p["Bağlantı"] || p["bağlantı"] || '#'}"
         target="_blank"
         class="buy"
     >
@@ -1844,10 +1858,39 @@ const querySnapshot =
 
         });
 
+        /* Eski Neris tasarımındaki Siyah Elbise kartını koru.
+           Firestore'da ürün yoksa da, ürünler arasında yoksa da kaybolmaz. */
+        if (!hasBlackDress) {
+          const fallback = document.createElement("div");
+          fallback.className = "card";
+          fallback.innerHTML = `
+            <div class="card-image">
+              <div class="badge">NEW</div>
+              <img src="https://picsum.photos/500/650?random=1" alt="Siyah Elbise">
+            </div>
+            <div class="card-content">
+              <h3>Siyah Elbise</h3>
+              <p class="product-price"><span class="price-currency">₺</span><span class="price-value">899</span></p>
+              <a href="#" class="buy">SATIN AL</a>
+            </div>`;
+          container.insertBefore(fallback, container.firstChild);
+        }
+
 
       }catch(error){
         console.error("Ürünler yüklenirken hata:",error);
-        container.innerHTML = '<div class="products-empty"><span>NERIS</span><strong>Ürünler yüklenemedi</strong><p>Bağlantıyı yenileyip tekrar deneyebilirsiniz.</p><button type="button" onclick="location.reload()">YENİLE</button></div>';
+        container.innerHTML = `
+          <div class="card">
+            <div class="card-image">
+              <div class="badge">NEW</div>
+              <img src="https://picsum.photos/500/650?random=1" alt="Siyah Elbise">
+            </div>
+            <div class="card-content">
+              <h3>Siyah Elbise</h3>
+              <p class="product-price"><span class="price-currency">₺</span><span class="price-value">899</span></p>
+              <a href="#" class="buy">SATIN AL</a>
+            </div>
+          </div>`;
       }
 
     }
@@ -1893,7 +1936,7 @@ const querySnapshot =
       const container=document.getElementById('favoritesContent'); if(!container)return;
       if(!authInitialized){container.innerHTML='<div class="favorites-empty"><div class="favorites-icon">♡</div><h3>Hesabınız kontrol ediliyor</h3><p>Lütfen bir saniye bekleyin.</p></div>';return;}
       const user=auth.currentUser;
-      if(!user){container.innerHTML='<div class="login-required"><div class="login-required-icon">♡</div><h3>Favorilerinizi oluşturun</h3><p>Favori ürünlerinizi kaydetmek ve daha sonra görüntülemek için hesabınıza giriş yapın.</p><div class="login-required-actions"><a href="giriş.html" onclick="event.preventDefault(); navigateWithTransition('giriş.html')">GİRİŞ YAP</a><button type="button" onclick="closeInfo()">VAZGEÇ</button></div></div>';return;}
+      if(!user){container.innerHTML='<div class="login-required"><div class="login-required-icon">♡</div><h3>Favorilerinizi oluşturun</h3><p>Favori ürünlerinizi kaydetmek ve daha sonra görüntülemek için hesabınıza giriş yapın.</p><div class="login-required-actions"><a href="giris.html" onclick="event.preventDefault(); navigateWithTransition("giris.html")">GİRİŞ YAP</a><button type="button" onclick="closeInfo()">VAZGEÇ</button></div></div>';return;}
       try{
         const fs=await getDocs(collection(db,'favoriler')); const favs=[];
         fs.forEach(d=>{const x=d.data();if(x.kullaniciId===user.uid&&x.urunId)favs.push(x)});
@@ -1922,7 +1965,7 @@ const querySnapshot =
         showPremiumConfirm(
           "Favorilerinize Kaydedin",
           "Favori ürünlerinizi kaydetmek için NERIS hesabınıza giriş yapmanız gerekiyor.",
-          function(){ navigateWithTransition("giriş.html"); }
+          function(){ navigateWithTransition("giris.html"); }
         );
         return;
     }
@@ -1982,8 +2025,18 @@ const loginLink = document.getElementById("loginLink");
 const accountDropdown = document.getElementById("accountDropdown");
 const logoutButton = document.getElementById("logoutButton");
 const accountName = document.getElementById("accountName");
+
+/* GİRİŞ YAP — TEK VE SAĞLAM YÖNLENDİRME */
 if (loginLink) {
-    loginLink.removeAttribute('href');
+    loginLink.setAttribute('href', 'giris.html');
+    loginLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (typeof navigateWithTransition === 'function') {
+            navigateWithTransition("giris.html");
+        } else {
+            window.location.href = 'giris.html';
+        }
+    });
 }
 
 
@@ -2027,7 +2080,7 @@ onAuthStateChanged(auth,function(user){
     const userName=user.displayName||(user.email?user.email.split('@')[0]:'HESABIM');
     accountName.textContent=userName; loginLink.removeAttribute('href'); loadFavorites();
   }else{
-    accountName.textContent='GİRİŞ YAP'; loginLink.removeAttribute('href');
+    accountName.textContent='GİRİŞ YAP'; loginLink.setAttribute('href','giris.html');
     document.querySelectorAll('.favorite-btn.active').forEach(b=>{b.classList.remove('active');b.innerHTML='♡'});
   }
   if(document.getElementById('favoritesContent')&&document.getElementById('infoModal')?.classList.contains('open'))window.loadFavoritesModal();
