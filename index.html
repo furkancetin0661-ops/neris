@@ -533,6 +533,156 @@ body.modal-open{overflow:hidden!important}
         line-height: 1.8 !important;
     }
 }
+    /* =========================================
+   NERIS DESKTOP PREMIUM BUTTON ANIMATIONS
+========================================= */
+
+@media (min-width: 769px) {
+
+    /* TÜM BUTONLAR */
+    button {
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease,
+            background-color 0.25s ease,
+            border-color 0.25s ease,
+            color 0.25s ease !important;
+
+        cursor: pointer;
+    }
+
+    /* Üzerine gelince */
+    button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 22px rgba(212, 175, 55, 0.20);
+    }
+
+    /* Basınca */
+    button:active {
+        transform: translateY(0) scale(0.97);
+        box-shadow: 0 3px 8px rgba(212, 175, 55, 0.12);
+    }
+
+
+    /* TÜM TIKLANABİLİR LİNKLER */
+    a {
+        transition:
+            color 0.25s ease,
+            opacity 0.25s ease,
+            transform 0.25s ease,
+            text-shadow 0.25s ease;
+
+        cursor: pointer;
+    }
+
+    /* Menü linkleri */
+    .navbar a:hover,
+    .topbar a:hover,
+    .footer-column a:hover {
+        color: #d4af37 !important;
+        text-shadow: 0 0 12px rgba(212, 175, 55, 0.35);
+    }
+
+
+    /* ANA MENÜ */
+    .navbar .menu a {
+        position: relative;
+    }
+
+    .navbar .menu a::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: -8px;
+
+        width: 0;
+        height: 2px;
+
+        background: #d4af37;
+
+        transform: translateX(-50%);
+        transition: width 0.3s ease;
+    }
+
+    .navbar .menu a:hover::after {
+        width: 70%;
+    }
+
+
+    /* ALIŞVERİŞE BAŞLA */
+    .hero button,
+    .hero a {
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease,
+            background 0.3s ease !important;
+    }
+
+    .hero button:hover,
+    .hero a:hover {
+        transform: translateY(-4px) scale(1.02);
+        box-shadow:
+            0 12px 30px rgba(212, 175, 55, 0.25);
+    }
+
+    .hero button:active,
+    .hero a:active {
+        transform: scale(0.97);
+    }
+
+
+    /* ÜRÜN BUTONLARI */
+    .product-card button:hover,
+    .product-card a:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(212, 175, 55, 0.18);
+    }
+
+
+    /* KALP / FAVORİ BUTONLARI */
+    .favorite-btn:hover {
+        transform: scale(1.12);
+        box-shadow: 0 0 18px rgba(212, 175, 55, 0.30);
+    }
+
+    .favorite-btn:active {
+        transform: scale(0.92);
+    }
+
+
+    /* SEPET BUTONU */
+    .cart-btn:hover,
+    .nav-action:hover {
+        transform: scale(1.08);
+        color: #d4af37 !important;
+    }
+
+
+    /* ARAMA / GİRİŞ / DİĞER AKSİYONLAR */
+    .nav-action,
+    .account-btn,
+    .search-btn {
+        transition:
+            transform 0.25s ease,
+            color 0.25s ease,
+            background 0.25s ease !important;
+    }
+
+    .nav-action:hover,
+    .account-btn:hover,
+    .search-btn:hover {
+        transform: translateY(-2px);
+        color: #d4af37 !important;
+    }
+
+
+    /* GENEL ALTIN IŞIK EFEKTİ */
+    button:focus-visible,
+    a:focus-visible {
+        outline: 1px solid #d4af37;
+        outline-offset: 4px;
+    }
+}
 </style>
   <script type="application/ld+json">
 {
@@ -949,6 +1099,7 @@ document.addEventListener("keydown", function(event) {
     }
 
     function openInfo(type){
+      history.pushState({ nerisInfo: type }, "", "#info");
       const content = document.getElementById('infoContent');
       const data = {
         story: {
@@ -1313,6 +1464,14 @@ preinfo: {
       document.getElementById('infoModal').classList.add('open');
       document.body.classList.add('modal-open');
     }
+    window.addEventListener("popstate", function () {
+    const modal = document.getElementById("infoModal");
+
+    if (modal && modal.classList.contains("open")) {
+        modal.classList.remove("open");
+        document.body.classList.remove("modal-open");
+    }
+});
 
 function closeInfo(){
   document.getElementById('infoModal').classList.remove('open');
