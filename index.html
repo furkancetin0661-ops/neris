@@ -798,6 +798,32 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .buy:
  .premium-alert-actions button{width:100%}
 }
 
+
+/* NERIS FINAL — PREMIUM LOGIN / FAVORITE FLOW */
+.premium-alert-box{
+  border-radius:4px;
+  overflow:hidden;
+}
+.premium-alert-box::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(120deg,transparent 20%,rgba(212,175,55,.035) 50%,transparent 80%);
+  transform:translateX(-100%);transition:transform .8s ease;
+}
+.premium-alert.open .premium-alert-box::after{transform:translateX(100%)}
+.premium-alert-actions button{
+  border-radius:2px;
+  transition:transform .25s cubic-bezier(.22,.61,.36,1),box-shadow .25s ease,background .25s ease,border-color .25s ease;
+}
+.premium-alert-actions button:active{transform:scale(.96)}
+@media(max-width:768px){
+  .premium-alert{padding:18px}
+  .premium-alert-box{width:100%;max-width:390px;padding:34px 22px 24px}
+  .premium-alert-title{font-size:22px}
+  .premium-alert-message{font-size:12px;max-width:310px}
+  .premium-alert-actions{gap:8px}
+  .premium-alert-actions button{min-height:48px}
+}
+
 </style>
   <script type="application/ld+json">
 {
@@ -913,7 +939,7 @@ document.addEventListener("keydown", function(event) {
   <div class="mobile-menu-bottom">
     <a href="#" onclick="openInfo('tracking'); closeMobileMenu(); return false;" class="mobile-order-btn">🚚 &nbsp; SİPARİŞ TAKİP</a>
     <div class="mobile-account-buttons">
-      <a href="giris.html">♙ &nbsp; GİRİŞ YAP</a>
+      <a href="giris.html" onclick="event.preventDefault(); navigateWithTransition('giris.html')">♙ &nbsp; GİRİŞ YAP</a>
       <a href="register.html">♙+ &nbsp; ÜYE OL</a>
     </div>
   </div>
@@ -1845,7 +1871,7 @@ const querySnapshot =
       const container=document.getElementById('favoritesContent'); if(!container)return;
       if(!authInitialized){container.innerHTML='<div class="favorites-empty"><div class="favorites-icon">♡</div><h3>Hesabınız kontrol ediliyor</h3><p>Lütfen bir saniye bekleyin.</p></div>';return;}
       const user=auth.currentUser;
-      if(!user){container.innerHTML='<div class="login-required"><div class="login-required-icon">♡</div><h3>Favorilerinizi oluşturun</h3><p>Favori ürünlerinizi kaydetmek ve daha sonra görüntülemek için hesabınıza giriş yapın.</p><div class="login-required-actions"><a href="giris.html">GİRİŞ YAP</a><button type="button" onclick="closeInfo()">VAZGEÇ</button></div></div>';return;}
+      if(!user){container.innerHTML='<div class="login-required"><div class="login-required-icon">♡</div><h3>Favorilerinizi oluşturun</h3><p>Favori ürünlerinizi kaydetmek ve daha sonra görüntülemek için hesabınıza giriş yapın.</p><div class="login-required-actions"><a href="giris.html" onclick="event.preventDefault(); navigateWithTransition('giris.html')">GİRİŞ YAP</a><button type="button" onclick="closeInfo()">VAZGEÇ</button></div></div>';return;}
       try{
         const fs=await getDocs(collection(db,'favoriler')); const favs=[];
         fs.forEach(d=>{const x=d.data();if(x.kullaniciId===user.uid&&x.urunId)favs.push(x)});
@@ -1871,8 +1897,11 @@ const querySnapshot =
     /* GİRİŞ YOKSA HİÇBİR ŞEKİLDE FAVORİ KAYDI YAPILMAZ */
     if (!authInitialized || !user) {
         button.blur();
-        const goLogin=confirm("Favorilere ürün eklemek için giriş yapmanız gerekmektedir. Giriş sayfasına gitmek ister misiniz?");
-        if(goLogin) window.location.href="giris.html";
+        showPremiumConfirm(
+          "Favorilerinize Kaydedin",
+          "Favori ürünlerinizi kaydetmek için NERIS hesabınıza giriş yapmanız gerekiyor.",
+          function(){ navigateWithTransition("giris.html"); }
+        );
         return;
     }
 
@@ -1943,7 +1972,7 @@ if (loginLink) {
 
         } else {
 
-            window.location.href = "giris.html";
+            navigateWithTransition("giris.html");
 
         }
 
