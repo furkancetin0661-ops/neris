@@ -1922,7 +1922,17 @@ import {
       const container=document.getElementById('favoritesContent'); if(!container)return;
       if(!authInitialized){container.innerHTML='<div class="favorites-empty"><div class="favorites-icon">♡</div><h3>Hesabınız kontrol ediliyor</h3><p>Lütfen bir saniye bekleyin.</p></div>';return;}
       const user=auth.currentUser;
-      if(!user){container.innerHTML='<div class="login-required"><div class="login-required-icon">♡</div><h3>Favorilerinizi oluşturun</h3><p>Favori ürünlerinizi kaydetmek ve daha sonra görüntülemek için hesabınıza giriş yapın.</p><div class="login-required-actions"><a href="giris.html" onclick="event.preventDefault(); navigateWithTransition('giris.html')">GİRİŞ YAP</a><button type="button" onclick="closeInfo()">VAZGEÇ</button></div></div>';return;}
+      if(!user){
+        container.innerHTML=`<div class="login-required"><div class="login-required-icon">♡</div><h3>Favorilerinizi oluşturun</h3><p>Favori ürünlerinizi kaydetmek ve daha sonra görüntülemek için hesabınıza giriş yapın.</p><div class="login-required-actions"><a href="giris.html">GİRİŞ YAP</a><button type="button" onclick="closeInfo()">VAZGEÇ</button></div></div>`;
+        const loginAction=container.querySelector('.login-required-actions a');
+        if(loginAction){
+          loginAction.addEventListener('click',function(e){
+            e.preventDefault();
+            window.location.href='giris.html';
+          });
+        }
+        return;
+      }
       try{
         const fs=await getDocs(collection(db,'favoriler')); const favs=[];
         fs.forEach(d=>{const x=d.data();if(x.kullaniciId===user.uid&&x.urunId)favs.push(x)});
