@@ -2,606 +2,135 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Neris | Siparişlerim</title>
-
-<link rel="stylesheet" href="css/style.css">
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-
-body{
-    margin:0;
-    background:#080808;
-    color:#fff;
-    font-family:Arial, sans-serif;
-}
-
-.orders-page{
-    max-width:1100px;
-    margin:0 auto;
-    padding:80px 25px;
-}
-
-.orders-header{
-    text-align:center;
-    margin-bottom:55px;
-}
-
-.orders-header h1{
-    font-family:Georgia,serif;
-    font-size:46px;
-    margin:0 0 12px;
-    letter-spacing:1px;
-}
-
-.orders-header p{
-    color:#aaa;
-    font-size:15px;
-}
-
-.gold-line{
-    width:55px;
-    height:2px;
-    background:#d4af37;
-    margin:25px auto;
-}
-
-/* GİRİŞ YAPILMADI */
-
-.login-message{
-    text-align:center;
-    padding:60px 20px;
-    border:1px solid #292929;
-    background:#0d0d0d;
-}
-
-.login-message h2{
-    font-family:Georgia,serif;
-    font-size:26px;
-    margin-bottom:15px;
-}
-
-.login-message p{
-    color:#aaa;
-}
-
-.login-button{
-    display:inline-block;
-    margin-top:20px;
-    padding:13px 35px;
-    border:1px solid #d4af37;
-    color:#d4af37;
-    text-decoration:none;
-    transition:.3s;
-}
-
-.login-button:hover{
-    background:#d4af37;
-    color:#000;
-}
-
-/* SİPARİŞ YOK */
-
-.empty-orders{
-    text-align:center;
-    padding:70px 20px;
-    border:1px solid #292929;
-    background:#0d0d0d;
-}
-
-.empty-orders h2{
-    font-family:Georgia,serif;
-    font-size:28px;
-}
-
-.empty-orders p{
-    color:#999;
-    margin-bottom:25px;
-}
-
-.shop-button{
-    display:inline-block;
-    padding:13px 35px;
-    border:1px solid #d4af37;
-    color:#d4af37;
-    text-decoration:none;
-    transition:.3s;
-}
-
-.shop-button:hover{
-    background:#d4af37;
-    color:#000;
-}
-
-/* SİPARİŞ KARTI */
-
-.order-card{
-    border:1px solid #292929;
-    background:#0d0d0d;
-    margin-bottom:25px;
-    padding:25px;
-}
-
-.order-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    border-bottom:1px solid #252525;
-    padding-bottom:18px;
-    margin-bottom:20px;
-}
-
-.order-number{
-    font-family:Georgia,serif;
-    font-size:20px;
-}
-
-.order-date{
-    color:#888;
-    font-size:13px;
-}
-
-.order-status{
-    color:#d4af37;
-    border:1px solid #d4af37;
-    padding:7px 14px;
-    font-size:12px;
-}
-
-.order-product{
-    display:flex;
-    gap:20px;
-    align-items:center;
-}
-
-.order-product img{
-    width:110px;
-    height:140px;
-    object-fit:cover;
-    background:#181818;
-}
-
-.product-info{
-    flex:1;
-}
-
-.product-info h3{
-    margin:0 0 10px;
-    font-family:Georgia,serif;
-    font-size:20px;
-}
-
-.product-info p{
-    color:#aaa;
-    margin:6px 0;
-}
-
-.order-bottom{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    border-top:1px solid #252525;
-    margin-top:20px;
-    padding-top:20px;
-}
-
-.total-price{
-    color:#d4af37;
-    font-size:22px;
-    font-weight:bold;
-}
-
-.loading{
-    text-align:center;
-    color:#aaa;
-    padding:50px;
-}
-
-/* MOBİL */
-
-@media(max-width:700px){
-
-    .orders-page{
-        padding:50px 15px;
-    }
-
-    .orders-header h1{
-        font-size:34px;
-    }
-
-    .order-top{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:12px;
-    }
-
-    .order-product{
-        align-items:flex-start;
-    }
-
-    .order-product img{
-        width:85px;
-        height:110px;
-    }
-
-    .order-bottom{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:15px;
-    }
-
-}
-
+:root{--bg:#070707;--panel:#0d0d0d;--line:rgba(212,175,55,.20);--gold:#d4af37;--gold2:#e2c45c;--text:#f5f1e8;--muted:#8d8a84}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Poppins,Arial,sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 0%,rgba(212,175,55,.035),transparent 35%);z-index:-1}
+.page{min-height:100vh;padding:92px 24px 80px;display:flex;justify-content:center;align-items:flex-start}
+.orders-wrap{width:min(980px,100%);animation:ordersIn .65s cubic-bezier(.22,.61,.36,1) both}
+@keyframes ordersIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.eyebrow{text-align:center;color:var(--gold);font-size:11px;letter-spacing:5px;margin-bottom:15px;font-weight:500}
+h1{font-family:"Playfair Display",Georgia,serif;text-align:center;font-size:54px;line-height:1.1;margin:0;font-weight:600;letter-spacing:-1px}
+.subtitle{text-align:center;color:var(--muted);font-size:14px;margin:14px 0 20px}
+.gold-line{width:48px;height:2px;background:var(--gold);margin:0 auto 48px}
+.panel{border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.018),rgba(0,0,0,.08));min-height:270px;display:flex;align-items:center;justify-content:center;padding:52px 30px;box-shadow:0 25px 70px rgba(0,0,0,.22)}
+.state{text-align:center;max-width:600px;animation:stateIn .55s .08s cubic-bezier(.22,.61,.36,1) both}
+@keyframes stateIn{from{opacity:0;transform:translateY(12px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+.icon{width:58px;height:58px;border:1px solid rgba(212,175,55,.45);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;color:var(--gold);font-size:23px;font-family:Georgia,serif}
+h2{font-family:"Playfair Display",Georgia,serif;font-size:30px;margin:0 0 12px;font-weight:600}
+.state p{margin:0;color:#88847e;font-size:14px;line-height:1.8}
+.actions{margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-width:150px;height:46px;padding:0 22px;border:1px solid var(--gold);background:transparent;color:var(--gold2);font:500 11px Poppins,sans-serif;letter-spacing:2px;text-decoration:none;cursor:pointer;transition:transform .25s ease,background .25s ease,color .25s ease,box-shadow .25s ease}
+.btn:hover{background:var(--gold);color:#080808;transform:translateY(-2px);box-shadow:0 10px 25px rgba(212,175,55,.13)}
+.btn:active{transform:translateY(0) scale(.98)}
+.order-list{width:100%;display:grid;gap:14px}
+.order-card{border:1px solid rgba(212,175,55,.16);padding:22px 24px;background:#0b0b0b;display:grid;grid-template-columns:1fr auto;gap:10px 20px;animation:ordersIn .5s ease both}
+.order-card h3{font-family:"Playfair Display",Georgia,serif;font-size:20px;margin:0 0 5px}.order-meta{color:#85817b;font-size:12px}.order-status{align-self:center;border:1px solid rgba(212,175,55,.35);color:var(--gold);padding:7px 11px;font-size:10px;letter-spacing:1.5px}.order-price{grid-column:1/-1;color:var(--gold2);font-size:14px;margin-top:5px}
+.back{display:block;text-align:center;margin-top:28px;color:#77736d;text-decoration:none;font-size:12px;letter-spacing:1px;transition:color .2s ease,transform .2s ease}.back:hover{color:var(--gold);transform:translateY(-1px)}
+@media(max-width:600px){.page{padding:60px 16px 55px}.eyebrow{font-size:9px;letter-spacing:3.5px}h1{font-size:38px}.subtitle{font-size:12px}.gold-line{margin-bottom:30px}.panel{padding:40px 20px;min-height:300px}.icon{width:52px;height:52px;font-size:21px}h2{font-size:25px}.state p{font-size:13px}.btn{width:100%;max-width:260px}.order-card{grid-template-columns:1fr}.order-status{justify-self:start}}
 </style>
 </head>
-
-
 <body>
-
-<div class="orders-page">
-
-    <div class="orders-header">
-
-        <h1>Siparişlerim</h1>
-
-        <p>
-            Neris üzerinden verdiğiniz siparişler
-        </p>
-
-        <div class="gold-line"></div>
-
+<main class="page">
+  <section class="orders-wrap" aria-live="polite">
+    <div class="eyebrow">NERIS ACCOUNT</div>
+    <h1>Siparişlerim</h1>
+    <p class="subtitle">Neris üzerinden verdiğiniz siparişler</p>
+    <div class="gold-line"></div>
+    <div id="ordersPanel" class="panel">
+      <div class="state">
+        <div class="icon">⋯</div>
+        <h2>Hesabınız kontrol ediliyor</h2>
+        <p>Sipariş bilgileriniz güvenli şekilde yükleniyor.</p>
+      </div>
     </div>
-
-
-    <div id="content">
-
-        <div class="loading">
-            Siparişleriniz yükleniyor...
-        </div>
-
-    </div>
-
-</div>
-
+    <a class="back" href="index.html">← Ana Sayfaya Dön</a>
+  </section>
+</main>
 
 <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-
-import {
-    getFirestore,
-    collection,
-    query,
-    where,
-    getDocs
-}
-from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
-import {
-    getAuth,
-    onAuthStateChanged
-}
-from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
-
-/* FIREBASE */
-
-const firebaseConfig = {
-
-    apiKey: "AIzaSyAQ0ses6c9FJnK5xDsh37-0-fLcCj-MVQw",
-
-    authDomain: "neris-78944.firebaseapp.com",
-
-    projectId: "neris-78944",
-
-    storageBucket: "neris-78944.firebasestorage.app",
-
-    messagingSenderId: "58960639184",
-
-    appId: "1:58960639184:web:dc25f186f8887f64f1dad5",
-
-    measurementId: "G-CVD0X6X882"
-
+const firebaseConfig={
+  apiKey:"AIzaSyAQ0ses6c9fJnk5xDsh37-0-fLcCj-MVQw",
+  authDomain:"neris-78944.firebaseapp.com",
+  projectId:"neris-78944",
+  storageBucket:"neris-78944.firebasestorage.app",
+  messagingSenderId:"58960639184",
+  appId:"1:58960639184:web:dc25f186f8887f64f1dad5",
+  measurementId:"G-CVD0X6X882"
 };
 
-
-const app = initializeApp(firebaseConfig);
-
-const db = getFirestore(app);
-
-const auth = getAuth(app);
-
-const content =
-document.getElementById("content");
-
-
-/* KULLANICI KONTROLÜ */
-
-onAuthStateChanged(auth, async (user) => {
-
-    if(!user){
-
-        content.innerHTML = `
-
-            <div class="login-message">
-
-                <h2>Giriş Yapmalısınız</h2>
-
-                <p>
-                    Siparişlerinizi görmek için
-                    hesabınıza giriş yapın.
-                </p>
-
-                <a
-                    href="giriş.html"
-                    class="login-button"
-                >
-                    GİRİŞ YAP
-                </a>
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    await loadOrders(user.uid);
-
-});
-
-
-/* SİPARİŞLERİ GETİR */
-
-async function loadOrders(userId){
-
-    try{
-
-        const ordersQuery = query(
-
-            collection(db,"siparişler"),
-
-            where("kullaniciId","==",userId)
-
-        );
-
-
-        const snapshot =
-        await getDocs(ordersQuery);
-
-
-        if(snapshot.empty){
-
-            content.innerHTML = `
-
-                <div class="empty-orders">
-
-                    <h2>Henüz bir siparişiniz yok.</h2>
-
-                    <p>
-                        Neris koleksiyonunu keşfedin
-                        ve ilk siparişinizi oluşturun.
-                    </p>
-
-                    <a
-                        href="index.html#products"
-                        class="shop-button"
-                    >
-                        ALIŞVERİŞE BAŞLA
-                    </a>
-
-                </div>
-
-            `;
-
-            return;
-
-        }
-
-
-        content.innerHTML = "";
-
-
-        snapshot.forEach((orderDoc) => {
-
-            const order =
-            orderDoc.data();
-
-
-            const orderId =
-            orderDoc.id;
-
-
-            const tarih =
-            order.tarih ||
-            order.olusturmaTarihi ||
-            order.createdAt ||
-            "";
-
-
-            let formattedDate = "";
-
-
-            if(tarih){
-
-                try{
-
-                    formattedDate =
-                    new Date(tarih)
-                    .toLocaleDateString(
-                        "tr-TR"
-                    );
-
-                }catch(e){
-
-                    formattedDate = tarih;
-
-                }
-
-            }
-
-
-            const durum =
-            order.durum ||
-            order.status ||
-            "Hazırlanıyor";
-
-
-            const toplam =
-            order.toplam ||
-            order.total ||
-            order.fiyat ||
-            0;
-
-
-            const urunAdi =
-            order.urunAdi ||
-            order.productName ||
-            order.ad ||
-            "Neris Ürünü";
-
-
-            const resim =
-            order.resim ||
-            order.productImage ||
-            "https://picsum.photos/300/400";
-
-
-            const beden =
-            order.beden ||
-            order.size ||
-            "-";
-
-
-            const adet =
-            order.adet ||
-            order.quantity ||
-            1;
-
-
-            const card = document.createElement("div");
-
-            card.className = "order-card";
-
-
-            card.innerHTML = `
-
-                <div class="order-top">
-
-                    <div>
-
-                        <div class="order-number">
-
-                            Sipariş #${orderId}
-
-                        </div>
-
-                        ${
-                            formattedDate
-                            ?
-                            `<div class="order-date">
-                                ${formattedDate}
-                            </div>`
-                            :
-                            ""
-                        }
-
-                    </div>
-
-
-                    <div class="order-status">
-
-                        ${durum}
-
-                    </div>
-
-                </div>
-
-
-                <div class="order-product">
-
-                    <img
-                        src="${resim}"
-                        alt="${urunAdi}"
-                    >
-
-
-                    <div class="product-info">
-
-                        <h3>
-                            ${urunAdi}
-                        </h3>
-
-                        <p>
-                            Beden: ${beden}
-                        </p>
-
-                        <p>
-                            Adet: ${adet}
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="order-bottom">
-
-                    <span>
-                        Sipariş toplamı
-                    </span>
-
-
-                    <span class="total-price">
-
-                        ₺${toplam}
-
-                    </span>
-
-                </div>
-
-            `;
-
-
-            content.appendChild(card);
-
-        });
-
-
-    }catch(error){
-
-        console.error(
-            "Siparişler yüklenirken hata:",
-            error
-        );
-
-
-        content.innerHTML = `
-
-            <div class="empty-orders">
-
-                <h2>Siparişler yüklenemedi.</h2>
-
-                <p>
-                    Bir bağlantı veya veritabanı
-                    sorunu oluştu.
-                </p>
-
-            </div>
-
-        `;
-
-    }
-
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+const auth=getAuth(app);
+setPersistence(auth,browserLocalPersistence).catch(()=>{});
+const panel=document.getElementById('ordersPanel');
+
+function showLoggedOut(){
+  panel.innerHTML=`<div class="state">
+    <div class="icon">♙</div>
+    <h2>Giriş Yapmalısınız</h2>
+    <p>Siparişlerinizi görüntülemek için Neris hesabınıza giriş yapın.</p>
+    <div class="actions"><a class="btn" href="giris.html">GİRİŞ YAP</a></div>
+  </div>`;
 }
 
-</script>
+function showEmpty(){
+  panel.innerHTML=`<div class="state">
+    <div class="icon">✓</div>
+    <h2>Henüz siparişiniz yok</h2>
+    <p>Verdiğiniz siparişler burada güvenli ve düzenli bir şekilde görünecek.</p>
+    <div class="actions"><a class="btn" href="index.html#products">ALIŞVERİŞE BAŞLA</a></div>
+  </div>`;
+}
 
+function showOrders(orders){
+  const list=document.createElement('div'); list.className='order-list';
+  orders.forEach((o,i)=>{
+    const card=document.createElement('article'); card.className='order-card'; card.style.animationDelay=(i*.05)+'s';
+    const no=o.siparisNo||o.orderNo||o.id||'Sipariş';
+    const status=o.durum||o.status||'Alındı';
+    const price=o.toplam||o.total||o.fiyat||'';
+    card.innerHTML=`<div><h3>${escapeHtml(String(no))}</h3><div class="order-meta">Siparişiniz NERIS tarafından alınmıştır.</div></div><div class="order-status">${escapeHtml(String(status))}</div>${price?`<div class="order-price">Toplam: ₺${escapeHtml(String(price))}</div>`:''}`;
+    list.appendChild(card);
+  });
+  panel.innerHTML='';panel.appendChild(list);
+}
+
+function escapeHtml(value){return value.replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+
+async function loadOrders(user){
+  // Sipariş koleksiyonu henüz kullanılmıyorsa bile kullanıcıya doğru premium boş durum gösterilir.
+  try{
+    const candidates=['siparisler','Siparişler','siparişler'];
+    let found=[];
+    for(const name of candidates){
+      try{
+        const snap=await getDocs(query(collection(db,name),where('kullaniciId','==',user.uid)));
+        if(!snap.empty){snap.forEach(d=>found.push({id:d.id,...d.data()}));break;}
+      }catch(e){/* Koleksiyon yoksa sıradakini dene. */}
+    }
+    if(found.length) showOrders(found); else showEmpty();
+  }catch(e){
+    console.warn('Siparişler yüklenemedi:',e);
+    showEmpty();
+  }
+}
+
+onAuthStateChanged(auth,user=>{
+  if(user) loadOrders(user);
+  else showLoggedOut();
+});
+</script>
 </body>
 </html>
