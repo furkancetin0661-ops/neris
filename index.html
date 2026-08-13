@@ -920,6 +920,19 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
   .neris-loader-line{width:62px;margin-top:14px}
 }
 
+
+/* NERIS PREMIUM CART */
+.neris-cart-list{display:flex;flex-direction:column;gap:12px;max-height:48vh;overflow:auto;margin-top:18px;padding-right:4px}
+.neris-cart-item{display:grid;grid-template-columns:72px 1fr 34px;gap:14px;align-items:center;padding:12px;border:1px solid rgba(212,175,55,.18);background:#0c0c0c}
+.neris-cart-item img{width:72px;height:88px;object-fit:cover;background:#111}
+.neris-cart-item-info h3{margin:0 0 7px;font-family:'Playfair Display',serif;font-size:17px;color:#fff}
+.neris-cart-meta{font-size:12px;color:#999;letter-spacing:.3px}
+.neris-cart-price{margin-top:8px;color:#d4af37;font-size:14px;font-weight:600}
+.neris-cart-remove{width:30px;height:30px;border:1px solid rgba(212,175,55,.35);background:transparent;color:#d4af37;font-size:20px;cursor:pointer}
+.neris-cart-summary{display:flex;justify-content:space-between;align-items:center;padding:20px 2px 14px;color:#aaa;font-size:14px}
+.neris-cart-summary strong{color:#d4af37;font-size:18px}
+.neris-cart-checkout{width:100%;height:50px;border:1px solid #d4af37;background:#d4af37;color:#090909;font-weight:700;letter-spacing:2px;cursor:pointer}
+@media(max-width:768px){.neris-cart-list{max-height:52vh}.neris-cart-item{grid-template-columns:58px 1fr 30px}.neris-cart-item img{width:58px;height:72px}.neris-cart-item-info h3{font-size:14px}}
 </style>
   <script type="application/ld+json">
 {
@@ -1881,7 +1894,7 @@ preinfo: {
         },
         cart: {
           title:'Sepetim',
-          body:'Sepetiniz şu anda boş.<br><br>Ürünleri sepete ekleme ve ödeme akışını sonraki adımda bağlayacağız.'
+          body:'<div id="cartContent"><div class="favorites-empty"><div class="favorites-icon">🛒</div><h3>Sepetiniz yükleniyor</h3><p>Sepetinizdeki ürünler hazırlanıyor.</p></div></div>'
         }
       };
       const item = data[type] || data.story;
@@ -1889,6 +1902,7 @@ preinfo: {
       document.getElementById('infoModal').classList.add('open');
       document.body.classList.add('modal-open');
       if(type === 'favorites' && typeof window.loadFavoritesModal === 'function'){ window.loadFavoritesModal(); }
+      if(type === 'cart'){ renderCartModal(); }
     }
     window.addEventListener("popstate", function () {
     const productModal = document.getElementById("productDetailModal");
@@ -1996,6 +2010,91 @@ function addProductToCart(){
 }
 window.addProductToCart=addProductToCart;
 
+function getNerisCart(){
+  try{
+    const cart=JSON.parse(localStorage.getItem('nerisCart')||'[]');
+    return Array.isArray(cart)?cart:[];
+  }catch(e){ return []; }
+}
+
+function formatCartPrice(value){
+  const n=parseFloat(String(value||'0').replace(/[^0-9.,-]/g,'').replace(/\.(?=.*\.)/g,'').replace(',','.'));
+  if(Number.isNaN(n)) return '₺0';
+  return '₺'+n.toLocaleString('tr-TR',{minimumFractionDigits:0,maximumFractionDigits:2});
+}
+
+function renderCartModal(){
+  const box=document.getElementById('cartContent');
+  if(!box) return;
+  const cart=getNerisCart();
+  if(!cart.length){
+    box.innerHTML='<div class="favorites-empty"><div class="favorites-icon">🛒</div><h3>Sepetiniz boş</h3><p>Beğendiğiniz ürünleri beden seçerek sepetinize ekleyebilirsiniz.</p></div>';
+    updateCartCount();
+    return;
+  }
+  let total=0;
+  const rows=cart.map((item,index)=>{
+    const qty=Math.max(1,Number(item.quantity)||1);
+    const price=parseFloat(String(item.price||'0').replace(/[^0-9.,-]/g,'').replace(/\.(?=.*\.)/g,'').replace(',','.'))||0;
+    total+=price*qty;
+    return `<div class="neris-cart-item">
+      <img src="${escapeHtml(item.image||'')}" alt="${escapeHtml(item.product||'Ürün')}">
+      <div class="neris-cart-item-info">
+        <h3>${escapeHtml(item.product||'Ürün')}</h3>
+        <div class="neris-cart-meta">Beden: <strong>${escapeHtml(item.size||'-')}</strong> · ${qty} adet</div>
+        <div class="neris-cart-price">${formatCartPrice(item.price)}</div>
+      </div>
+      <button type="button" class="neris-cart-remove" onclick="removeCartItem(${index})">×</button>
+    </div>`;
+  }).join('');
+  box.innerHTML=`<div class="neris-cart-list">${rows}</div>
+    <div class="neris-cart-summary"><span>Toplam</span><strong>${formatCartPrice(total)}</strong></div>
+    <button type="button" class="neris-cart-checkout" onclick="checkoutCart()">ÖDEMEYE GEÇ</button>`;
+  updateCartCount();
+}
+
+function escapeHtml(value){
+  return String(value??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+}
+
+function removeCartItem(index){
+  const cart=getNerisCart();
+  if(index<0 || index>=cart.length) return;
+  cart.splice(index,1);
+  localStorage.setItem('nerisCart',JSON.stringify(cart));
+  renderCartModal();
+}
+window.removeCartItem=removeCartItem;
+
+function checkoutCart(){
+  const cart=getNerisCart();
+  if(!cart.length){ renderCartModal(); return; }
+  const first=cart[0];
+  const params=new URLSearchParams({
+    product:first.product||'Ürün', price:first.price||'0', image:first.image||'',
+    shopier:first.shopier||'https://www.shopier.com/nerisbutik_/49854673',
+    id:first.id||'', size:first.size||'', quantity:String(first.quantity||1)
+  });
+  closeInfo();
+  setTimeout(()=>navigateWithTransition('checkout.html?'+params.toString()),120);
+}
+window.checkoutCart=checkoutCart;
+
+function updateCartCount(){
+  const count=getNerisCart().reduce((sum,item)=>sum+(Number(item.quantity)||0),0);
+  document.querySelectorAll('.icons span').forEach(el=>{
+    if(el.textContent.includes('🛒')){
+      el.setAttribute('title',count?`Sepetim (${count})`:'Sepetim');
+    }
+  });
+}
+window.updateCartCount=updateCartCount;
+
+window.addEventListener('storage',()=>{
+  updateCartCount();
+  if(document.getElementById('infoModal')?.classList.contains('open')) renderCartModal();
+});
+
 function buyProductNow(){
   if(!nerisSelectedProduct) return;
   if(!nerisSelectedSize){
@@ -2040,7 +2139,9 @@ function closeInfo(){
       showPremiumAlert('Sipariş Takip', '“'+no+'” numaralı sipariş için takip altyapısı hazır. Gerçek durum, sipariş veritabanı bağlandığında burada gösterilecek.');
     }
 
-    document.addEventListener('keydown', e=>{
+    document.addEventListener('DOMContentLoaded',()=>{ updateCartCount(); });
+
+document.addEventListener('keydown', e=>{
       if(e.key==='Escape'){
         closeInfo();
         const searchPanel = document.getElementById('searchPanel');
