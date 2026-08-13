@@ -241,6 +241,143 @@ body.modal-open{overflow:hidden!important}
 @media(min-width:769px){
   .mobile-menu-btn,.mobile-menu{display:none!important}
 }
+    /* =========================================
+   NERIS PREMIUM MENÜ ANİMASYONLARI
+========================================= */
+
+@media (max-width: 768px) {
+
+    /* Menü başlangıç hali */
+    .mobile-menu {
+        display: flex !important;
+
+        transform: translateX(-105%);
+        opacity: 0;
+
+        transition:
+            transform .45s cubic-bezier(.22,.61,.36,1),
+            opacity .35s ease;
+
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    /* Menü açıldığında */
+    .mobile-menu.active {
+        transform: translateX(0);
+        opacity: 1;
+
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    /* Menü yazıları */
+    .mobile-menu-links a {
+        opacity: 0;
+        transform: translateX(-20px);
+
+        transition:
+            opacity .35s ease,
+            transform .4s cubic-bezier(.22,.61,.36,1);
+    }
+
+    /* Açılırken sırayla gelsin */
+    .mobile-menu.active .mobile-menu-links a:nth-child(1) {
+        opacity: 1;
+        transform: translateX(0);
+        transition-delay: .12s;
+    }
+
+    .mobile-menu.active .mobile-menu-links a:nth-child(2) {
+        opacity: 1;
+        transform: translateX(0);
+        transition-delay: .18s;
+    }
+
+    .mobile-menu.active .mobile-menu-links a:nth-child(3) {
+        opacity: 1;
+        transform: translateX(0);
+        transition-delay: .24s;
+    }
+
+    .mobile-menu.active .mobile-menu-links a:nth-child(4) {
+        opacity: 1;
+        transform: translateX(0);
+        transition-delay: .30s;
+    }
+
+    /* Menü başlığı */
+    .mobile-menu-header {
+        opacity: 0;
+        transform: translateY(-15px);
+
+        transition:
+            opacity .35s ease,
+            transform .4s ease;
+    }
+
+    .mobile-menu.active .mobile-menu-header {
+        opacity: 1;
+        transform: translateY(0);
+        transition-delay: .05s;
+    }
+
+    /* Kapatma butonu */
+    .mobile-menu-close {
+        transition:
+            transform .35s ease,
+            background .3s ease;
+    }
+
+    .mobile-menu-close:hover {
+        transform: rotate(90deg);
+    }
+
+    /* Menü linklerine basınca */
+    .mobile-menu-links a {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .mobile-menu-links a::before {
+        content: "";
+
+        position: absolute;
+        left: 0;
+        bottom: 0;
+
+        width: 0;
+        height: 2px;
+
+        background: #d4af37;
+
+        transition: width .35s ease;
+    }
+
+    .mobile-menu-links a:hover::before {
+        width: 100%;
+    }
+
+    .mobile-menu-links a:active {
+        transform: translateX(5px) !important;
+    }
+
+    /* Alt bölüm */
+    .mobile-menu-bottom {
+        opacity: 0;
+        transform: translateY(20px);
+
+        transition:
+            opacity .4s ease,
+            transform .4s ease;
+    }
+
+    .mobile-menu.active .mobile-menu-bottom {
+        opacity: 1;
+        transform: translateY(0);
+        transition-delay: .32s;
+    }
+}
 </style>
   <script type="application/ld+json">
 {
