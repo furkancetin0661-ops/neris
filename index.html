@@ -2167,20 +2167,101 @@ if (loginLink) {
 }
 
 
-/* ÇIKIŞ YAP */
+/* PREMIUM ÇIKIŞ YAP */
 if (logoutButton) {
 
-    logoutButton.addEventListener("click", function() {
+    logoutButton.addEventListener("click", async function(e) {
 
-        auth.signOut().then(function() {
-            try{localStorage.removeItem('nerisUserName');}catch(e){}
-            const loginButton=document.getElementById('loginLink');
-            const nameEl=document.getElementById('accountName');
-            if(nameEl) nameEl.textContent='GİRİŞ YAP';
-            if(loginButton) loginButton.dataset.loggedIn='false';
-            if(accountDropdown) accountDropdown.classList.remove('active');
-            window.location.reload();
+        e.preventDefault();
+        e.stopPropagation();
+
+        /* Hesap menüsünü kapat */
+        if (accountDropdown) {
+            accountDropdown.classList.remove("active");
+        }
+
+        /* Animasyon ekranını oluştur */
+        let overlay = document.getElementById("nerisLogoutOverlay");
+
+        if (!overlay) {
+
+            overlay = document.createElement("div");
+
+            overlay.id = "nerisLogoutOverlay";
+            overlay.className = "neris-logout-overlay";
+
+            overlay.innerHTML = `
+                <div class="neris-logout-content">
+                    <div class="neris-logout-logo">NERIS</div>
+
+                    <div class="neris-logout-line"></div>
+
+                    <div class="neris-logout-text">
+                        Hesabınızdan güvenli şekilde çıkış yapılıyor
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(overlay);
+        }
+
+        /* Çıkış animasyonunu başlat */
+        requestAnimationFrame(function() {
+            overlay.classList.add("active");
         });
+
+        try {
+
+            /* Firebase çıkışı */
+            await auth.signOut();
+
+            /* Kayıtlı kullanıcı adını temizle */
+            try {
+                localStorage.removeItem("nerisUserName");
+            } catch (err) {}
+
+            /* Üst menüyü GİRİŞ YAP olarak güncelle */
+            const loginButton = document.getElementById("loginLink");
+            const nameEl = document.getElementById("accountName");
+
+            if (nameEl) {
+                nameEl.textContent = "GİRİŞ YAP";
+            }
+
+            if (loginButton) {
+                loginButton.dataset.loggedIn = "false";
+            }
+
+            /* Favori kalplerini sıfırla */
+            document.querySelectorAll(".favorite-btn.active").forEach(function(button) {
+                button.classList.remove("active");
+                button.innerHTML = "♡";
+            });
+
+            /* Animasyonun görünmesi için bekle */
+            setTimeout(function() {
+                window.location.reload();
+            }, 750);
+
+        } catch (error) {
+
+            console.error("Çıkış işlemi başarısız:", error);
+
+            overlay.classList.remove("active");
+
+            if (typeof showPremiumAlert === "function") {
+
+                showPremiumAlert(
+                    "Çıkış Yapılamadı",
+                    "Hesabınızdan çıkış yapılırken bir sorun oluştu. Lütfen tekrar deneyin."
+                );
+
+            } else {
+
+                alert("Çıkış yapılırken bir sorun oluştu.");
+
+            }
+        }
 
     });
 
