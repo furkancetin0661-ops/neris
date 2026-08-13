@@ -1965,9 +1965,9 @@ const querySnapshot =
     <p class="product-price"><span class="price-currency">₺</span><span class="price-value">${p.fiyat || "0"}</span></p>
 
     <a
-        href="${p["Bağlantı"] || 'https://www.shopier.com/nerisbutik_/49854673'}"
-        target="_blank"
+        href="checkout.html?product=${encodeURIComponent(p.reklam || 'Ürün')}&price=${encodeURIComponent(p.fiyat || '0')}&image=${encodeURIComponent(p.resim || '')}&shopier=${encodeURIComponent(p["Bağlantı"] || 'https://www.shopier.com/nerisbutik_/49854673')}&id=${encodeURIComponent(p.id || '')}"
         class="buy"
+        data-checkout="true"
     >
         SATIN AL
     </a>
