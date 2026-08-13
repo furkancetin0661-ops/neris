@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Neris | Premium</title>
+  <!-- NERIS FIX PACK: auth-ui + product fallback + removed categories -->
   <meta name="description" content="Neris, premium kadın giyim ve butik moda koleksiyonlarını keşfedin. Şık elbiseler, özel tasarımlar ve seçkin kadın giyim ürünleri.">
 
 <meta name="keywords" content="Neris, Neris butik, kadın giyim, kadın moda, butik giyim, kadın elbise, premium kadın giyim, şık elbise">
@@ -173,14 +174,6 @@ button,input,textarea{font:inherit}
   .hero-text p{font-size:17px;line-height:1.2;margin:0 0 20px;color:#fff;text-shadow:0 2px 7px rgba(0,0,0,.7);white-space:nowrap}
   .hero-text .hero-btn{width:min(230px,90vw);height:58px;margin:0 auto;padding:0;display:inline-flex;align-items:center;justify-content:center;font-size:17px;white-space:nowrap}
 
-  .categories{padding:55px 15px}
-  .categories-title{margin-bottom:28px}
-  .categories-title h2{font-size:32px}
-  .category-grid{grid-template-columns:1fr 1fr;gap:10px}
-  .category-card{height:280px}
-  .category-overlay{left:14px;bottom:14px}
-  .category-overlay h3{font-size:18px}
-
   .benefits{grid-template-columns:1fr 1fr;padding:35px 10px;gap:25px 0}
   .benefit{padding:10px 12px}
   .benefit:not(:last-child)::after{display:block}
@@ -224,7 +217,6 @@ button,input,textarea{font:inherit}
   .hero-text{bottom:35px}
   .hero-text h1{font-size:38px}
   .hero-text p{font-size:16px}
-  .category-card{height:250px}
   .card-image{height:230px}
   .mobile-menu-links a{font-size:20px;min-height:76px}
 }
@@ -826,6 +818,7 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .buy:
 
 
 /* FINAL FIX — PRODUCT VISIBILITY / LOGIN TRANSITION */
+#productsGrid .neris-fallback-product{display:block!important;}
 .products-empty{
   grid-column:1/-1; text-align:center; padding:70px 20px;
   border:1px solid rgba(212,175,55,.22); background:linear-gradient(145deg,#111,#0a0a0a);
@@ -846,6 +839,8 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .buy:
   "description":"Neris, premium kadın giyim ve butik moda koleksiyonları sunar.",
   "brand":{"@type":"Brand","name":"Neris"}
 }
+</script>
+<script>
     document.addEventListener("click", function(event) {
 
     const searchPanel = document.getElementById("searchPanel");
@@ -1238,6 +1233,10 @@ document.addEventListener("keydown", function(event) {
       const layer = document.getElementById('pageTransition');
       if(layer) layer.classList.remove('active');
       document.body.classList.remove('modal-open');
+      // Giriş sayfasından geri dönüldüğünde Firebase oturumunu yeniden UI'ya uygula.
+      if(window.nerisAuth && window.nerisAuth.currentUser && typeof window.syncNerisAccountUI === 'function'){
+        window.syncNerisAccountUI(window.nerisAuth.currentUser);
+      }
     });
 
     /* Sayfa yenilendiğinde tarayıcı eski scroll konumunu geri yüklemesin.
@@ -1251,7 +1250,7 @@ document.addEventListener("keydown", function(event) {
 
     function handleLoginClick(event){
       if(event) event.preventDefault();
-      const currentUser = (typeof auth !== 'undefined') ? auth.currentUser : null;
+      const currentUser = window.nerisAuth ? window.nerisAuth.currentUser : null;
       const loggedIn = !!currentUser || document.getElementById('loginLink')?.dataset.loggedIn === 'true';
       if(loggedIn){
         const dropdown=document.getElementById('accountDropdown');
@@ -1261,6 +1260,12 @@ document.addEventListener("keydown", function(event) {
       navigateWithTransition('giris.html');
       return false;
     }
+    window.addEventListener('focus', function(){
+      if(window.nerisAuth && window.nerisAuth.currentUser && typeof window.syncNerisAccountUI === 'function'){
+        window.syncNerisAccountUI(window.nerisAuth.currentUser);
+      }
+    });
+
     document.addEventListener('DOMContentLoaded',()=>{
       /* Her tıklanabilir öğeye premium mikro animasyon / ripple */
       document.querySelectorAll('a, button, .nav-action, .cart-btn, .favorite-btn, .buy').forEach(el=>{
@@ -1800,6 +1805,9 @@ import {
 
     const db = getFirestore(app);
     const auth = getAuth(app);
+    // Normal (non-module) UI kodunun da aynı Firebase oturumunu kullanabilmesi için
+    // auth nesnesini güvenli şekilde window üzerinde paylaş.
+    window.nerisAuth = auth;
     let authInitialized = false;
     // Oturumun index.html'de de aynı tarayıcı oturumunda kalmasını garanti et.
     setPersistence(auth, browserLocalPersistence).catch((e)=>console.warn("Auth persistence:", e));
@@ -2042,6 +2050,7 @@ function syncAccountUI(user){
     document.querySelectorAll('.favorite-btn.active').forEach(b=>{b.classList.remove('active');b.innerHTML='♡'});
   }
 }
+window.syncNerisAccountUI = syncAccountUI;
 
 // Girişten hemen sonra isim ekranda görünsün; Firebase durumu da ardından doğrulasın.
 (function restoreSavedAccount(){
