@@ -1240,9 +1240,9 @@ document.addEventListener("keydown", function(event) {
 
     function handleLoginClick(event){
       if(event) event.preventDefault();
-      const authReady = (typeof authInitialized !== 'undefined') ? authInitialized : false;
       const currentUser = (typeof auth !== 'undefined') ? auth.currentUser : null;
-      if(currentUser){
+      const loggedIn = !!currentUser || document.getElementById('loginLink')?.dataset.loggedIn === 'true';
+      if(loggedIn){
         const dropdown=document.getElementById('accountDropdown');
         if(dropdown) dropdown.classList.toggle('active');
         return false;
@@ -1805,11 +1805,11 @@ const querySnapshot =
             <div class="card">
               <div class="card-image">
                 <div class="badge">NEW</div>
-                <img src="https://picsum.photos/500/650?random=1" alt="Siyah Elbise">
+                <img src="hero.png" alt="Siyah Elbise">
               </div>
               <div class="card-content">
                 <h3>Siyah Elbise</h3>
-                <p class="product-price"><span class="price-currency">₺</span><span class="price-value">899</span></p>
+                <p class="product-price"><span class="price-currency">₺</span><span class="price-value">2399</span></p>
                 <a href="#" class="buy">SATIN AL</a>
               </div>
             </div>`;
@@ -1883,11 +1883,11 @@ const querySnapshot =
           fallback.innerHTML = `
             <div class="card-image">
               <div class="badge">NEW</div>
-              <img src="https://picsum.photos/500/650?random=1" alt="Siyah Elbise">
+              <img src="hero.png" alt="Siyah Elbise">
             </div>
             <div class="card-content">
               <h3>Siyah Elbise</h3>
-              <p class="product-price"><span class="price-currency">₺</span><span class="price-value">899</span></p>
+              <p class="product-price"><span class="price-currency">₺</span><span class="price-value">2399</span></p>
               <a href="#" class="buy">SATIN AL</a>
             </div>`;
           container.insertBefore(fallback, container.firstChild);
@@ -1900,11 +1900,11 @@ const querySnapshot =
           <div class="card">
             <div class="card-image">
               <div class="badge">NEW</div>
-              <img src="https://picsum.photos/500/650?random=1" alt="Siyah Elbise">
+              <img src="hero.png" alt="Siyah Elbise">
             </div>
             <div class="card-content">
               <h3>Siyah Elbise</h3>
-              <p class="product-price"><span class="price-currency">₺</span><span class="price-value">899</span></p>
+              <p class="product-price"><span class="price-currency">₺</span><span class="price-value">2399</span></p>
               <a href="#" class="buy">SATIN AL</a>
             </div>
           </div>`;
@@ -2085,18 +2085,34 @@ document.addEventListener("click", function(e) {
 
 });
 
-onAuthStateChanged(auth,function(user){
-  authInitialized=true;
-  const loginLink=document.getElementById('loginLink');
-  if(!loginLink)return;
+function syncAccountUI(user){
+  const loginButton=document.getElementById('loginLink');
+  const nameEl=document.getElementById('accountName');
+  if(!loginButton || !nameEl) return;
   if(user){
-    const userName=user.displayName||(user.email?user.email.split('@')[0]:'HESABIM');
-    accountName.textContent=userName; loginLink.removeAttribute('href'); loadFavorites();
+    const userName=(user.displayName && user.displayName.trim())
+      ? user.displayName.trim()
+      : (user.email ? user.email.split('@')[0] : 'HESABIM');
+    nameEl.textContent=userName;
+    loginButton.setAttribute('type','button');
+    loginButton.removeAttribute('href');
+    loginButton.dataset.loggedIn='true';
   }else{
-    accountName.textContent='GİRİŞ YAP'; loginLink.setAttribute('href','giris.html');
+    nameEl.textContent='GİRİŞ YAP';
+    loginButton.setAttribute('type','button');
+    loginButton.removeAttribute('href');
+    loginButton.dataset.loggedIn='false';
     document.querySelectorAll('.favorite-btn.active').forEach(b=>{b.classList.remove('active');b.innerHTML='♡'});
   }
-  if(document.getElementById('favoritesContent')&&document.getElementById('infoModal')?.classList.contains('open'))window.loadFavoritesModal();
+}
+
+onAuthStateChanged(auth,function(user){
+  authInitialized=true;
+  syncAccountUI(user);
+  if(user) loadFavorites();
+  if(document.getElementById('favoritesContent')&&document.getElementById('infoModal')?.classList.contains('open')){
+    window.loadFavoritesModal();
+  }
 });
 </script>
 </body>
