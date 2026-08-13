@@ -2132,6 +2132,168 @@
         display: flex !important;
     }
 }
+    /* ==========================================
+   NERIS MOBIL YAN MENU
+========================================== */
+
+.mobile-menu {
+    display: none;
+}
+
+@media (max-width: 768px) {
+
+    .mobile-menu {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+
+        width: 78% !important;
+        height: 100vh !important;
+
+        background: #ffffff !important;
+        color: #222 !important;
+
+        z-index: 99999 !important;
+
+        flex-direction: column !important;
+
+        box-shadow: 8px 0 30px rgba(0,0,0,.25) !important;
+
+        overflow-y: auto !important;
+    }
+
+    .mobile-menu.active {
+        display: flex !important;
+    }
+
+    .mobile-menu-header {
+        height: 105px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+
+        padding: 0 22px !important;
+
+        border-bottom: 1px solid #ddd !important;
+    }
+
+    .mobile-menu-logo {
+        color: #c9a227 !important;
+        font-family: Georgia, serif !important;
+        font-size: 38px !important;
+        font-weight: 700 !important;
+        letter-spacing: 4px !important;
+        text-decoration: none !important;
+    }
+
+    .mobile-menu-close {
+        width: 70px !important;
+        height: 105px !important;
+
+        border: 0 !important;
+        background: #000 !important;
+        color: #fff !important;
+
+        font-size: 42px !important;
+        line-height: 1 !important;
+
+        cursor: pointer !important;
+    }
+
+    .mobile-menu-links {
+        display: flex !important;
+        flex-direction: column !important;
+
+        padding: 35px 22px 0 !important;
+    }
+
+    .mobile-menu-links a {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+
+        min-height: 90px !important;
+
+        color: #222 !important;
+        text-decoration: none !important;
+
+        font-size: 25px !important;
+        font-weight: 700 !important;
+        letter-spacing: .5px !important;
+
+        border-bottom: 1px solid #ddd !important;
+    }
+
+    .mobile-menu-links a span {
+        font-size: 42px !important;
+        font-weight: 300 !important;
+    }
+
+    .mobile-menu-bottom {
+        margin-top: auto !important;
+        padding: 35px 22px 25px !important;
+    }
+
+    .mobile-order-btn {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        height: 70px !important;
+
+        border: 3px solid #222 !important;
+
+        color: #222 !important;
+        background: #fff !important;
+
+        text-decoration: none !important;
+
+        font-size: 23px !important;
+        font-weight: 700 !important;
+
+        margin-bottom: 22px !important;
+    }
+
+    .mobile-account-buttons {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    .mobile-account-buttons a {
+        height: 70px !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        text-decoration: none !important;
+
+        font-size: 18px !important;
+        font-weight: 700 !important;
+    }
+
+    .mobile-account-buttons a:first-child {
+        background: #222 !important;
+        color: #fff !important;
+    }
+
+    .mobile-account-buttons a:last-child {
+        background: #f1f1f1 !important;
+        color: #222 !important;
+    }
+}
+
+
+/* MASAÜSTÜNDE MOBİL MENÜ TAMAMEN GİZLİ */
+@media (min-width: 769px) {
+    .mobile-menu {
+        display: none !important;
+    }
+
+    .mobile-menu-btn {
+        display: none !important;
+    }
+}
   </style>
   <script type="application/ld+json">
 {
@@ -2232,12 +2394,55 @@ function closeMobileMenu() {
   </div>
   <!-- MOBİL MENÜ -->
 <div class="mobile-menu" id="mobileMenu">
-    <a href="#" onclick="openInfo('story'); closeMobileMenu(); return false;">HİKAYEMİZ</a>
-    <a href="#" onclick="openInfo('tracking'); closeMobileMenu(); return false;">SİPARİŞ TAKİP</a>
-    <a href="#" onclick="openInfo('contact'); closeMobileMenu(); return false;">BİZE ULAŞIN</a>
-    <a href="#" onclick="toggleSearch(); closeMobileMenu(); return false;">ARAMA</a>
-    <a href="giris.html">GİRİŞ YAP</a>
-    <a href="favoriler.html">FAVORİLER</a>
+
+    <div class="mobile-menu-header">
+        <a href="#" class="mobile-menu-logo">NERIS</a>
+
+        <button class="mobile-menu-close"
+                onclick="toggleMobileMenu()"
+                aria-label="Menüyü Kapat">
+            ×
+        </button>
+    </div>
+
+    <div class="mobile-menu-links">
+
+        <a href="#" onclick="openInfo('story'); closeMobileMenu(); return false;">
+            HİKAYEMİZ
+            <span>›</span>
+        </a>
+
+        <a href="#" onclick="openInfo('tracking'); closeMobileMenu(); return false;">
+            SİPARİŞ TAKİP
+            <span>›</span>
+        </a>
+
+        <a href="#" onclick="openInfo('contact'); closeMobileMenu(); return false;">
+            BİZE ULAŞIN
+            <span>›</span>
+        </a>
+
+        <a href="#" onclick="toggleSearch(); closeMobileMenu(); return false;">
+            ARAMA
+            <span>›</span>
+        </a>
+
+    </div>
+
+    <div class="mobile-menu-bottom">
+
+        <a href="#" onclick="openInfo('tracking'); closeMobileMenu(); return false;"
+           class="mobile-order-btn">
+            🚚 &nbsp; SİPARİŞ TAKİP
+        </a>
+
+        <div class="mobile-account-buttons">
+            <a href="giris.html">♙ &nbsp; GİRİŞ YAP</a>
+            <a href="register.html">♙+ &nbsp; ÜYE OL</a>
+        </div>
+
+    </div>
+
 </div>
 
 
