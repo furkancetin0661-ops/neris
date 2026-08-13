@@ -251,6 +251,41 @@ body.modal-open{overflow:hidden!important}
   "description":"Neris, premium kadın giyim ve butik moda koleksiyonları sunar.",
   "brand":{"@type":"Brand","name":"Neris"}
 }
+    document.addEventListener("click", function(event) {
+
+    const searchPanel = document.getElementById("searchPanel");
+
+    if (!searchPanel) return;
+
+    if (!searchPanel.classList.contains("open")) return;
+
+    if (searchPanel.contains(event.target)) return;
+
+    if (
+        event.target.closest(".mobile-search-btn") ||
+        event.target.closest('[onclick*="toggleSearch"]') ||
+        event.target.closest('[onclick*="searchPanel"]')
+    ) {
+        return;
+    }
+
+    searchPanel.classList.remove("open");
+    document.body.style.overflow = "";
+});
+
+document.addEventListener("keydown", function(event) {
+
+    if (event.key === "Escape") {
+
+        const searchPanel = document.getElementById("searchPanel");
+
+        if (searchPanel) {
+            searchPanel.classList.remove("open");
+        }
+
+        document.body.style.overflow = "";
+    }
+});
 </script>
 </head>
 
