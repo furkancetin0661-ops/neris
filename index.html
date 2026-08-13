@@ -459,6 +459,80 @@ body.modal-open{overflow:hidden!important}
             visibility 0s linear 0s !important;
     }
 }
+    /* =========================================
+   NERIS HIKAYESI - PREMIUM YAZI DUZENI
+========================================= */
+
+.neris-story-content {
+    width: 100%;
+    max-width: 950px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 10px 20px 30px;
+    box-sizing: border-box;
+}
+
+.neris-story-content p {
+    max-width: 850px;
+    margin: 0 auto 32px;
+    font-size: 17px !important;
+    line-height: 2 !important;
+    color: #777 !important;
+    text-align: center;
+}
+
+.neris-story-content p strong {
+    color: #b8b8b8;
+}
+
+.neris-story-content > div:first-child {
+    margin-bottom: 35px !important;
+}
+
+/* Altın çizgi */
+.neris-story-content > div[style*="width:60px"] {
+    margin: 38px auto !important;
+}
+
+/* Son paragraf */
+.neris-story-content p:last-child {
+    max-width: 700px;
+    font-family: Georgia, serif !important;
+    font-size: 19px !important;
+    line-height: 1.9 !important;
+    color: #777 !important;
+}
+
+/* TELEFON */
+@media (max-width: 768px) {
+
+    .neris-story-content {
+        max-width: 100%;
+        padding: 5px 22px 25px;
+    }
+
+    .neris-story-content p {
+        max-width: 100%;
+        font-size: 15px !important;
+        line-height: 1.9 !important;
+        margin-bottom: 28px;
+    }
+
+    .neris-story-content > div:first-child {
+        font-size: 24px !important;
+        letter-spacing: 5px !important;
+        margin-bottom: 28px !important;
+    }
+
+    .neris-story-content > div[style*="width:60px"] {
+        margin: 30px auto !important;
+    }
+
+    .neris-story-content p:last-child {
+        font-size: 17px !important;
+        line-height: 1.8 !important;
+    }
+}
 </style>
   <script type="application/ld+json">
 {
@@ -880,7 +954,7 @@ document.addEventListener("keydown", function(event) {
         story: {
     title:'Neris Hikayesi',
     body:`
-        <div style="text-align:center;">
+        <div class="neris-story-content">
 
             <div style="
                 color:#d4af37;
