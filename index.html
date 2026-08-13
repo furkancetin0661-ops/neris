@@ -165,6 +165,10 @@ button,input,textarea{font:inherit}
   .mobile-account-buttons a{height:64px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:17px;font-weight:700}
   .mobile-account-buttons a:first-child{background:#222;color:#fff}
   .mobile-account-buttons a:last-child{background:#f1f1f1;color:#222}
+  .mobile-account-buttons button{height:64px;border:0;background:#222;color:#fff;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit}
+  .mobile-account-buttons button:active{transform:scale(.98)}
+  .mobile-account-buttons.logged-in button{background:#111;color:#d4af37}
+  .mobile-account-buttons.logged-in button span{max-width:145px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
   .hero{min-height:calc(100svh - 72px);height:calc(100svh - 72px);max-height:none;background:linear-gradient(rgba(0,0,0,.15),rgba(0,0,0,.45)),url("hero.png") center top/cover no-repeat}
   .hero-image{object-position:center top}
@@ -906,14 +910,15 @@ document.addEventListener("keydown", function(event) {
   </div>
   <div class="mobile-menu-links">
     <a href="#" onclick="openInfo('story'); closeMobileMenu(); return false;">HİKAYEMİZ <span>›</span></a>
+    <a href="#" onclick="openInfo('tracking'); closeMobileMenu(); return false;">SİPARİŞ TAKİP <span>›</span></a>
     <a href="#" onclick="openInfo('contact'); closeMobileMenu(); return false;">BİZE ULAŞIN <span>›</span></a>
     
   </div>
   <div class="mobile-menu-bottom">
     <a href="#" onclick="openInfo('tracking'); closeMobileMenu(); return false;" class="mobile-order-btn">🚚 &nbsp; SİPARİŞ TAKİP</a>
-    <div class="mobile-account-buttons">
-      <a href="giris.html">♙ &nbsp; GİRİŞ YAP</a>
-      <a href="register.html">♙+ &nbsp; ÜYE OL</a>
+    <div class="mobile-account-buttons" id="mobileAccountButtons">
+      <button id="mobileLoginLink" type="button" onclick="handleMobileLoginClick(event)">♙ &nbsp; <span id="mobileAccountName">GİRİŞ YAP</span></button>
+      <a id="mobileRegisterLink" href="register.html">♙+ &nbsp; ÜYE OL</a>
     </div>
   </div>
 </div>
@@ -1181,6 +1186,25 @@ document.addEventListener("keydown", function(event) {
       layer.classList.add('active');
       setTimeout(()=>{window.location.href=url;},320);
     }
+    function handleMobileLoginClick(event){
+      if(event) event.preventDefault();
+
+      const authUser = window.nerisAuth ? window.nerisAuth.currentUser : null;
+      const desktopLogin = document.getElementById('loginLink');
+      const loggedIn = !!authUser || desktopLogin?.dataset.loggedIn === 'true';
+
+      if(loggedIn){
+        closeMobileMenu();
+        navigateWithTransition('account.html');
+        return false;
+      }
+
+      closeMobileMenu();
+      navigateWithTransition('giris.html');
+      return false;
+    }
+    window.handleMobileLoginClick = handleMobileLoginClick;
+
     document.addEventListener('DOMContentLoaded',()=>{
       /* Her tıklanabilir öğeye premium mikro animasyon / ripple */
       document.querySelectorAll('a, button, .nav-action, .cart-btn, .favorite-btn, .buy').forEach(el=>{
@@ -1986,15 +2010,38 @@ document.addEventListener("click", function(e) {
 onAuthStateChanged(auth,function(user){
   authInitialized=true;
   const loginLink=document.getElementById('loginLink');
+  const mobileName=document.getElementById('mobileAccountName');
+  const mobileButtons=document.getElementById('mobileAccountButtons');
+  const mobileRegister=document.getElementById('mobileRegisterLink');
   if(!loginLink)return;
+
   if(user){
     const userName=user.displayName||(user.email?user.email.split('@')[0]:'HESABIM');
-    accountName.textContent=userName; loginLink.href='#'; loadFavorites();
+    accountName.textContent=userName;
+    loginLink.href='#';
+    loginLink.dataset.loggedIn='true';
+
+    if(mobileName) mobileName.textContent=userName;
+    if(mobileButtons) mobileButtons.classList.add('logged-in');
+    if(mobileRegister) mobileRegister.style.display='none';
+
+    loadFavorites();
   }else{
-    accountName.textContent='GİRİŞ YAP'; loginLink.href='#'; loginLink.onclick=null;
+    accountName.textContent='GİRİŞ YAP';
+    loginLink.href='#';
+    loginLink.onclick=null;
+    loginLink.dataset.loggedIn='false';
+
+    if(mobileName) mobileName.textContent='GİRİŞ YAP';
+    if(mobileButtons) mobileButtons.classList.remove('logged-in');
+    if(mobileRegister) mobileRegister.style.display='flex';
+
     document.querySelectorAll('.favorite-btn.active').forEach(b=>{b.classList.remove('active');b.innerHTML='♡'});
   }
-  if(document.getElementById('favoritesContent')&&document.getElementById('infoModal')?.classList.contains('open'))window.loadFavoritesModal();
+
+  if(document.getElementById('favoritesContent')&&document.getElementById('infoModal')?.classList.contains('open')){
+    window.loadFavoritesModal();
+  }
 });
 </script>
 </body>
