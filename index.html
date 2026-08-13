@@ -816,6 +816,81 @@ button,input,textarea{font:inherit}
 }
 
 
+
+/* NERIS PREMIUM MINIMAL CART ICON */
+.navbar .icons{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+}
+.cart-icon-btn{
+  position:relative;
+  width:42px;
+  height:42px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:#d8d8d8;
+  cursor:pointer;
+  border-radius:50%;
+  -webkit-tap-highlight-color:transparent;
+  transition:color .25s ease, transform .25s ease, background-color .25s ease;
+}
+.cart-icon-btn:hover{
+  color:#d4af37;
+  background:rgba(212,175,55,.07);
+  transform:translateY(-1px);
+}
+.cart-icon-svg{
+  width:22px;
+  height:22px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.45;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.cart-count-badge{
+  position:absolute;
+  top:2px;
+  right:0px;
+  min-width:16px;
+  height:16px;
+  padding:0 4px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:999px;
+  background:#d4af37;
+  color:#080808;
+  font:700 9px/1 Arial,sans-serif;
+  box-sizing:border-box;
+  box-shadow:0 0 0 2px #050505;
+  opacity:0;
+  transform:scale(.65);
+  transition:opacity .2s ease, transform .2s ease;
+}
+.cart-count-badge.has-items{
+  opacity:1;
+  transform:scale(1);
+}
+.cart-count-badge.bump{
+  animation:nerisCartBadgeBump .35s ease;
+}
+@keyframes nerisCartBadgeBump{
+  0%{transform:scale(1)}
+  45%{transform:scale(1.28)}
+  100%{transform:scale(1)}
+}
+@media(max-width:768px){
+  .cart-icon-btn{width:44px;height:44px}
+  .cart-icon-svg{width:21px;height:21px}
+  .cart-count-badge{top:2px;right:1px}
+}
+
 /* NERIS PREMIUM INTERACTION SYSTEM */
 button, a, .nav-action, .cart-btn, .favorite-btn, .mobile-menu-btn, .mobile-menu-links a, .mobile-account-buttons a, .footer-column a, .footer-instagram { -webkit-tap-highlight-color: transparent; }
 button, .nav-action, .cart-btn, .favorite-btn, .mobile-menu-btn, .mobile-menu-links a, .mobile-account-buttons a, .footer-column a, .footer-instagram { transition: transform .24s cubic-bezier(.22,.61,.36,1), box-shadow .24s ease, background-color .24s ease, border-color .24s ease, color .24s ease, opacity .24s ease; }
@@ -1042,7 +1117,16 @@ document.addEventListener("keydown", function(event) {
     <a href="#products">Ürünler</a>
     <a href="#" onclick="openInfo('contact'); return false;">İletişim</a>
   </div>
-  <div class="icons"><span onclick="openInfo('cart')">🛒</span></div>
+  <div class="icons">
+  <button class="cart-icon-btn" type="button" onclick="openInfo('cart')" aria-label="Sepetim" title="Sepetim">
+    <svg class="cart-icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3.5 4h2l1.7 10.1a1.8 1.8 0 0 0 1.8 1.5h7.8a1.8 1.8 0 0 0 1.7-1.2L20.5 7H6.2"/>
+      <circle cx="9.2" cy="19" r="1.2"/>
+      <circle cx="17.2" cy="19" r="1.2"/>
+    </svg>
+    <span class="cart-count-badge" id="cartCountBadge">0</span>
+  </button>
+</div>
 </div>
 
 <!-- MOBİL MENÜ -->
@@ -1468,7 +1552,7 @@ document.addEventListener("keydown", function(event) {
 
     document.addEventListener('DOMContentLoaded',()=>{
       /* Her tıklanabilir öğeye premium mikro animasyon / ripple */
-      document.querySelectorAll('a, button, .nav-action, .cart-btn, .favorite-btn').forEach(el=>{
+      document.querySelectorAll('a, button, .nav-action, .cart-btn, .cart-icon-btn, .favorite-btn').forEach(el=>{
         el.addEventListener('click',function(e){
           const r=document.createElement('span');
           const rect=this.getBoundingClientRect();
@@ -2082,11 +2166,23 @@ window.checkoutCart=checkoutCart;
 
 function updateCartCount(){
   const count=getNerisCart().reduce((sum,item)=>sum+(Number(item.quantity)||0),0);
-  document.querySelectorAll('.icons span').forEach(el=>{
-    if(el.textContent.includes('🛒')){
-      el.setAttribute('title',count?`Sepetim (${count})`:'Sepetim');
-    }
-  });
+  const badge=document.getElementById('cartCountBadge');
+  const cartButton=document.querySelector('.cart-icon-btn');
+  if(!badge) return;
+
+  badge.textContent = count > 99 ? '99+' : String(count);
+  badge.classList.toggle('has-items', count > 0);
+
+  if(cartButton){
+    cartButton.setAttribute('title', count ? `Sepetim (${count})` : 'Sepetim');
+    cartButton.setAttribute('aria-label', count ? `Sepetim, ${count} ürün` : 'Sepetim');
+  }
+
+  if(count > 0){
+    badge.classList.remove('bump');
+    void badge.offsetWidth;
+    badge.classList.add('bump');
+  }
 }
 window.updateCartCount=updateCartCount;
 
