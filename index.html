@@ -2445,10 +2445,10 @@ function closeMobileMenu() {
             <span>›</span>
         </a>
 
-        <a href="#" onclick="toggleSearch(); closeMobileMenu(); return false;">
-            ARAMA
-            <span>›</span>
-        </a>
+        <a href="#" onclick="closeMobileMenu(); setTimeout(function(){ toggleSearch(); }, 200); return false;">
+    ARAMA
+    <span>⌕</span>
+</a>
 
     </div>
 
