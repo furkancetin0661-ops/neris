@@ -2317,6 +2317,72 @@ body.modal-open {
     position: fixed !important;
     width: 100% !important;
 }
+    /* ===== NERIS MOBİL ARAMA ===== */
+
+.mobile-search-btn {
+    display: block;
+    width: 100%;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+
+    #searchPanel {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+
+        padding: 90px 20px 25px !important;
+
+        background: #080808 !important;
+        border: 0 !important;
+        border-bottom: 1px solid #d4af37 !important;
+
+        box-shadow: 0 20px 60px rgba(0,0,0,.8) !important;
+
+        z-index: 999999 !important;
+
+        display: none !important;
+    }
+
+    #searchPanel.open {
+        display: flex !important;
+        gap: 10px !important;
+    }
+
+    #searchPanel input {
+        flex: 1 !important;
+        width: auto !important;
+        height: 52px !important;
+
+        background: #111 !important;
+        color: #fff !important;
+
+        border: 1px solid #444 !important;
+        padding: 0 16px !important;
+
+        font-size: 16px !important;
+    }
+
+    #searchPanel button {
+        height: 52px !important;
+        padding: 0 20px !important;
+
+        background: #d4af37 !important;
+        color: #000 !important;
+
+        border: 0 !important;
+        font-weight: 600 !important;
+    }
+}
   </style>
   <script type="application/ld+json">
 {
@@ -2445,10 +2511,10 @@ function closeMobileMenu() {
             <span>›</span>
         </a>
 
-        <a href="#" onclick="closeMobileMenu(); setTimeout(function(){ toggleSearch(); }, 200); return false;">
+        <button type="button" class="mobile-search-btn" onclick="closeMobileMenu(); toggleSearch();">
     ARAMA
     <span>⌕</span>
-</a>
+</button>
 
     </div>
 
@@ -2719,16 +2785,23 @@ function closeMobileMenu() {
         return;
     }
 
-    panel.classList.toggle("open");
+    const isOpen = panel.classList.contains("open");
 
-    if (panel.classList.contains("open")) {
-        const input = document.getElementById("siteSearch");
+    if (isOpen) {
+        panel.classList.remove("open");
+        document.body.style.overflow = "";
+        return;
+    }
 
-        if (input) {
-            setTimeout(function () {
-                input.focus();
-            }, 100);
-        }
+    panel.classList.add("open");
+    document.body.style.overflow = "hidden";
+
+    const input = document.getElementById("siteSearch");
+
+    if (input) {
+        setTimeout(function () {
+            input.focus();
+        }, 150);
     }
 }
 
