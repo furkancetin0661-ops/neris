@@ -1571,6 +1571,70 @@
     .navbar-nav {
         display: none !important;
     }
+  /* MOBİL HAMBURGER MENÜ */
+.mobile-menu-btn {
+    display: none;
+}
+
+.mobile-menu {
+    display: none;
+}
+
+@media (max-width: 768px) {
+
+    .navbar {
+        position: relative !important;
+    }
+
+    .mobile-menu-btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        padding: 0;
+        margin: 0;
+        border: none;
+        background: transparent;
+        color: #ffffff;
+        font-size: 27px;
+        cursor: pointer;
+        z-index: 2001;
+    }
+
+    .mobile-menu {
+        display: none;
+        position: absolute !important;
+        top: 100% !important;
+        left: 0 !important;
+        width: 100% !important;
+        background: #050505 !important;
+        z-index: 2000 !important;
+        flex-direction: column;
+        border-top: 1px solid rgba(212,175,55,.3);
+        box-shadow: 0 8px 20px rgba(0,0,0,.35);
+    }
+
+    .mobile-menu.active {
+        display: flex !important;
+    }
+
+    .mobile-menu a {
+        display: block !important;
+        width: 100%;
+        padding: 17px 24px;
+        color: #ffffff !important;
+        text-decoration: none !important;
+        font-size: 14px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255,255,255,.08);
+        box-sizing: border-box;
+    }
+
+    .mobile-menu a:active {
+        background: rgba(212,175,55,.15);
+    }
+}
 
     /* Ana header */
     .main-header,
@@ -2107,6 +2171,9 @@
 
   <!-- NAVBAR -->
   <div class="navbar">
+    <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menüyü Aç">
+    ☰
+</button>
 
     <a href="#" class="logo">NERIS</a>
 
@@ -2122,6 +2189,15 @@
 </div>
 
   </div>
+  <!-- MOBİL MENÜ -->
+<div class="mobile-menu" id="mobileMenu">
+    <a href="#" onclick="openInfo('story'); closeMobileMenu(); return false;">HİKAYEMİZ</a>
+    <a href="#" onclick="openInfo('tracking'); closeMobileMenu(); return false;">SİPARİŞ TAKİP</a>
+    <a href="#" onclick="openInfo('contact'); closeMobileMenu(); return false;">BİZE ULAŞIN</a>
+    <a href="#" onclick="toggleSearch(); closeMobileMenu(); return false;">ARAMA</a>
+    <a href="giris.html">GİRİŞ YAP</a>
+    <a href="favoriler.html">FAVORİLER</a>
+</div>
 
 
   <!-- HERO -->
