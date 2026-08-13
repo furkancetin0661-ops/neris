@@ -1189,7 +1189,7 @@ document.addEventListener("keydown", function(event) {
 
 
 
-<div class="page-transition" id="pageTransition"></div>
+<div class="page-transition active" id="pageTransition" aria-hidden="true"></div>
 
 <!-- NERIS PREMIUM ALERT -->
 <div class="premium-alert" id="premiumAlert" onclick="if(event.target===this)closePremiumAlert()">
@@ -1257,7 +1257,24 @@ document.addEventListener("keydown", function(event) {
        Böylece NERIS logosunda takılı kalmaz; ana sayfa normal şekilde görünür. */
     window.addEventListener('pageshow', function(){
       const layer = document.getElementById('pageTransition');
-      if(layer) layer.classList.remove('active');
+      const nav = performance.getEntriesByType('navigation')[0];
+      const navType = nav ? nav.type : 'navigate';
+
+      /*
+         NERIS sayfaya ilk kez girildiğinde, adres çubuğuna yazıp ENTER'a
+         basıldığında veya sayfa yenilendiğinde giriş perdesi animasyonla
+         görünür ve içerik hazır olduktan sonra yumuşakça kaybolur.
+         Geri/ileri ile dönüldüğünde ise sayfayı perdede bırakmaz.
+      */
+      if(layer){
+        if(navType === 'back_forward'){
+          layer.classList.remove('active');
+        }else{
+          layer.classList.add('active');
+          setTimeout(function(){ layer.classList.remove('active'); }, 720);
+        }
+      }
+
       document.body.classList.remove('modal-open');
       // Giriş sayfasından geri dönüldüğünde Firebase oturumunu yeniden UI'ya uygula.
       if(window.nerisAuth && window.nerisAuth.currentUser && typeof window.syncNerisAccountUI === 'function'){
