@@ -1780,7 +1780,9 @@ function closeMobileMenu() {
 
 import {
     getAuth,
-    onAuthStateChanged
+    onAuthStateChanged,
+    setPersistence,
+    browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
     const firebaseConfig = {
@@ -1799,6 +1801,8 @@ import {
     const db = getFirestore(app);
     const auth = getAuth(app);
     let authInitialized = false;
+    // Oturumun index.html'de de aynı tarayıcı oturumunda kalmasını garanti et.
+    setPersistence(auth, browserLocalPersistence).catch((e)=>console.warn("Auth persistence:", e));
 
 
     async function loadProducts(){
@@ -1988,9 +1992,13 @@ if (logoutButton) {
     logoutButton.addEventListener("click", function() {
 
         auth.signOut().then(function() {
-
+            try{localStorage.removeItem('nerisUserName');}catch(e){}
+            const loginButton=document.getElementById('loginLink');
+            const nameEl=document.getElementById('accountName');
+            if(nameEl) nameEl.textContent='GİRİŞ YAP';
+            if(loginButton) loginButton.dataset.loggedIn='false';
+            if(accountDropdown) accountDropdown.classList.remove('active');
             window.location.reload();
-
         });
 
     });
@@ -2045,14 +2053,26 @@ function syncAccountUI(user){
 
 onAuthStateChanged(auth,function(user){
   authInitialized=true;
+
   if(user){
-    const name=(user.displayName&&user.displayName.trim()) ? user.displayName.trim() : (user.email||'').split('@')[0] || 'HESABIM';
+    const name=(user.displayName&&user.displayName.trim())
+      ? user.displayName.trim()
+      : (user.email||'').split('@')[0] || 'HESABIM';
     try{localStorage.setItem('nerisUserName',name);}catch(e){}
+    syncAccountUI(user);
+    loadFavorites();
   }else{
-    try{localStorage.removeItem('nerisUserName');}catch(e){}
+    // Firebase ilk anda durumu çözerken null dönebilir.
+    // Bu aşamada kayıtlı kullanıcı adını silme; sadece gerçek Çıkış Yap işleminde silinir.
+    let savedName='';
+    try{savedName=(localStorage.getItem('nerisUserName')||'').trim();}catch(e){}
+    if(savedName){
+      syncAccountUI({displayName:savedName,email:savedName});
+    }else{
+      syncAccountUI(null);
+    }
   }
-  syncAccountUI(user);
-  if(user) loadFavorites();
+
   if(document.getElementById('favoritesContent')&&document.getElementById('infoModal')?.classList.contains('open')){
     window.loadFavoritesModal();
   }
