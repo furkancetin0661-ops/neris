@@ -2319,16 +2319,7 @@ body.modal-open {
 }
     /* ===== NERIS MOBİL ARAMA ===== */
 
-.mobile-search-btn {
-    display: block;
-    width: 100%;
-    border: 0;
-    background: transparent;
-    color: inherit;
-    font: inherit;
-    text-align: left;
-    cursor: pointer;
-}
+
 
 @media (max-width: 768px) {
 
@@ -2380,6 +2371,49 @@ body.modal-open {
         color: #000 !important;
 
         border: 0 !important;
+        font-weight: 600 !important;
+    }
+}
+    @media (max-width: 768px) {
+
+    #searchPanel {
+        position: fixed !important;
+        top: 70px !important;
+        left: 15px !important;
+        right: 15px !important;
+        width: auto !important;
+
+        background: #0b0b0b !important;
+        border: 1px solid #d4af37 !important;
+        padding: 14px !important;
+
+        box-shadow: 0 20px 50px rgba(0,0,0,.8) !important;
+
+        z-index: 999999 !important;
+    }
+
+    #searchPanel.open {
+        display: flex !important;
+        gap: 8px !important;
+    }
+
+    #searchPanel input {
+        flex: 1 !important;
+        min-width: 0 !important;
+        height: 48px !important;
+        background: #111 !important;
+        color: white !important;
+        border: 1px solid #444 !important;
+        padding: 0 14px !important;
+        font-size: 16px !important;
+    }
+
+    #searchPanel button {
+        height: 48px !important;
+        background: #d4af37 !important;
+        color: #000 !important;
+        border: 0 !important;
+        padding: 0 18px !important;
         font-weight: 600 !important;
     }
 }
@@ -2511,11 +2545,19 @@ function closeMobileMenu() {
             <span>›</span>
         </a>
 
-        <button type="button" class="mobile-search-btn" onclick="closeMobileMenu(); toggleSearch();">
+        <a href="#" onclick="
+    event.preventDefault();
+    document.getElementById('mobileMenu').classList.remove('active');
+    document.getElementById('searchPanel').classList.add('open');
+    setTimeout(function(){
+        var input = document.getElementById('siteSearch');
+        if(input) input.focus();
+    },150);
+    return false;
+">
     ARAMA
     <span>⌕</span>
-</button>
-
+</a>
     </div>
 
     <div class="mobile-menu-bottom">
