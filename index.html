@@ -758,6 +758,46 @@ button,input,textarea{font:inherit}
   .products-title h2{font-size:34px}
 }
 
+
+/* NERIS PREMIUM INTERACTION SYSTEM */
+button, a, .nav-action, .cart-btn, .favorite-btn, .buy, .mobile-menu-btn, .mobile-menu-links a, .mobile-account-buttons a, .footer-column a, .footer-instagram { -webkit-tap-highlight-color: transparent; }
+button, .nav-action, .cart-btn, .favorite-btn, .buy, .mobile-menu-btn, .mobile-menu-links a, .mobile-account-buttons a, .footer-column a, .footer-instagram { transition: transform .24s cubic-bezier(.22,.61,.36,1), box-shadow .24s ease, background-color .24s ease, border-color .24s ease, color .24s ease, opacity .24s ease; }
+button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .buy:active, .mobile-menu-btn:active, .mobile-menu-links a:active, .mobile-account-buttons a:active, .footer-column a:active, .footer-instagram:active { transform: translateY(1px) scale(.97); }
+
+/* Sayfa geçiş perdesi */
+.page-transition{position:fixed;inset:0;background:#070707;z-index:1000000;pointer-events:none;opacity:0;visibility:hidden;display:flex;align-items:center;justify-content:center;transition:opacity .38s ease,visibility 0s linear .38s}
+.page-transition::before{content:'NERIS';font-family:'Playfair Display',serif;letter-spacing:7px;color:#d4af37;font-size:25px;transform:translateY(10px);opacity:0;transition:transform .45s ease,opacity .35s ease}
+.page-transition.active{opacity:1;visibility:visible;transition:opacity .28s ease,visibility 0s linear 0s}
+.page-transition.active::before{transform:translateY(0);opacity:1}
+
+/* Premium uyarı / onay penceresi */
+.premium-alert{position:fixed;inset:0;z-index:1000001;background:rgba(0,0,0,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:22px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .28s ease,visibility 0s linear .28s}
+.premium-alert.open{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .28s ease,visibility 0s linear 0s}
+.premium-alert-box{width:min(460px,100%);background:linear-gradient(145deg,#151515,#0b0b0b);border:1px solid rgba(212,175,55,.42);box-shadow:0 30px 90px rgba(0,0,0,.65);padding:38px 34px 32px;text-align:center;position:relative;transform:translateY(22px) scale(.97);opacity:0;transition:transform .42s cubic-bezier(.22,.61,.36,1),opacity .32s ease}
+.premium-alert.open .premium-alert-box{transform:translateY(0) scale(1);opacity:1}
+.premium-alert-line{width:46px;height:1px;background:#d4af37;margin:0 auto 21px}
+.premium-alert-kicker{font-size:9px;letter-spacing:3px;color:#d4af37;margin-bottom:11px}
+.premium-alert-title{font-family:'Playfair Display',serif;font-size:25px;color:#fff;font-weight:500;margin:0 0 11px}
+.premium-alert-message{font-size:13px;line-height:1.8;color:#999;margin:0 auto 25px;max-width:360px}
+.premium-alert-actions{display:flex;gap:10px;justify-content:center}
+.premium-alert-actions button{min-width:130px;min-height:46px;padding:0 20px;font-family:Poppins,sans-serif;font-size:11px;font-weight:600;letter-spacing:1.2px;cursor:pointer}
+.premium-alert-primary{background:#d4af37;color:#080808;border:1px solid #d4af37}
+.premium-alert-secondary{background:transparent;color:#aaa;border:1px solid rgba(255,255,255,.16)}
+.premium-alert-primary:hover{box-shadow:0 12px 30px rgba(212,175,55,.18);transform:translateY(-2px)}
+.premium-alert-secondary:hover{border-color:rgba(212,175,55,.4);color:#fff;transform:translateY(-2px)}
+
+/* Buton ripple */
+.premium-ripple{position:absolute;border-radius:50%;background:rgba(212,175,55,.28);transform:scale(0);animation:premiumRipple .55s ease-out;pointer-events:none}
+@keyframes premiumRipple{to{transform:scale(4);opacity:0}}
+@media(max-width:768px){
+ .premium-alert{padding:16px}
+ .premium-alert-box{padding:31px 22px 25px}
+ .premium-alert-title{font-size:23px}
+ .premium-alert-message{font-size:12px;line-height:1.75}
+ .premium-alert-actions{flex-direction:column}
+ .premium-alert-actions button{width:100%}
+}
+
 </style>
   <script type="application/ld+json">
 {
@@ -1078,6 +1118,20 @@ document.addEventListener("keydown", function(event) {
 
 
 
+
+<div class="page-transition" id="pageTransition"></div>
+
+<!-- NERIS PREMIUM ALERT -->
+<div class="premium-alert" id="premiumAlert" onclick="if(event.target===this)closePremiumAlert()">
+  <div class="premium-alert-box">
+    <div class="premium-alert-line"></div>
+    <div class="premium-alert-kicker">NERIS</div>
+    <h3 class="premium-alert-title" id="premiumAlertTitle">Bilgilendirme</h3>
+    <p class="premium-alert-message" id="premiumAlertMessage"></p>
+    <div class="premium-alert-actions" id="premiumAlertActions"></div>
+  </div>
+</div>
+
   <!-- NERIS BİLGİ / İŞLEM PENCERELERİ -->
   <div class="info-modal" id="infoModal" onclick="if(event.target===this)closeInfo()">
     <div class="info-box">
@@ -1088,6 +1142,69 @@ document.addEventListener("keydown", function(event) {
 
 
   <script>
+
+    /* NERIS PREMIUM ALERT + PAGE TRANSITION */
+    let premiumAlertCallback = null;
+    function showPremiumAlert(title, message){
+      const modal=document.getElementById('premiumAlert');
+      if(!modal)return;
+      premiumAlertCallback=null;
+      document.getElementById('premiumAlertTitle').textContent=title||'Bilgilendirme';
+      document.getElementById('premiumAlertMessage').textContent=message||'';
+      document.getElementById('premiumAlertActions').innerHTML='<button type="button" class="premium-alert-primary" onclick="closePremiumAlert()">TAMAM</button>';
+      modal.classList.add('open');
+      document.body.classList.add('modal-open');
+    }
+    function showPremiumConfirm(title,message,onConfirm){
+      const modal=document.getElementById('premiumAlert');
+      if(!modal)return;
+      premiumAlertCallback=onConfirm||null;
+      document.getElementById('premiumAlertTitle').textContent=title||'Devam Edelim mi?';
+      document.getElementById('premiumAlertMessage').textContent=message||'';
+      document.getElementById('premiumAlertActions').innerHTML='<button type="button" class="premium-alert-secondary" onclick="closePremiumAlert()">VAZGEÇ</button><button type="button" class="premium-alert-primary" onclick="confirmPremiumAlert()">GİRİŞ YAP</button>';
+      modal.classList.add('open');
+      document.body.classList.add('modal-open');
+    }
+    function confirmPremiumAlert(){
+      const cb=premiumAlertCallback;
+      closePremiumAlert();
+      if(typeof cb==='function') setTimeout(cb,220);
+    }
+    function closePremiumAlert(){
+      const modal=document.getElementById('premiumAlert');
+      if(modal)modal.classList.remove('open');
+      premiumAlertCallback=null;
+      if(!document.getElementById('infoModal')?.classList.contains('open')) document.body.classList.remove('modal-open');
+    }
+    function navigateWithTransition(url){
+      const layer=document.getElementById('pageTransition');
+      if(!layer){window.location.href=url;return;}
+      layer.classList.add('active');
+      setTimeout(()=>{window.location.href=url;},320);
+    }
+    document.addEventListener('DOMContentLoaded',()=>{
+      /* Her tıklanabilir öğeye premium mikro animasyon / ripple */
+      document.querySelectorAll('a, button, .nav-action, .cart-btn, .favorite-btn, .buy').forEach(el=>{
+        el.addEventListener('click',function(e){
+          const r=document.createElement('span');
+          const rect=this.getBoundingClientRect();
+          const size=Math.max(rect.width,rect.height)*.7;
+          r.className='premium-ripple'; r.style.width=size+'px'; r.style.height=size+'px';
+          r.style.left=(e.clientX-rect.left-size/2)+'px'; r.style.top=(e.clientY-rect.top-size/2)+'px';
+          if(getComputedStyle(this).position==='static') this.style.position='relative';
+          this.style.overflow='hidden'; this.appendChild(r); setTimeout(()=>r.remove(),600);
+        });
+      });
+      /* Sayfa değiştiren bağlantılar önce premium geçiş gösterir */
+      document.querySelectorAll('a[href$=".html"], a[href$=".html#"]').forEach(a=>{
+        a.addEventListener('click',function(e){
+          const href=this.getAttribute('href');
+          if(!href || href.startsWith('#') || this.target==='_blank')return;
+          e.preventDefault(); navigateWithTransition(href);
+        });
+      });
+    });
+
     function toggleSearch() {
     const panel = document.getElementById("searchPanel");
 
@@ -1131,7 +1248,7 @@ document.addEventListener("keydown", function(event) {
 
       document.getElementById('products').scrollIntoView({behavior:'smooth'});
       if(term && !found){
-        alert('“'+input.value+'” için ürün bulunamadı.');
+        showPremiumAlert('Ürün Bulunamadı', 'Aradığınız ürün için eşleşen bir sonuç bulunamadı.');
       }
     }
 
@@ -1522,14 +1639,14 @@ function closeInfo(){
       const name=document.getElementById('contactName')?.value.trim();
       const email=document.getElementById('contactEmail')?.value.trim();
       const message=document.getElementById('contactMessage')?.value.trim();
-      if(!name||!email||!message){alert('Lütfen ad soyad, e-posta ve mesaj alanlarını doldurun.');return;}
-      alert('Mesajınız hazır. İletişim gönderim altyapısı bağlandığında bu form doğrudan NERIS ekibine iletilecek.');
+      if(!name||!email||!message){showPremiumAlert('Eksik Bilgi', 'Lütfen ad soyad, e-posta ve mesaj alanlarını doldurun.');return;}
+      showPremiumAlert('Mesajınız Hazır', 'Mesajınız alındı. Gönderim altyapısı bağlandığında doğrudan NERIS ekibine iletilecek.');
     }
 
     function trackOrder(){
       const input=document.getElementById('orderNo'); const no=input?input.value.trim():'';
-      if(!no){alert('Lütfen sipariş numaranızı girin.');return;}
-      alert('“'+no+'” numaralı sipariş için takip altyapısı hazır. Gerçek sipariş durumu, sipariş veritabanı bağlandığında burada gösterilecek.');
+      if(!no){showPremiumAlert('Sipariş Numarası', 'Lütfen sipariş numaranızı girin.');return;}
+      showPremiumAlert('Sipariş Takip', '“'+no+'” numaralı sipariş için takip altyapısı hazır. Gerçek durum, sipariş veritabanı bağlandığında burada gösterilecek.');
     }
 
     document.addEventListener('keydown', e=>{
@@ -1802,7 +1919,7 @@ const querySnapshot =
 
     } catch (error) {
         console.error("Favori işlemi başarısız:", error);
-        alert("Favori işlemi sırasında bir hata oluştu.");
+        showPremiumAlert("İşlem Başarısız", "Favori işlemi sırasında bir hata oluştu. Lütfen tekrar deneyin.");
     }
 });
 
