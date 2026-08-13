@@ -2294,6 +2294,12 @@
         display: none !important;
     }
 }
+    /* MODAL AÇIKKEN ANA SAYFA KAYMASIN */
+body.modal-open {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+}
   </style>
   <script type="application/ld+json">
 {
@@ -3078,11 +3084,13 @@ preinfo: {
       const item = data[type] || data.story;
       content.innerHTML = '<h2>'+item.title+'</h2><p>'+item.body+'</p>' + (item.form || '');
       document.getElementById('infoModal').classList.add('open');
+      document.body.classList.add('modal-open');
     }
 
-    function closeInfo(){
-      document.getElementById('infoModal').classList.remove('open');
-    }
+function closeInfo(){
+  document.getElementById('infoModal').classList.remove('open');
+  document.body.classList.remove('modal-open');
+}
 
     function trackOrder(){
       const no = document.getElementById('orderNo').value.trim();
