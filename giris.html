@@ -52,17 +52,24 @@ button:disabled{opacity:.6;cursor:wait;transform:none;box-shadow:none}
 </main>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 const firebaseConfig={apiKey:"AIzaSyAQ0ses6c9fJnk5xDsh37-0-fLcCj-MVQw",authDomain:"neris-78944.firebaseapp.com",projectId:"neris-78944",storageBucket:"neris-78944.firebasestorage.app",messagingSenderId:"58960639184",appId:"1:58960639184:web:dc25f186f8887f64f1dad5",measurementId:"G-CVD0X6X882"};
 const auth=getAuth(initializeApp(firebaseConfig));
+setPersistence(auth, browserLocalPersistence).catch(()=>{});
 const form=document.getElementById('loginForm'), btn=document.getElementById('loginButton'), msg=document.getElementById('message');
 function show(text,error=false){msg.textContent=text;msg.className='message show'+(error?' error':'')}
-onAuthStateChanged(auth,user=>{ if(user && sessionStorage.getItem('nerisLoginRedirect')==='1'){sessionStorage.removeItem('nerisLoginRedirect');location.href='index.html';} });
+onAuthStateChanged(auth,user=>{ if(user && sessionStorage.getItem('nerisLoginRedirect')==='1'){sessionStorage.removeItem('nerisLoginRedirect');window.location.replace('index.html?login=1');} });
 form.addEventListener('submit',async e=>{
  e.preventDefault();
  const email=document.getElementById('email').value.trim(), password=document.getElementById('password').value;
  btn.disabled=true;btn.textContent='GİRİŞ YAPILIYOR';msg.className='message';
- try{await signInWithEmailAndPassword(auth,email,password);sessionStorage.setItem('nerisLoginRedirect','1');show('Giriş başarılı. Ana sayfaya yönlendiriliyorsunuz.');setTimeout(()=>location.href='index.html',450)}
+ try{
+   await setPersistence(auth, browserLocalPersistence);
+   await signInWithEmailAndPassword(auth,email,password);
+   sessionStorage.setItem('nerisLoginRedirect','1');
+   show('Giriş başarılı. Ana sayfaya yönlendiriliyorsunuz.');
+   setTimeout(()=>window.location.replace('index.html?login=1'),450);
+ }
  catch(err){let t='E-posta veya şifre hatalı. Lütfen bilgilerinizi kontrol edin.';if(err.code==='auth/user-not-found')t='Bu e-posta ile kayıtlı bir hesap bulunamadı.';if(err.code==='auth/invalid-credential')t='E-posta veya şifre hatalı.';if(err.code==='auth/too-many-requests')t='Çok fazla deneme yapıldı. Lütfen biraz sonra tekrar deneyin.';show(t,true);btn.disabled=false;btn.textContent='GİRİŞ YAP'}
 });
 </script>
