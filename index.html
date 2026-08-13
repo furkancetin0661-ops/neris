@@ -21,6 +21,89 @@
 <meta property="og:site_name" content="Neris">
 
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  /* =====================================================
+   NERIS - SAYFA AÇILIŞ ANİMASYONU
+   ===================================================== */
+
+#nerisPageLoader{
+    position:fixed;
+    inset:0;
+    background:#050505;
+    z-index:99999999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    opacity:1;
+    visibility:visible;
+    pointer-events:all;
+    transition:
+        opacity .8s cubic-bezier(.22,.61,.36,1),
+        visibility 0s linear .8s;
+}
+
+#nerisPageLoader.hide{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+}
+
+.neris-loader-content{
+    text-align:center;
+    transform:translateY(15px);
+    opacity:0;
+    animation:nerisLoaderLogo 1s cubic-bezier(.22,.61,.36,1) .15s forwards;
+}
+
+.neris-loader-logo{
+    font-family:'Playfair Display',serif;
+    color:#d4af37;
+    font-size:38px;
+    font-weight:500;
+    letter-spacing:9px;
+}
+
+.neris-loader-line{
+    width:0;
+    height:1px;
+    background:#d4af37;
+    margin:18px auto 0;
+    animation:nerisLoaderLine .7s ease .55s forwards;
+}
+
+@keyframes nerisLoaderLogo{
+    from{
+        opacity:0;
+        transform:translateY(15px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes nerisLoaderLine{
+    from{
+        width:0;
+        opacity:0;
+    }
+    to{
+        width:42px;
+        opacity:1;
+    }
+}
+
+/* MOBİL */
+@media(max-width:768px){
+
+    .neris-loader-logo{
+        font-size:30px;
+        letter-spacing:7px;
+    }
+
+    .neris-loader-line{
+        margin-top:14px;
+    }
+}
 <style>
 /* PREMIUM ÇIKIŞ ANİMASYONU */
 .neris-logout-overlay{
@@ -1033,6 +1116,12 @@ document.addEventListener("keydown", function(event) {
 </head>
 
 <body>
+  <div id="nerisPageLoader">
+    <div class="neris-loader-content">
+        <div class="neris-loader-logo">NERIS</div>
+        <div class="neris-loader-line"></div>
+    </div>
+</div>
 
   <!-- ÜST BİLGİ BAR -->
   <div class="topbar">
@@ -2339,6 +2428,23 @@ onAuthStateChanged(auth,function(user){
   if(document.getElementById('favoritesContent')&&document.getElementById('infoModal')?.classList.contains('open')){
     window.loadFavoritesModal();
   }
+});
+    /* =====================================================
+   NERIS - SAYFA AÇILIŞ ANİMASYONU
+   ===================================================== */
+
+window.addEventListener("load", function(){
+
+    const loader = document.getElementById("nerisPageLoader");
+
+    if(!loader) return;
+
+    setTimeout(function(){
+
+        loader.classList.add("hide");
+
+    }, 650);
+
 });
 </script>
 </body>
