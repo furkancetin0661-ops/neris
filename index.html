@@ -2106,6 +2106,32 @@
     box-sizing: border-box !important;
   }
 }
+    /* ================================
+   HAMBURGER SADECE MOBİLDE
+================================ */
+
+.mobile-menu-btn {
+    display: none !important;
+}
+
+.mobile-menu {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+
+    .mobile-menu-btn {
+        display: flex !important;
+    }
+
+    .mobile-menu {
+        display: none !important;
+    }
+
+    .mobile-menu.active {
+        display: flex !important;
+    }
+}
   </style>
   <script type="application/ld+json">
 {
