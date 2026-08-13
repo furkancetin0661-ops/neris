@@ -824,6 +824,18 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .buy:
   .premium-alert-actions button{min-height:48px}
 }
 
+
+/* FINAL FIX — PRODUCT VISIBILITY / LOGIN TRANSITION */
+.products-empty{
+  grid-column:1/-1; text-align:center; padding:70px 20px;
+  border:1px solid rgba(212,175,55,.22); background:linear-gradient(145deg,#111,#0a0a0a);
+}
+.products-empty span{display:block;color:#d4af37;letter-spacing:5px;font-size:9px;margin-bottom:14px}
+.products-empty strong{display:block;font-family:'Playfair Display',serif;font-size:25px;font-weight:500;margin-bottom:10px}
+.products-empty p{color:#888;font-size:13px;margin:0 0 20px}
+.products-empty button{background:#d4af37;border:1px solid #d4af37;color:#080808;padding:13px 26px;font-size:10px;font-weight:600;letter-spacing:1.5px;cursor:pointer}
+@media(max-width:768px){.products-empty{padding:52px 16px}.products-empty strong{font-size:22px}}
+
 </style>
   <script type="application/ld+json">
 {
@@ -886,7 +898,7 @@ document.addEventListener("keydown", function(event) {
 
     <div class="topbar-right">
 <div class="account-menu-wrapper">
-    <button id="loginLink" class="nav-action" type="button">
+    <button id="loginLink" class="nav-action" type="button" onclick="handleLoginClick(event)">
         <span class="nav-icon">♙</span>
         <span id="accountName">GİRİŞ YAP</span>
         <span class="account-arrow">▾</span>
@@ -939,7 +951,7 @@ document.addEventListener("keydown", function(event) {
   <div class="mobile-menu-bottom">
     <a href="#" onclick="openInfo('tracking'); closeMobileMenu(); return false;" class="mobile-order-btn">🚚 &nbsp; SİPARİŞ TAKİP</a>
     <div class="mobile-account-buttons">
-      <a href="giris.html" onclick="event.preventDefault(); navigateWithTransition('giris.html')">♙ &nbsp; GİRİŞ YAP</a>
+      <a href="giriş.html" onclick="event.preventDefault(); navigateWithTransition('giriş.html')">♙ &nbsp; GİRİŞ YAP</a>
       <a href="register.html">♙+ &nbsp; ÜYE OL</a>
     </div>
   </div>
@@ -1206,7 +1218,20 @@ document.addEventListener("keydown", function(event) {
       const layer=document.getElementById('pageTransition');
       if(!layer){window.location.href=url;return;}
       layer.classList.add('active');
-      setTimeout(()=>{window.location.href=url;},320);
+      setTimeout(()=>{window.location.href=url;},380);
+    }
+
+    function handleLoginClick(event){
+      if(event) event.preventDefault();
+      const authReady = (typeof authInitialized !== 'undefined') ? authInitialized : false;
+      const currentUser = (typeof auth !== 'undefined') ? auth.currentUser : null;
+      if(currentUser){
+        const dropdown=document.getElementById('accountDropdown');
+        if(dropdown) dropdown.classList.toggle('active');
+        return false;
+      }
+      navigateWithTransition('giriş.html');
+      return false;
     }
     document.addEventListener('DOMContentLoaded',()=>{
       /* Her tıklanabilir öğeye premium mikro animasyon / ripple */
@@ -1750,19 +1775,17 @@ import {
 
     async function loadProducts(){
 
+      const container = document.getElementById("productsGrid");
+      if(!container) return;
+
       try{
 
 const querySnapshot =
     await getDocs(collection(db, "Ürünler"));
 
-        const container =
-          document.getElementById("productsGrid");
-
-
         if(querySnapshot.empty){
-
+          container.innerHTML = '<div class="products-empty"><span>NERIS</span><strong>Yeni koleksiyon hazırlanıyor</strong><p>Çok yakında yeni ürünlerle buluşacağız.</p></div>';
           return;
-
         }
 
 
@@ -1823,9 +1846,8 @@ const querySnapshot =
 
 
       }catch(error){
-
         console.error("Ürünler yüklenirken hata:",error);
-
+        container.innerHTML = '<div class="products-empty"><span>NERIS</span><strong>Ürünler yüklenemedi</strong><p>Bağlantıyı yenileyip tekrar deneyebilirsiniz.</p><button type="button" onclick="location.reload()">YENİLE</button></div>';
       }
 
     }
@@ -1871,7 +1893,7 @@ const querySnapshot =
       const container=document.getElementById('favoritesContent'); if(!container)return;
       if(!authInitialized){container.innerHTML='<div class="favorites-empty"><div class="favorites-icon">♡</div><h3>Hesabınız kontrol ediliyor</h3><p>Lütfen bir saniye bekleyin.</p></div>';return;}
       const user=auth.currentUser;
-      if(!user){container.innerHTML='<div class="login-required"><div class="login-required-icon">♡</div><h3>Favorilerinizi oluşturun</h3><p>Favori ürünlerinizi kaydetmek ve daha sonra görüntülemek için hesabınıza giriş yapın.</p><div class="login-required-actions"><a href="giris.html" onclick="event.preventDefault(); navigateWithTransition('giris.html')">GİRİŞ YAP</a><button type="button" onclick="closeInfo()">VAZGEÇ</button></div></div>';return;}
+      if(!user){container.innerHTML='<div class="login-required"><div class="login-required-icon">♡</div><h3>Favorilerinizi oluşturun</h3><p>Favori ürünlerinizi kaydetmek ve daha sonra görüntülemek için hesabınıza giriş yapın.</p><div class="login-required-actions"><a href="giriş.html" onclick="event.preventDefault(); navigateWithTransition('giriş.html')">GİRİŞ YAP</a><button type="button" onclick="closeInfo()">VAZGEÇ</button></div></div>';return;}
       try{
         const fs=await getDocs(collection(db,'favoriler')); const favs=[];
         fs.forEach(d=>{const x=d.data();if(x.kullaniciId===user.uid&&x.urunId)favs.push(x)});
@@ -1900,7 +1922,7 @@ const querySnapshot =
         showPremiumConfirm(
           "Favorilerinize Kaydedin",
           "Favori ürünlerinizi kaydetmek için NERIS hesabınıza giriş yapmanız gerekiyor.",
-          function(){ navigateWithTransition("giris.html"); }
+          function(){ navigateWithTransition("giriş.html"); }
         );
         return;
     }
@@ -1961,23 +1983,7 @@ const accountDropdown = document.getElementById("accountDropdown");
 const logoutButton = document.getElementById("logoutButton");
 const accountName = document.getElementById("accountName");
 if (loginLink) {
-
-    loginLink.addEventListener("click", function(e) {
-
-        e.preventDefault();
-
-        if (auth.currentUser) {
-
-            accountDropdown.classList.toggle("active");
-
-        } else {
-
-            navigateWithTransition("giris.html");
-
-        }
-
-    });
-
+    loginLink.removeAttribute('href');
 }
 
 
@@ -2019,9 +2025,9 @@ onAuthStateChanged(auth,function(user){
   if(!loginLink)return;
   if(user){
     const userName=user.displayName||(user.email?user.email.split('@')[0]:'HESABIM');
-    accountName.textContent=userName; loginLink.href='#'; loadFavorites();
+    accountName.textContent=userName; loginLink.removeAttribute('href'); loadFavorites();
   }else{
-    accountName.textContent='GİRİŞ YAP'; loginLink.href='#'; loginLink.onclick=null;
+    accountName.textContent='GİRİŞ YAP'; loginLink.removeAttribute('href');
     document.querySelectorAll('.favorite-btn.active').forEach(b=>{b.classList.remove('active');b.innerHTML='♡'});
   }
   if(document.getElementById('favoritesContent')&&document.getElementById('infoModal')?.classList.contains('open'))window.loadFavoritesModal();
