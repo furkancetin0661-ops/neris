@@ -2120,6 +2120,21 @@
   },
   "sameAs": []
 }
+    function toggleMobileMenu() {
+    const menu = document.getElementById("mobileMenu");
+
+    if (!menu) return;
+
+    menu.classList.toggle("active");
+}
+
+function closeMobileMenu() {
+    const menu = document.getElementById("mobileMenu");
+
+    if (!menu) return;
+
+    menu.classList.remove("active");
+}
 </script>
 </head>
 
