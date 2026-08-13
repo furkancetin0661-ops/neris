@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Neris | Premium</title>
-  <!-- NERIS FIX PACK: auth-ui + product fallback + removed categories -->
   <meta name="description" content="Neris, premium kadın giyim ve butik moda koleksiyonlarını keşfedin. Şık elbiseler, özel tasarımlar ve seçkin kadın giyim ürünleri.">
 
 <meta name="keywords" content="Neris, Neris butik, kadın giyim, kadın moda, butik giyim, kadın elbise, premium kadın giyim, şık elbise">
@@ -125,24 +124,6 @@ button,input,textarea{font:inherit}
 .account-divider{height:1px;background:#292929;margin:6px 12px}
 .account-arrow{margin-left:5px;font-size:10px}
 
-/* PREMIUM HESAP PANELİ */
-.account-dropdown{min-width:310px;padding:0;overflow:hidden;border:1px solid rgba(212,175,55,.28);background:linear-gradient(145deg,#141414,#090909);box-shadow:0 24px 70px rgba(0,0,0,.72);}
-.account-profile{padding:20px 20px 17px;border-bottom:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(212,175,55,.07),transparent);}
-.account-profile-top{display:flex;align-items:center;gap:13px;}
-.account-avatar{width:46px;height:46px;flex:0 0 46px;border:1px solid rgba(212,175,55,.7);border-radius:50%;display:flex;align-items:center;justify-content:center;background:#0a0a0a;color:#d4af37;font-family:'Playfair Display',serif;font-size:17px;font-weight:500;letter-spacing:.5px;}
-.account-profile-copy{min-width:0;display:flex;flex-direction:column;gap:3px;}
-.account-profile-name{color:#fff;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:210px;}
-.account-profile-email{color:#777;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:210px;}
-.account-profile-label{display:block;margin-top:12px;color:#d4af37;font-size:8px;letter-spacing:2px;}
-.account-dropdown .account-link{display:flex;align-items:center;justify-content:space-between;width:100%;padding:14px 19px;color:#e9e9e9;background:transparent;border:0;text-decoration:none;text-align:left;font-family:inherit;font-size:12px;cursor:pointer;transition:.25s ease;}
-.account-dropdown .account-link span:last-child{color:#555;font-size:14px;transition:.25s ease;}
-.account-dropdown .account-link:hover{background:#171717;color:#d4af37;padding-left:23px;}
-.account-dropdown .account-link:hover span:last-child{color:#d4af37;transform:translateX(2px);}
-.account-dropdown .account-divider{height:1px;background:rgba(255,255,255,.08);margin:4px 13px;}
-.account-dropdown #logoutButton{display:flex;align-items:center;justify-content:flex-start;gap:9px;width:100%;padding:14px 19px;color:#999;background:transparent;border:0;text-align:left;font-family:inherit;font-size:11px;cursor:pointer;transition:.25s ease;}
-.account-dropdown #logoutButton:hover{background:#171717;color:#d4af37;padding-left:23px;}
-@media(max-width:768px){.account-dropdown{min-width:280px;right:-8px}.account-profile-name,.account-profile-email{max-width:190px}}
-
 /* INFO MODAL — PREMIUM */
   .info-modal{position:fixed;inset:0;width:100vw;height:100vh;background:rgba(0,0,0,.78);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:999999;display:flex;align-items:center;justify-content:center;padding:30px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s ease,visibility 0s linear .35s}
   .info-modal.open{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .35s ease,visibility 0s linear 0s}
@@ -184,10 +165,6 @@ button,input,textarea{font:inherit}
   .mobile-account-buttons a{height:64px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:17px;font-weight:700}
   .mobile-account-buttons a:first-child{background:#222;color:#fff}
   .mobile-account-buttons a:last-child{background:#f1f1f1;color:#222}
-  .mobile-account-buttons button{height:64px;border:0;background:#222;color:#fff;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit}
-  .mobile-account-buttons button:active{transform:scale(.98)}
-  .mobile-account-buttons.logged-in button{background:#111;color:#d4af37}
-  .mobile-account-buttons.logged-in button span{max-width:145px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
   .hero{min-height:calc(100svh - 72px);height:calc(100svh - 72px);max-height:none;background:linear-gradient(rgba(0,0,0,.15),rgba(0,0,0,.45)),url("hero.png") center top/cover no-repeat}
   .hero-image{object-position:center top}
@@ -195,6 +172,14 @@ button,input,textarea{font:inherit}
   .hero-text h1{font-size:42px;line-height:1;margin:0 0 10px;color:#fff;text-shadow:0 3px 8px rgba(0,0,0,.7);white-space:nowrap}
   .hero-text p{font-size:17px;line-height:1.2;margin:0 0 20px;color:#fff;text-shadow:0 2px 7px rgba(0,0,0,.7);white-space:nowrap}
   .hero-text .hero-btn{width:min(230px,90vw);height:58px;margin:0 auto;padding:0;display:inline-flex;align-items:center;justify-content:center;font-size:17px;white-space:nowrap}
+
+  .categories{padding:55px 15px}
+  .categories-title{margin-bottom:28px}
+  .categories-title h2{font-size:32px}
+  .category-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .category-card{height:280px}
+  .category-overlay{left:14px;bottom:14px}
+  .category-overlay h3{font-size:18px}
 
   .benefits{grid-template-columns:1fr 1fr;padding:35px 10px;gap:25px 0}
   .benefit{padding:10px 12px}
@@ -239,6 +224,7 @@ button,input,textarea{font:inherit}
   .hero-text{bottom:35px}
   .hero-text h1{font-size:38px}
   .hero-text p{font-size:16px}
+  .category-card{height:250px}
   .card-image{height:230px}
   .mobile-menu-links a{font-size:20px;min-height:76px}
 }
@@ -812,45 +798,6 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .buy:
  .premium-alert-actions button{width:100%}
 }
 
-
-/* NERIS FINAL — PREMIUM LOGIN / FAVORITE FLOW */
-.premium-alert-box{
-  border-radius:4px;
-  overflow:hidden;
-}
-.premium-alert-box::after{
-  content:"";position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(120deg,transparent 20%,rgba(212,175,55,.035) 50%,transparent 80%);
-  transform:translateX(-100%);transition:transform .8s ease;
-}
-.premium-alert.open .premium-alert-box::after{transform:translateX(100%)}
-.premium-alert-actions button{
-  border-radius:2px;
-  transition:transform .25s cubic-bezier(.22,.61,.36,1),box-shadow .25s ease,background .25s ease,border-color .25s ease;
-}
-.premium-alert-actions button:active{transform:scale(.96)}
-@media(max-width:768px){
-  .premium-alert{padding:18px}
-  .premium-alert-box{width:100%;max-width:390px;padding:34px 22px 24px}
-  .premium-alert-title{font-size:22px}
-  .premium-alert-message{font-size:12px;max-width:310px}
-  .premium-alert-actions{gap:8px}
-  .premium-alert-actions button{min-height:48px}
-}
-
-
-/* FINAL FIX — PRODUCT VISIBILITY / LOGIN TRANSITION */
-#productsGrid .neris-fallback-product{display:block!important;}
-.products-empty{
-  grid-column:1/-1; text-align:center; padding:70px 20px;
-  border:1px solid rgba(212,175,55,.22); background:linear-gradient(145deg,#111,#0a0a0a);
-}
-.products-empty span{display:block;color:#d4af37;letter-spacing:5px;font-size:9px;margin-bottom:14px}
-.products-empty strong{display:block;font-family:'Playfair Display',serif;font-size:25px;font-weight:500;margin-bottom:10px}
-.products-empty p{color:#888;font-size:13px;margin:0 0 20px}
-.products-empty button{background:#d4af37;border:1px solid #d4af37;color:#080808;padding:13px 26px;font-size:10px;font-weight:600;letter-spacing:1.5px;cursor:pointer}
-@media(max-width:768px){.products-empty{padding:52px 16px}.products-empty strong{font-size:22px}}
-
 </style>
   <script type="application/ld+json">
 {
@@ -861,8 +808,6 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .buy:
   "description":"Neris, premium kadın giyim ve butik moda koleksiyonları sunar.",
   "brand":{"@type":"Brand","name":"Neris"}
 }
-</script>
-<script>
     document.addEventListener("click", function(event) {
 
     const searchPanel = document.getElementById("searchPanel");
@@ -915,28 +860,20 @@ document.addEventListener("keydown", function(event) {
 
     <div class="topbar-right">
 <div class="account-menu-wrapper">
-    <button id="loginLink" class="nav-action" type="button" onclick="handleLoginClick(event)">
+    <button id="loginLink" class="nav-action" type="button">
         <span class="nav-icon">♙</span>
         <span id="accountName">GİRİŞ YAP</span>
         <span class="account-arrow">▾</span>
     </button>
 
     <div class="account-dropdown" id="accountDropdown">
-        <div class="account-profile">
-            <div class="account-profile-top">
-                <div class="account-avatar" id="accountAvatar">N</div>
-                <div class="account-profile-copy">
-                    <div class="account-profile-name" id="accountProfileName">HESABIM</div>
-                    <div class="account-profile-email" id="accountProfileEmail">Hesabınızla giriş yaptınız</div>
-                </div>
-            </div>
-            <span class="account-profile-label">NERIS ÜYELİĞİ</span>
-        </div>
-        <a href="account.html" class="account-link"><span>Hesabım</span><span>›</span></a>
-        <a href="siparişler.html" class="account-link"><span>Siparişlerim</span><span>›</span></a>
-        <a href="favoriler.html" class="account-link"><span>Favorilerim</span><span>›</span></a>
+        <a href="account.html">Hesabım</a>
+        <a href="siparişler.html">Siparişlerim</a>
+        <a href="favoriler.html">Favorilerim</a>
+
         <div class="account-divider"></div>
-        <button id="logoutButton" type="button"><span>↪</span> Çıkış Yap</button>
+
+        <button id="logoutButton">Çıkış Yap</button>
     </div>
 </div>
       <span class="topbar-separator"></span>
@@ -969,15 +906,14 @@ document.addEventListener("keydown", function(event) {
   </div>
   <div class="mobile-menu-links">
     <a href="#" onclick="openInfo('story'); closeMobileMenu(); return false;">HİKAYEMİZ <span>›</span></a>
-    <a href="#" onclick="openInfo('tracking'); closeMobileMenu(); return false;">SİPARİŞ TAKİP <span>›</span></a>
     <a href="#" onclick="openInfo('contact'); closeMobileMenu(); return false;">BİZE ULAŞIN <span>›</span></a>
     
   </div>
   <div class="mobile-menu-bottom">
     <a href="#" onclick="openInfo('tracking'); closeMobileMenu(); return false;" class="mobile-order-btn">🚚 &nbsp; SİPARİŞ TAKİP</a>
-    <div class="mobile-account-buttons" id="mobileAccountButtons">
-      <button id="mobileLoginLink" type="button" onclick="handleMobileLoginClick(event)">♙ &nbsp; <span id="mobileAccountName">GİRİŞ YAP</span></button>
-      <a id="mobileRegisterLink" href="register.html">♙+ &nbsp; ÜYE OL</a>
+    <div class="mobile-account-buttons">
+      <a href="giris.html">♙ &nbsp; GİRİŞ YAP</a>
+      <a href="register.html">♙+ &nbsp; ÜYE OL</a>
     </div>
   </div>
 </div>
@@ -1006,19 +942,8 @@ document.addEventListener("keydown", function(event) {
     </div>
 
     <div class="grid" id="productsGrid">
-      <!-- ANA ÜRÜN: Firebase gecikse bile görünür -->
-      <div class="card neris-fallback-product" data-fallback-product="siyah-elbise">
-        <div class="card-image">
-          <div class="badge">NEW</div>
-          <button class="favorite-btn" data-id="siyah-elbise" type="button" aria-label="Favorilere ekle">♡</button>
-          <img src="hero.png" alt="Siyah Elbise" loading="eager">
-        </div>
-        <div class="card-content">
-          <h3>Siyah Elbise</h3>
-          <p class="product-price"><span class="price-currency">₺</span><span class="price-value">2399</span></p>
-          <a href="#" class="buy" onclick="return false;">SATIN AL</a>
-        </div>
-      </div>
+
+      
     </div>
 
   </section>
@@ -1193,7 +1118,7 @@ document.addEventListener("keydown", function(event) {
 
 
 
-<div class="page-transition active" id="pageTransition" aria-hidden="true"></div>
+<div class="page-transition" id="pageTransition"></div>
 
 <!-- NERIS PREMIUM ALERT -->
 <div class="premium-alert" id="premiumAlert" onclick="if(event.target===this)closePremiumAlert()">
@@ -1254,84 +1179,8 @@ document.addEventListener("keydown", function(event) {
       const layer=document.getElementById('pageTransition');
       if(!layer){window.location.href=url;return;}
       layer.classList.add('active');
-      setTimeout(()=>{window.location.href=url;},380);
+      setTimeout(()=>{window.location.href=url;},320);
     }
-
-    /* Tarayıcının geri tuşunda bfcache ile dönen sayfada geçiş perdesini temizle.
-       Böylece NERIS logosunda takılı kalmaz; ana sayfa normal şekilde görünür. */
-    window.addEventListener('pageshow', function(){
-      const layer = document.getElementById('pageTransition');
-      const nav = performance.getEntriesByType('navigation')[0];
-      const navType = nav ? nav.type : 'navigate';
-
-      /*
-         NERIS sayfaya ilk kez girildiğinde, adres çubuğuna yazıp ENTER'a
-         basıldığında veya sayfa yenilendiğinde giriş perdesi animasyonla
-         görünür ve içerik hazır olduktan sonra yumuşakça kaybolur.
-         Geri/ileri ile dönüldüğünde ise sayfayı perdede bırakmaz.
-      */
-      if(layer){
-        if(navType === 'back_forward'){
-          layer.classList.remove('active');
-        }else{
-          layer.classList.add('active');
-          setTimeout(function(){ layer.classList.remove('active'); }, 720);
-        }
-      }
-
-      document.body.classList.remove('modal-open');
-      // Giriş sayfasından geri dönüldüğünde Firebase oturumunu yeniden UI'ya uygula.
-      if(window.nerisAuth && window.nerisAuth.currentUser && typeof window.syncNerisAccountUI === 'function'){
-        window.syncNerisAccountUI(window.nerisAuth.currentUser);
-      }
-    });
-
-    /* Sayfa yenilendiğinde tarayıcı eski scroll konumunu geri yüklemesin.
-       Geri/ileri navigasyonunda mevcut konumu bozmaz. */
-    window.addEventListener('load', function(){
-      const nav = performance.getEntriesByType('navigation')[0];
-      if (nav && nav.type === 'reload') {
-        setTimeout(function(){ window.scrollTo({top:0,left:0,behavior:'instant'}); }, 30);
-      }
-    });
-
-    function handleMobileLoginClick(event){
-      if(event) event.preventDefault();
-      const authUser = window.nerisAuth ? window.nerisAuth.currentUser : null;
-      const loginButton = document.getElementById('loginLink');
-      const loggedIn = !!authUser || loginButton?.dataset.loggedIn === 'true';
-
-      if(loggedIn){
-        // Mobilde kullanıcı giriş yaptıktan sonra adı görünür; hesabın ana ekranına geçiş yapar.
-        closeMobileMenu();
-        navigateWithTransition('account.html');
-        return false;
-      }
-
-      closeMobileMenu();
-      navigateWithTransition('giris.html');
-      return false;
-    }
-    window.handleMobileLoginClick = handleMobileLoginClick;
-
-    function handleLoginClick(event){
-      if(event) event.preventDefault();
-      const currentUser = window.nerisAuth ? window.nerisAuth.currentUser : null;
-      const loggedIn = !!currentUser || document.getElementById('loginLink')?.dataset.loggedIn === 'true';
-      if(loggedIn){
-        const dropdown=document.getElementById('accountDropdown');
-        if(dropdown) dropdown.classList.toggle('active');
-        return false;
-      }
-      navigateWithTransition('giris.html');
-      return false;
-    }
-    window.addEventListener('focus', function(){
-      if(window.nerisAuth && window.nerisAuth.currentUser && typeof window.syncNerisAccountUI === 'function'){
-        window.syncNerisAccountUI(window.nerisAuth.currentUser);
-      }
-    });
-
     document.addEventListener('DOMContentLoaded',()=>{
       /* Her tıklanabilir öğeye premium mikro animasyon / ripple */
       document.querySelectorAll('a, button, .nav-action, .cart-btn, .favorite-btn, .buy').forEach(el=>{
@@ -1851,9 +1700,7 @@ function closeMobileMenu() {
 
 import {
     getAuth,
-    onAuthStateChanged,
-    setPersistence,
-    browserLocalPersistence
+    onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
     const firebaseConfig = {
@@ -1871,54 +1718,91 @@ import {
 
     const db = getFirestore(app);
     const auth = getAuth(app);
-    // Normal (non-module) UI kodunun da aynı Firebase oturumunu kullanabilmesi için
-    // auth nesnesini güvenli şekilde window üzerinde paylaş.
-    window.nerisAuth = auth;
     let authInitialized = false;
-    // Oturumun index.html'de de aynı tarayıcı oturumunda kalmasını garanti et.
-    setPersistence(auth, browserLocalPersistence).catch((e)=>console.warn("Auth persistence:", e));
 
 
     async function loadProducts(){
-      const container=document.getElementById("productsGrid");
-      if(!container) return;
-      const fallback=container.querySelector('[data-fallback-product="siyah-elbise"]');
-      try{
-        const querySnapshot=await getDocs(collection(db,"Ürünler"));
-        const firebaseProducts=[];
-        querySnapshot.forEach(d=>firebaseProducts.push({...d.data(),id:d.id}));
-        const hasBlackDress=firebaseProducts.some(p=>String(p.reklam||'').trim().toLocaleLowerCase('tr-TR')==='siyah elbise');
 
-        // Firebase ürünleri varsa mevcut ürünleri ekle; ana Siyah Elbise kartını koru.
-        firebaseProducts.forEach(p=>{
-          if(String(p.reklam||'').trim().toLocaleLowerCase('tr-TR')==='siyah elbise'){
-            if(fallback){
-              fallback.dataset.id=p.id;
-              const fav=fallback.querySelector('.favorite-btn');
-              if(fav) fav.dataset.id=p.id;
-              const img=fallback.querySelector('img');
-              if(img && p.resim) img.src=p.resim;
-              const title=fallback.querySelector('h3');
-              if(title) title.textContent=p.reklam||'Siyah Elbise';
-              const price=fallback.querySelector('.price-value');
-              if(price) price.textContent=p.fiyat||'2399';
-              const buy=fallback.querySelector('.buy');
-              if(buy && (p['Bağlantı']||p['bağlantı'])){buy.href=p['Bağlantı']||p['bağlantı'];buy.target='_blank';buy.onclick=null;}
-            }
-            return;
-          }
-          const card=document.createElement('div');
-          card.className='card';
-          card.innerHTML=`<div class="card-image"><div class="badge">${p.rozet||'NEW'}</div><button class="favorite-btn" data-id="${p.id}" type="button" aria-label="Favorilere ekle">♡</button><img src="${p.resim||'https://picsum.photos/500/650'}" alt="${p.reklam||'Neris Ürün'}"></div><div class="card-content"><h3>${p.reklam||'Ürün'}</h3><p class="product-price"><span class="price-currency">₺</span><span class="price-value">${p.fiyat||'0'}</span></p><a href="${p['Bağlantı']||p['bağlantı']||'#'}" target="_blank" class="buy">SATIN AL</a></div>`;
+      try{
+
+const querySnapshot =
+    await getDocs(collection(db, "Ürünler"));
+
+        const container =
+          document.getElementById("productsGrid");
+
+
+        if(querySnapshot.empty){
+
+          return;
+
+        }
+
+
+        container.innerHTML = "";
+
+
+        querySnapshot.forEach((doc)=>{
+
+          const p = {
+    ...doc.data(),
+    id: doc.id
+};
+
+
+          const card = document.createElement("div");
+
+          card.className = "card";
+
+
+          card.innerHTML = `
+
+            
+
+            <div class="card-image">
+
+    <div class="badge">${p.rozet || "NEW"}</div>
+
+    <button class="favorite-btn" data-id="${p.id}" type="button">♡</button>
+
+    <img
+        src="${p.resim || 'https://picsum.photos/500/650'}"
+        alt="${p.reklam || 'Neris Ürün'}"
+    >
+
+</div>
+
+<div class="card-content">
+
+    <h3>${p.reklam || "Ürün"}</h3>
+
+    <p class="product-price"><span class="price-currency">₺</span><span class="price-value">${p.fiyat || "0"}</span></p>
+
+    <a
+        href="${p["Bağlantı"] || '#'}"
+        target="_blank"
+        class="buy"
+    >
+        SATIN AL
+    </a>
+
+</div>
+          `;
+
+
           container.appendChild(card);
+
         });
 
-        if(fallback) fallback.style.display='';
+
       }catch(error){
-        console.warn('Firebase ürünleri yüklenemedi; ana ürün yerel olarak gösteriliyor.',error);
-        if(fallback) fallback.style.display='';
+
+        console.error("Ürünler yüklenirken hata:",error);
+
       }
+
     }
+
 
    loadProducts().then(() => {
     loadFavorites();
@@ -1960,7 +1844,7 @@ import {
       const container=document.getElementById('favoritesContent'); if(!container)return;
       if(!authInitialized){container.innerHTML='<div class="favorites-empty"><div class="favorites-icon">♡</div><h3>Hesabınız kontrol ediliyor</h3><p>Lütfen bir saniye bekleyin.</p></div>';return;}
       const user=auth.currentUser;
-      if(!user){container.innerHTML='<div class="login-required"><div class="login-required-icon">♡</div><h3>Favorilerinizi oluşturun</h3><p>Favori ürünlerinizi kaydetmek ve daha sonra görüntülemek için hesabınıza giriş yapın.</p><div class="login-required-actions"><a href="giris.html" onclick="event.preventDefault(); navigateWithTransition(\'giris.html\')">GİRİŞ YAP</a><button type="button" onclick="closeInfo()">VAZGEÇ</button></div></div>';return;}
+      if(!user){container.innerHTML='<div class="login-required"><div class="login-required-icon">♡</div><h3>Favorilerinizi oluşturun</h3><p>Favori ürünlerinizi kaydetmek ve daha sonra görüntülemek için hesabınıza giriş yapın.</p><div class="login-required-actions"><a href="giris.html">GİRİŞ YAP</a><button type="button" onclick="closeInfo()">VAZGEÇ</button></div></div>';return;}
       try{
         const fs=await getDocs(collection(db,'favoriler')); const favs=[];
         fs.forEach(d=>{const x=d.data();if(x.kullaniciId===user.uid&&x.urunId)favs.push(x)});
@@ -1986,11 +1870,8 @@ import {
     /* GİRİŞ YOKSA HİÇBİR ŞEKİLDE FAVORİ KAYDI YAPILMAZ */
     if (!authInitialized || !user) {
         button.blur();
-        showPremiumConfirm(
-          "Favorilerinize Kaydedin",
-          "Favori ürünlerinizi kaydetmek için NERIS hesabınıza giriş yapmanız gerekiyor.",
-          function(){ navigateWithTransition("giris.html"); }
-        );
+        const goLogin=confirm("Favorilere ürün eklemek için giriş yapmanız gerekmektedir. Giriş sayfasına gitmek ister misiniz?");
+        if(goLogin) window.location.href="giris.html";
         return;
     }
 
@@ -2020,7 +1901,7 @@ import {
             const productRef = doc(db, "Ürünler", productId);
             const productSnap = await getDoc(productRef);
 
-            if (!productSnap.exists() && productId !== 'siyah-elbise') {
+            if (!productSnap.exists()) {
                 console.error("Ürün bulunamadı.");
                 return;
             }
@@ -2049,14 +1930,24 @@ const loginLink = document.getElementById("loginLink");
 const accountDropdown = document.getElementById("accountDropdown");
 const logoutButton = document.getElementById("logoutButton");
 const accountName = document.getElementById("accountName");
-
-/* GİRİŞ / HESAP MENÜSÜ
-   HTML'deki handleLoginClick() tek giriş noktasıdır.
-   Kullanıcı giriş yaptıysa isim alanı dropdown'u açar; giriş yoksa
-   premium geçişle giris.html'e gider. */
 if (loginLink) {
-    loginLink.setAttribute('type', 'button');
-    loginLink.removeAttribute('href');
+
+    loginLink.addEventListener("click", function(e) {
+
+        e.preventDefault();
+
+        if (auth.currentUser) {
+
+            accountDropdown.classList.toggle("active");
+
+        } else {
+
+            window.location.href = "giris.html";
+
+        }
+
+    });
+
 }
 
 
@@ -2066,19 +1957,9 @@ if (logoutButton) {
     logoutButton.addEventListener("click", function() {
 
         auth.signOut().then(function() {
-            try{localStorage.removeItem('nerisUserName');}catch(e){}
-            const loginButton=document.getElementById('loginLink');
-            const nameEl=document.getElementById('accountName');
-            if(nameEl) nameEl.textContent='GİRİŞ YAP';
-            const profileName=document.getElementById('accountProfileName');
-            const profileEmail=document.getElementById('accountProfileEmail');
-            const avatar=document.getElementById('accountAvatar');
-            if(profileName) profileName.textContent='HESABIM';
-            if(profileEmail) profileEmail.textContent='Hesabınızla giriş yaptığınızda bilgileriniz burada görünür';
-            if(avatar) avatar.textContent='N';
-            if(loginButton) loginButton.dataset.loggedIn='false';
-            if(accountDropdown) accountDropdown.classList.remove('active');
+
             window.location.reload();
+
         });
 
     });
@@ -2102,81 +1983,18 @@ document.addEventListener("click", function(e) {
 
 });
 
-function syncAccountUI(user){
-  const loginButton=document.getElementById('loginLink');
-  const nameEl=document.getElementById('accountName');
-  const profileName=document.getElementById('accountProfileName');
-  const profileEmail=document.getElementById('accountProfileEmail');
-  const avatar=document.getElementById('accountAvatar');
-  const mobileNameEl=document.getElementById('mobileAccountName');
-  const mobileButtons=document.getElementById('mobileAccountButtons');
-  const mobileRegister=document.getElementById('mobileRegisterLink');
-  if(!loginButton || !nameEl) return;
-  if(user){
-    const userName=(user.displayName && user.displayName.trim())
-      ? user.displayName.trim()
-      : (user.email ? user.email.split('@')[0] : 'HESABIM');
-    const email=user.email || 'NERIS hesabınız';
-    const initials=userName.trim().split(/\s+/).filter(Boolean).slice(0,2).map(x=>x.charAt(0).toUpperCase()).join('') || 'N';
-    nameEl.textContent=userName;
-    if(mobileNameEl) mobileNameEl.textContent=userName;
-    if(mobileButtons) mobileButtons.classList.add('logged-in');
-    if(mobileRegister) mobileRegister.style.display='none';
-    if(profileName) profileName.textContent=userName;
-    if(profileEmail) profileEmail.textContent=email;
-    if(avatar) avatar.textContent=initials;
-    loginButton.setAttribute('type','button');
-    loginButton.removeAttribute('href');
-    loginButton.dataset.loggedIn='true';
-  }else{
-    nameEl.textContent='GİRİŞ YAP';
-    if(mobileNameEl) mobileNameEl.textContent='GİRİŞ YAP';
-    if(mobileButtons) mobileButtons.classList.remove('logged-in');
-    if(mobileRegister) mobileRegister.style.display='flex';
-    if(profileName) profileName.textContent='HESABIM';
-    if(profileEmail) profileEmail.textContent='Hesabınızla giriş yaptığınızda bilgileriniz burada görünür';
-    if(avatar) avatar.textContent='N';
-    loginButton.setAttribute('type','button');
-    loginButton.removeAttribute('href');
-    loginButton.dataset.loggedIn='false';
-    document.querySelectorAll('.favorite-btn.active').forEach(b=>{b.classList.remove('active');b.innerHTML='♡'});
-  }
-}
-window.syncNerisAccountUI = syncAccountUI;
-
-// Girişten hemen sonra isim ekranda görünsün; Firebase durumu da ardından doğrulasın.
-(function restoreSavedAccount(){
-  try{
-    const saved=localStorage.getItem('nerisUserName');
-    if(saved){ syncAccountUI({displayName:saved,email:saved}); }
-  }catch(e){}
-})();
-
 onAuthStateChanged(auth,function(user){
   authInitialized=true;
-
+  const loginLink=document.getElementById('loginLink');
+  if(!loginLink)return;
   if(user){
-    const name=(user.displayName&&user.displayName.trim())
-      ? user.displayName.trim()
-      : (user.email||'').split('@')[0] || 'HESABIM';
-    try{localStorage.setItem('nerisUserName',name);}catch(e){}
-    syncAccountUI(user);
-    loadFavorites();
+    const userName=user.displayName||(user.email?user.email.split('@')[0]:'HESABIM');
+    accountName.textContent=userName; loginLink.href='#'; loadFavorites();
   }else{
-    // Firebase ilk anda durumu çözerken null dönebilir.
-    // Bu aşamada kayıtlı kullanıcı adını silme; sadece gerçek Çıkış Yap işleminde silinir.
-    let savedName='';
-    try{savedName=(localStorage.getItem('nerisUserName')||'').trim();}catch(e){}
-    if(savedName){
-      syncAccountUI({displayName:savedName,email:savedName});
-    }else{
-      syncAccountUI(null);
-    }
+    accountName.textContent='GİRİŞ YAP'; loginLink.href='#'; loginLink.onclick=null;
+    document.querySelectorAll('.favorite-btn.active').forEach(b=>{b.classList.remove('active');b.innerHTML='♡'});
   }
-
-  if(document.getElementById('favoritesContent')&&document.getElementById('infoModal')?.classList.contains('open')){
-    window.loadFavoritesModal();
-  }
+  if(document.getElementById('favoritesContent')&&document.getElementById('infoModal')?.classList.contains('open'))window.loadFavoritesModal();
 });
 </script>
 </body>
