@@ -130,6 +130,53 @@ button,input,textarea{font:inherit}
 .account-menu-wrapper:has(.account-dropdown.active) .account-arrow{transform:rotate(180deg);color:#d4af37}
 @media(max-width:768px){.account-dropdown{right:-5px;width:220px;top:calc(100% + 10px)}}
 
+/* NERIS ÜRÜN DETAYI — PREMIUM / PELIA TARZI */
+  .product-detail-modal{position:fixed;inset:0;width:100vw;height:100vh;background:rgba(0,0,0,.80);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:1000002;display:flex;align-items:center;justify-content:center;padding:28px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .32s ease,visibility 0s linear .32s}
+  .product-detail-modal.open{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .32s ease,visibility 0s linear 0s}
+  .product-detail-box{width:min(1080px,100%);max-height:min(92vh,900px);overflow:auto;background:#fff;color:#111;box-shadow:0 35px 100px rgba(0,0,0,.70);position:relative;transform:translateY(24px) scale(.975);opacity:0;transition:transform .42s cubic-bezier(.22,.61,.36,1),opacity .32s ease}
+  .product-detail-modal.open .product-detail-box{transform:translateY(0) scale(1);opacity:1}
+  .product-detail-close{position:absolute;top:16px;right:16px;width:42px;height:42px;border:1px solid rgba(0,0,0,.15);background:rgba(255,255,255,.92);color:#111;display:flex;align-items:center;justify-content:center;font-size:25px;line-height:1;cursor:pointer;z-index:5;transition:.25s ease}
+  .product-detail-close:hover{background:#111;color:#d4af37;border-color:#111;transform:rotate(90deg)}
+  .product-detail-layout{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(380px,.95fr);min-height:650px}
+  .product-detail-media{background:#f3f0ed;min-height:650px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .product-detail-media img{width:100%;height:100%;min-height:650px;max-height:78vh;object-fit:cover;display:block}
+  .product-detail-info{padding:68px 58px 48px;display:flex;flex-direction:column;justify-content:center;background:#fff}
+  .product-detail-kicker{color:#8e7620;font-size:9px;letter-spacing:3px;font-weight:600;margin-bottom:13px}
+  .product-detail-title{margin:0 0 12px;font-family:'Playfair Display',serif;font-size:34px;font-weight:500;line-height:1.2;color:#111}
+  .product-detail-price{margin:0 0 30px;color:#111;font-family:'Playfair Display',serif;font-size:21px}
+  .product-detail-divider{width:100%;height:1px;background:#e8e8e8;margin:0 0 25px}
+  .product-detail-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;color:#222;font-size:11px;letter-spacing:1.2px;font-weight:600}
+  .product-size-guide{color:#777;font-size:10px;text-decoration:underline;cursor:pointer;background:none;border:0;padding:0}
+  .product-size-options{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:25px}
+  .product-size-btn{min-height:48px;background:#fff;border:1px solid #d8d8d8;color:#222;font-size:12px;cursor:pointer;transition:.22s ease}
+  .product-size-btn:hover{border-color:#111;transform:translateY(-2px)}
+  .product-size-btn.selected{background:#111;color:#fff;border-color:#111}
+  .product-quantity-row{display:grid;grid-template-columns:130px 1fr;gap:10px;margin-bottom:12px}
+  .product-quantity{height:52px;border:1px solid #ddd;display:grid;grid-template-columns:40px 1fr 40px;align-items:center;text-align:center}
+  .product-quantity button{height:100%;border:0;background:#fff;color:#222;cursor:pointer;font-size:18px}
+  .product-quantity span{font-size:13px}
+  .product-add-cart,.product-buy-now{height:52px;border:1px solid #111;cursor:pointer;font-size:11px;font-weight:600;letter-spacing:1.5px;transition:.25s ease}
+  .product-add-cart{background:#111;color:#fff}
+  .product-add-cart:hover{background:#d4af37;color:#080808;border-color:#d4af37;transform:translateY(-2px)}
+  .product-buy-now{width:100%;background:#fff;color:#111;margin-top:0}
+  .product-buy-now:hover{background:#f4f4f4;transform:translateY(-2px)}
+  .product-favorite-row{display:flex;align-items:center;gap:10px;margin-top:18px;color:#666;font-size:11px}
+  .product-favorite-mini{width:34px;height:34px;border:1px solid #ddd;background:#fff;color:#222;border-radius:50%;cursor:pointer;font-size:18px}
+  .product-detail-note{margin:25px 0 0;color:#777;font-size:11px;line-height:1.8}
+  @media(max-width:768px){
+    .product-detail-modal{padding:0;background:rgba(0,0,0,.86)}
+    .product-detail-box{width:100%;height:100dvh;max-height:100dvh}
+    .product-detail-layout{display:block;min-height:0}
+    .product-detail-media{height:48dvh;min-height:0}
+    .product-detail-media img{height:48dvh;min-height:0;max-height:none;object-fit:cover}
+    .product-detail-info{padding:30px 22px 38px}
+    .product-detail-title{font-size:28px}
+    .product-detail-price{font-size:19px;margin-bottom:22px}
+    .product-detail-close{top:11px;right:11px;width:40px;height:40px}
+    .product-quantity-row{grid-template-columns:105px 1fr}
+    .product-detail-note{margin-bottom:10px}
+  }
+
 /* INFO MODAL — PREMIUM */
   .info-modal{position:fixed;inset:0;width:100vw;height:100vh;background:rgba(0,0,0,.78);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:999999;display:flex;align-items:center;justify-content:center;padding:30px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s ease,visibility 0s linear .35s}
   .info-modal.open{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .35s ease,visibility 0s linear 0s}
@@ -770,9 +817,9 @@ button,input,textarea{font:inherit}
 
 
 /* NERIS PREMIUM INTERACTION SYSTEM */
-button, a, .nav-action, .cart-btn, .favorite-btn, .buy, .mobile-menu-btn, .mobile-menu-links a, .mobile-account-buttons a, .footer-column a, .footer-instagram { -webkit-tap-highlight-color: transparent; }
-button, .nav-action, .cart-btn, .favorite-btn, .buy, .mobile-menu-btn, .mobile-menu-links a, .mobile-account-buttons a, .footer-column a, .footer-instagram { transition: transform .24s cubic-bezier(.22,.61,.36,1), box-shadow .24s ease, background-color .24s ease, border-color .24s ease, color .24s ease, opacity .24s ease; }
-button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .buy:active, .mobile-menu-btn:active, .mobile-menu-links a:active, .mobile-account-buttons a:active, .footer-column a:active, .footer-instagram:active { transform: translateY(1px) scale(.97); }
+button, a, .nav-action, .cart-btn, .favorite-btn, .mobile-menu-btn, .mobile-menu-links a, .mobile-account-buttons a, .footer-column a, .footer-instagram { -webkit-tap-highlight-color: transparent; }
+button, .nav-action, .cart-btn, .favorite-btn, .mobile-menu-btn, .mobile-menu-links a, .mobile-account-buttons a, .footer-column a, .footer-instagram { transition: transform .24s cubic-bezier(.22,.61,.36,1), box-shadow .24s ease, background-color .24s ease, border-color .24s ease, color .24s ease, opacity .24s ease; }
+button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobile-menu-btn:active, .mobile-menu-links a:active, .mobile-account-buttons a:active, .footer-column a:active, .footer-instagram:active { transform: translateY(1px) scale(.97); }
 
 /* Sayfa geçiş perdesi */
 .page-transition{position:fixed;inset:0;background:#070707;z-index:1000000;pointer-events:none;opacity:0;visibility:hidden;display:flex;align-items:center;justify-content:center;transition:opacity .38s ease,visibility 0s linear .38s}
@@ -1218,6 +1265,45 @@ document.addEventListener("keydown", function(event) {
   </div>
 </div>
 
+  <!-- NERIS ÜRÜN DETAYI -->
+  <div class="product-detail-modal" id="productDetailModal" onclick="if(event.target===this)closeProductDetail()">
+    <div class="product-detail-box" role="dialog" aria-modal="true" aria-labelledby="productDetailTitle">
+      <button class="product-detail-close" type="button" onclick="closeProductDetail()" aria-label="Ürün detayını kapat">×</button>
+      <div class="product-detail-layout">
+        <div class="product-detail-media"><img id="productDetailImage" src="" alt=""></div>
+        <div class="product-detail-info">
+          <div class="product-detail-kicker">NERIS COLLECTION</div>
+          <h2 class="product-detail-title" id="productDetailTitle">Ürün</h2>
+          <p class="product-detail-price" id="productDetailPrice">₺0</p>
+          <div class="product-detail-divider"></div>
+          <div class="product-detail-label">
+            <span>BEDEN</span>
+            <button class="product-size-guide" type="button" onclick="showPremiumAlert('Beden Bilgisi','36: S — 38: M — 40: L. Ürün kalıbına göre değişiklik gösterebilir.');">Beden rehberi</button>
+          </div>
+          <div class="product-size-options" id="productSizeOptions">
+            <button class="product-size-btn" type="button" data-size="36">36</button>
+            <button class="product-size-btn" type="button" data-size="38">38</button>
+            <button class="product-size-btn" type="button" data-size="40">40</button>
+          </div>
+          <div class="product-quantity-row">
+            <div class="product-quantity">
+              <button type="button" onclick="changeProductQuantity(-1)" aria-label="Azalt">−</button>
+              <span id="productQuantity">1</span>
+              <button type="button" onclick="changeProductQuantity(1)" aria-label="Artır">+</button>
+            </div>
+            <button class="product-add-cart" type="button" onclick="addProductToCart()">SEPETE EKLE</button>
+          </div>
+          <button class="product-buy-now" type="button" onclick="buyProductNow()">HEMEN AL</button>
+          <div class="product-favorite-row">
+            <button class="product-favorite-mini" id="productDetailFavorite" type="button" onclick="toggleProductDetailFavorite()" aria-label="Favorilere ekle">♡</button>
+            <span>Favorilere ekle</span>
+          </div>
+          <p class="product-detail-note">Beden seçiminizi yaptıktan sonra ürünü sepetinize ekleyebilir veya doğrudan ödeme adımına geçebilirsiniz.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- NERIS BİLGİ / İŞLEM PENCERELERİ -->
   <div class="info-modal" id="infoModal" onclick="if(event.target===this)closeInfo()">
     <div class="info-box">
@@ -1369,7 +1455,7 @@ document.addEventListener("keydown", function(event) {
 
     document.addEventListener('DOMContentLoaded',()=>{
       /* Her tıklanabilir öğeye premium mikro animasyon / ripple */
-      document.querySelectorAll('a, button, .nav-action, .cart-btn, .favorite-btn, .buy').forEach(el=>{
+      document.querySelectorAll('a, button, .nav-action, .cart-btn, .favorite-btn').forEach(el=>{
         el.addEventListener('click',function(e){
           const r=document.createElement('span');
           const rect=this.getBoundingClientRect();
@@ -1805,13 +1891,133 @@ preinfo: {
       if(type === 'favorites' && typeof window.loadFavoritesModal === 'function'){ window.loadFavoritesModal(); }
     }
     window.addEventListener("popstate", function () {
+    const productModal = document.getElementById("productDetailModal");
+    if (productModal && productModal.classList.contains("open")) {
+        closeProductDetail();
+        return;
+    }
     const modal = document.getElementById("infoModal");
-
     if (modal && modal.classList.contains("open")) {
         modal.classList.remove("open");
         document.body.classList.remove("modal-open");
     }
 });
+
+let nerisSelectedProduct = null;
+let nerisSelectedSize = null;
+let nerisProductQuantity = 1;
+
+function openProductDetail(product){
+  if(!product) return;
+  nerisSelectedProduct = product;
+  nerisSelectedSize = null;
+  nerisProductQuantity = 1;
+
+  const modal=document.getElementById('productDetailModal');
+  const image=document.getElementById('productDetailImage');
+  const title=document.getElementById('productDetailTitle');
+  const price=document.getElementById('productDetailPrice');
+  const quantity=document.getElementById('productQuantity');
+  const favorite=document.getElementById('productDetailFavorite');
+  if(!modal||!image||!title||!price) return;
+
+  const name=product.reklam||'Neris Ürün';
+  image.src=product.resim||'https://picsum.photos/700/900';
+  image.alt=name;
+  title.textContent=name;
+  price.textContent='₺'+(product.fiyat||'0');
+  if(quantity) quantity.textContent='1';
+  document.querySelectorAll('#productSizeOptions .product-size-btn').forEach(btn=>btn.classList.remove('selected'));
+  if(favorite) favorite.textContent='♡';
+
+  document.querySelectorAll('#productSizeOptions .product-size-btn').forEach(btn=>{
+    btn.onclick=function(){
+      nerisSelectedSize=this.dataset.size;
+      document.querySelectorAll('#productSizeOptions .product-size-btn').forEach(b=>b.classList.remove('selected'));
+      this.classList.add('selected');
+    };
+  });
+
+  modal.classList.add('open');
+  document.body.classList.add('modal-open');
+}
+window.openProductDetail=openProductDetail;
+
+function closeProductDetail(){
+  const modal=document.getElementById('productDetailModal');
+  if(modal) modal.classList.remove('open');
+  if(!document.getElementById('infoModal')?.classList.contains('open')&&!document.getElementById('premiumAlert')?.classList.contains('open')) document.body.classList.remove('modal-open');
+  nerisSelectedProduct=null; nerisSelectedSize=null; nerisProductQuantity=1;
+}
+window.closeProductDetail=closeProductDetail;
+
+function changeProductQuantity(delta){
+  nerisProductQuantity=Math.max(1,Math.min(20,nerisProductQuantity+delta));
+  const el=document.getElementById('productQuantity');
+  if(el) el.textContent=String(nerisProductQuantity);
+}
+window.changeProductQuantity=changeProductQuantity;
+
+function productCheckoutUrl(product,size,quantity){
+  const params=new URLSearchParams({
+    product:product?.reklam||'Ürün',
+    price:product?.fiyat||'0',
+    image:product?.resim||'',
+    shopier:product?.["Bağlantı"]||'https://www.shopier.com/nerisbutik_/49854673',
+    id:product?.id||'',
+    size:size||'',
+    quantity:String(quantity||1)
+  });
+  return 'checkout.html?'+params.toString();
+}
+
+function addProductToCart(){
+  if(!nerisSelectedProduct) return;
+  if(!nerisSelectedSize){
+    showPremiumAlert('Beden Seçin','Lütfen devam etmeden önce bir beden seçin.');
+    return;
+  }
+  const item={
+    id:nerisSelectedProduct.id||'',
+    product:nerisSelectedProduct.reklam||'Ürün',
+    price:nerisSelectedProduct.fiyat||'0',
+    image:nerisSelectedProduct.resim||'',
+    shopier:nerisSelectedProduct["Bağlantı"]||'https://www.shopier.com/nerisbutik_/49854673',
+    size:nerisSelectedSize,
+    quantity:nerisProductQuantity
+  };
+  let cart=[];
+  try{cart=JSON.parse(localStorage.getItem('nerisCart')||'[]');}catch(e){cart=[];}
+  const same=cart.find(x=>x.id===item.id&&x.size===item.size);
+  if(same) same.quantity+=item.quantity; else cart.push(item);
+  localStorage.setItem('nerisCart',JSON.stringify(cart));
+  closeProductDetail();
+  showPremiumAlert('Sepete Eklendi',`${item.product} — ${item.size} beden, ${item.quantity} adet sepetinize eklendi.`);
+}
+window.addProductToCart=addProductToCart;
+
+function buyProductNow(){
+  if(!nerisSelectedProduct) return;
+  if(!nerisSelectedSize){
+    showPremiumAlert('Beden Seçin','Lütfen devam etmeden önce bir beden seçin.');
+    return;
+  }
+  const url=productCheckoutUrl(nerisSelectedProduct,nerisSelectedSize,nerisProductQuantity);
+  closeProductDetail();
+  setTimeout(()=>navigateWithTransition(url),120);
+}
+window.buyProductNow=buyProductNow;
+
+function toggleProductDetailFavorite(){
+  if(!nerisSelectedProduct) return;
+  const btn=document.getElementById('productDetailFavorite');
+  const source=[...document.querySelectorAll('.favorite-btn')].find(el=>String(el.dataset.id)===String(nerisSelectedProduct.id||''));
+  if(source){
+    source.click();
+    setTimeout(()=>{if(btn)btn.textContent=source.classList.contains('active')?'♥':'♡';},80);
+  }
+}
+window.toggleProductDetailFavorite=toggleProductDetailFavorite;
 
 function closeInfo(){
   const modal=document.getElementById('infoModal');
@@ -1964,19 +2170,31 @@ const querySnapshot =
 
     <p class="product-price"><span class="price-currency">₺</span><span class="price-value">${p.fiyat || "0"}</span></p>
 
-    <a
-        href="checkout.html?product=${encodeURIComponent(p.reklam || 'Ürün')}&price=${encodeURIComponent(p.fiyat || '0')}&image=${encodeURIComponent(p.resim || '')}&shopier=${encodeURIComponent(p["Bağlantı"] || 'https://www.shopier.com/nerisbutik_/49854673')}&id=${encodeURIComponent(p.id || '')}"
-        class="buy"
-        data-checkout="true"
-    >
-        SATIN AL
-    </a>
 
 </div>
           `;
 
 
           container.appendChild(card);
+
+          /* Ürün görseli -> premium ürün detay penceresi */
+          const productImage = card.querySelector(".card-image img");
+          if (productImage) {
+            productImage.style.cursor = "pointer";
+            productImage.setAttribute("tabindex", "0");
+            productImage.setAttribute("role", "button");
+            productImage.setAttribute("aria-label", `${p.reklam || "Ürün"} detaylarını aç`);
+            productImage.addEventListener("click", function () {
+              if (typeof window.openProductDetail === "function") window.openProductDetail(p);
+            });
+            productImage.addEventListener("keydown", function (event) {
+              if ((event.key === "Enter" || event.key === " ") &&
+                  typeof window.openProductDetail === "function") {
+                event.preventDefault();
+                window.openProductDetail(p);
+              }
+            });
+          }
 
         });
 
