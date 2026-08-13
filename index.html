@@ -951,7 +951,7 @@ document.addEventListener("keydown", function(event) {
   <div class="mobile-menu-bottom">
     <a href="#" onclick="openInfo('tracking'); closeMobileMenu(); return false;" class="mobile-order-btn">🚚 &nbsp; SİPARİŞ TAKİP</a>
     <div class="mobile-account-buttons">
-      <a href="giris.html" onclick="event.preventDefault(); navigateWithTransition("giris.html")">♙ &nbsp; GİRİŞ YAP</a>
+      <a href="giris.html" onclick="event.preventDefault(); navigateWithTransition('giris.html')">♙ &nbsp; GİRİŞ YAP</a>
       <a href="register.html">♙+ &nbsp; ÜYE OL</a>
     </div>
   </div>
@@ -1221,6 +1221,14 @@ document.addEventListener("keydown", function(event) {
       setTimeout(()=>{window.location.href=url;},380);
     }
 
+    /* Tarayıcının geri tuşunda bfcache ile dönen sayfada geçiş perdesini temizle.
+       Böylece NERIS logosunda takılı kalmaz; ana sayfa normal şekilde görünür. */
+    window.addEventListener('pageshow', function(){
+      const layer = document.getElementById('pageTransition');
+      if(layer) layer.classList.remove('active');
+      document.body.classList.remove('modal-open');
+    });
+
     function handleLoginClick(event){
       if(event) event.preventDefault();
       const authReady = (typeof authInitialized !== 'undefined') ? authInitialized : false;
@@ -1230,7 +1238,7 @@ document.addEventListener("keydown", function(event) {
         if(dropdown) dropdown.classList.toggle('active');
         return false;
       }
-      navigateWithTransition("giris.html");
+      navigateWithTransition('giris.html');
       return false;
     }
     document.addEventListener('DOMContentLoaded',()=>{
@@ -1936,7 +1944,7 @@ const querySnapshot =
       const container=document.getElementById('favoritesContent'); if(!container)return;
       if(!authInitialized){container.innerHTML='<div class="favorites-empty"><div class="favorites-icon">♡</div><h3>Hesabınız kontrol ediliyor</h3><p>Lütfen bir saniye bekleyin.</p></div>';return;}
       const user=auth.currentUser;
-      if(!user){container.innerHTML='<div class="login-required"><div class="login-required-icon">♡</div><h3>Favorilerinizi oluşturun</h3><p>Favori ürünlerinizi kaydetmek ve daha sonra görüntülemek için hesabınıza giriş yapın.</p><div class="login-required-actions"><a href="giris.html" onclick="event.preventDefault(); navigateWithTransition("giris.html")">GİRİŞ YAP</a><button type="button" onclick="closeInfo()">VAZGEÇ</button></div></div>';return;}
+      if(!user){container.innerHTML='<div class="login-required"><div class="login-required-icon">♡</div><h3>Favorilerinizi oluşturun</h3><p>Favori ürünlerinizi kaydetmek ve daha sonra görüntülemek için hesabınıza giriş yapın.</p><div class="login-required-actions"><a href="giris.html" onclick="event.preventDefault(); navigateWithTransition('giris.html')">GİRİŞ YAP</a><button type="button" onclick="closeInfo()">VAZGEÇ</button></div></div>';return;}
       try{
         const fs=await getDocs(collection(db,'favoriler')); const favs=[];
         fs.forEach(d=>{const x=d.data();if(x.kullaniciId===user.uid&&x.urunId)favs.push(x)});
@@ -2032,7 +2040,7 @@ if (loginLink) {
     loginLink.addEventListener('click', function(e) {
         e.preventDefault();
         if (typeof navigateWithTransition === 'function') {
-            navigateWithTransition("giris.html");
+            navigateWithTransition('giris.html');
         } else {
             window.location.href = 'giris.html';
         }
