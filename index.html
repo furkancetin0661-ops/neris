@@ -1185,6 +1185,13 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
   object-fit:cover;
   display:block;
 }
+.product-gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border:1px solid rgba(255,255,255,.42);background:rgba(8,8,8,.46);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;font-family:Arial,sans-serif;font-size:36px;font-weight:300;line-height:42px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:4;opacity:.88;transition:all .25s ease;box-shadow:0 8px 24px rgba(0,0,0,.22)}
+.product-gallery-arrow:hover{background:#d4af37;color:#090909;border-color:#d4af37;opacity:1;transform:translateY(-50%) scale(1.04)}
+.product-gallery-prev{left:18px}.product-gallery-next{right:18px}
+.product-gallery-arrow.hidden{display:none}
+.product-gallery-dots{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);display:flex;gap:7px;z-index:4;padding:6px 10px;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.28);backdrop-filter:blur(7px);border-radius:999px}
+.product-gallery-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.45);transition:.2s ease}.product-gallery-dot.active{width:18px;border-radius:5px;background:#d4af37}
+@media(max-width:768px){.product-gallery-arrow{width:42px;height:42px;font-size:31px}.product-gallery-prev{left:10px}.product-gallery-next{right:10px}.product-gallery-dots{bottom:12px}}
 .product-detail-info{
   position:absolute;
   right:0;
@@ -1829,7 +1836,12 @@ document.addEventListener("keydown", function(event) {
     <div class="product-detail-box" role="dialog" aria-modal="true" aria-labelledby="productDetailTitle">
       <button class="product-detail-close" type="button" onclick="closeProductDetail()" aria-label="Ürün detayını kapat">×</button>
       <div class="product-detail-layout">
-        <div class="product-detail-media"><img id="productDetailImage" src="" alt=""></div>
+        <div class="product-detail-media" id="productDetailMedia">
+          <img id="productDetailImage" src="" alt="">
+          <button class="product-gallery-arrow product-gallery-prev" id="productGalleryPrev" type="button" aria-label="Önceki görsel" onclick="changeProductImage(-1)">‹</button>
+          <button class="product-gallery-arrow product-gallery-next" id="productGalleryNext" type="button" aria-label="Sonraki görsel" onclick="changeProductImage(1)">›</button>
+          <div class="product-gallery-dots" id="productGalleryDots" aria-hidden="true"></div>
+        </div>
         <div class="product-detail-info">
           <div class="product-detail-kicker">NERIS COLLECTION</div>
           <h2 class="product-detail-title" id="productDetailTitle">Ürün</h2>
@@ -2505,6 +2517,47 @@ function clearProductInlineAlert(){
 }
 window.showProductInlineAlert=showProductInlineAlert;
 
+let nerisProductImages=[];
+let nerisProductImageIndex=0;
+
+function getProductImages(product){
+  if(!product) return [];
+  const candidates=[
+    product.resim,
+    product.resim2,
+    product['2. resim'],
+    product['resim 2'],
+    product['Resim 2'],
+    product.image2,
+    product.image_2
+  ];
+  return [...new Set(candidates.map(v=>String(v||'').trim()).filter(Boolean))].slice(0,2);
+}
+
+function renderProductGallery(){
+  const image=document.getElementById('productDetailImage');
+  const prev=document.getElementById('productGalleryPrev');
+  const next=document.getElementById('productGalleryNext');
+  const dots=document.getElementById('productGalleryDots');
+  if(!image) return;
+  const total=nerisProductImages.length;
+  if(!total) return;
+  nerisProductImageIndex=Math.max(0,Math.min(nerisProductImageIndex,total-1));
+  image.src=nerisProductImages[nerisProductImageIndex];
+  if(prev) prev.classList.toggle('hidden',total<2);
+  if(next) next.classList.toggle('hidden',total<2);
+  if(dots){
+    dots.innerHTML=total>1?nerisProductImages.map((_,i)=>`<span class="product-gallery-dot ${i===nerisProductImageIndex?'active':''}"></span>`).join(''):'';
+  }
+}
+
+function changeProductImage(direction){
+  if(nerisProductImages.length<2) return;
+  nerisProductImageIndex=(nerisProductImageIndex+direction+nerisProductImages.length)%nerisProductImages.length;
+  renderProductGallery();
+}
+window.changeProductImage=changeProductImage;
+
 function openProductDetail(product){
   if(!product) return;
   nerisSelectedProduct = product;
@@ -2520,8 +2573,11 @@ function openProductDetail(product){
   if(!modal||!image||!title||!price) return;
 
   const name=product.reklam||'Neris Ürün';
-  image.src=product.resim||'https://picsum.photos/700/900';
+  nerisProductImages=getProductImages(product);
+  if(!nerisProductImages.length) nerisProductImages=['https://picsum.photos/700/900'];
+  nerisProductImageIndex=0;
   image.alt=name;
+  renderProductGallery();
   title.textContent=name;
   price.textContent=(product.fiyat||'0')+' ₺';
   if(quantity) quantity.textContent='1';
@@ -2536,6 +2592,18 @@ function openProductDetail(product){
     if(label) label.textContent='Favorilere ekle';
   }
   syncProductDetailFavoriteState();
+
+  const media=document.getElementById('productDetailMedia');
+  if(media && !media.dataset.galleryBound){
+    media.dataset.galleryBound='1';
+    let touchStartX=0;
+    media.addEventListener('touchstart',e=>{touchStartX=e.touches[0]?.clientX||0},{passive:true});
+    media.addEventListener('touchend',e=>{
+      const endX=e.changedTouches[0]?.clientX||0;
+      const dx=endX-touchStartX;
+      if(Math.abs(dx)>45) changeProductImage(dx<0?1:-1);
+    },{passive:true});
+  }
 
   document.querySelectorAll('#productSizeOptions .product-size-btn').forEach(btn=>{
     btn.onclick=function(){
