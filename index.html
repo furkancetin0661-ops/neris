@@ -1069,38 +1069,203 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
 .neris-cart-checkout{width:100%;height:50px;border:1px solid #d4af37;background:#d4af37;color:#090909;font-weight:700;letter-spacing:2px;cursor:pointer}
 @media(max-width:768px){.neris-cart-list{max-height:52vh}.neris-cart-item{grid-template-columns:58px 1fr 30px}.neris-cart-item img{width:58px;height:72px}.neris-cart-item-info h3{font-size:14px}}
 
-/* NERIS — ÜRÜN KARTI / DETAY SON SADELEŞTİRME */
+/* NERIS — PREMIUM ÜRÜN KARTI */
 .card{
-  background:#fff;
-  border:1px solid #e9e9e9;
+  background:#0a0a0a;
+  border:1px solid rgba(212,175,55,.48);
+  overflow:hidden;
+  position:relative;
+  transition:transform .4s ease,border-color .4s ease,box-shadow .4s ease;
 }
 .card:hover{
-  border-color:#d8d8d8;
-  box-shadow:0 18px 45px rgba(0,0,0,.18);
+  transform:translateY(-6px);
+  border-color:#d4af37;
+  box-shadow:0 20px 55px rgba(0,0,0,.42),0 0 0 1px rgba(212,175,55,.12);
+}
+.card-image{
+  height:390px;
+  overflow:hidden;
+  position:relative;
+  background:#111;
+}
+.card-image::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;bottom:0;
+  height:42%;
+  background:linear-gradient(to top,rgba(0,0,0,.90),rgba(0,0,0,.48),transparent);
+  z-index:2;
+  pointer-events:none;
 }
 .card-content{
-  background:#fff;
-  padding:18px 20px 20px;
+  position:absolute;
+  left:0;right:0;bottom:0;
+  z-index:4;
+  padding:70px 20px 20px;
+  background:transparent;
+  pointer-events:none;
 }
 .card h3{
-  color:#111;
-  margin:0 0 8px;
+  color:#fff;
+  margin:0 0 7px;
+  font-family:'Playfair Display',serif;
+  font-size:20px;
+  font-weight:500;
+  text-shadow:0 2px 12px rgba(0,0,0,.45);
 }
 .product-price{
-  color:#111!important;
+  color:#fff!important;
   font-family:Poppins,sans-serif!important;
   font-size:14px!important;
   font-weight:500!important;
-  letter-spacing:0!important;
+  letter-spacing:.2px!important;
+  margin:0!important;
+  text-shadow:0 2px 12px rgba(0,0,0,.45);
 }
 .price-currency{
-  color:#111!important;
-  font-size:14px!important;
-  letter-spacing:0!important;
+  color:#d4af37!important;
+  font-size:12px!important;
+  margin-right:2px;
 }
 .price-value{
-  color:#111!important;
+  color:#fff!important;
   font-weight:500!important;
+}
+.card-content .buy{display:none}
+
+/* PREMIUM ÜRÜN DETAYI — beyaz panel yerine görsel üstü içerik */
+.product-detail-box{
+  width:min(980px,100%);
+  max-height:min(90vh,900px);
+  overflow:hidden;
+  background:#090909;
+  color:#fff;
+  border:1px solid rgba(212,175,55,.42);
+  box-shadow:0 35px 100px rgba(0,0,0,.78),0 0 0 1px rgba(212,175,55,.08);
+}
+.product-detail-layout{
+  display:block;
+  min-height:min(720px,82vh);
+  position:relative;
+  overflow:hidden;
+}
+.product-detail-media{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  min-height:0;
+  background:#111;
+}
+.product-detail-media::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(90deg,rgba(0,0,0,.02) 0%,rgba(0,0,0,.06) 42%,rgba(0,0,0,.55) 72%,rgba(0,0,0,.82) 100%),
+    linear-gradient(0deg,rgba(0,0,0,.88) 0%,rgba(0,0,0,.34) 35%,transparent 65%);
+  pointer-events:none;
+}
+.product-detail-media img{
+  width:100%;
+  height:100%;
+  min-height:0;
+  max-height:none;
+  object-fit:cover;
+  display:block;
+}
+.product-detail-info{
+  position:absolute;
+  right:0;
+  top:0;
+  bottom:0;
+  width:min(48%,500px);
+  box-sizing:border-box;
+  padding:70px 48px 38px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  background:linear-gradient(90deg,rgba(7,7,7,.10),rgba(7,7,7,.78) 22%,rgba(7,7,7,.94));
+  color:#fff;
+  z-index:3;
+}
+.product-detail-kicker{color:#d4af37}
+.product-detail-title{color:#fff}
+.product-detail-price{color:#fff}
+.product-detail-divider{background:rgba(255,255,255,.16)}
+.product-detail-label{color:#fff}
+.product-size-guide{color:#c8c8c8}
+.product-size-btn{
+  background:rgba(255,255,255,.04);
+  border-color:rgba(255,255,255,.22);
+  color:#fff;
+}
+.product-size-btn:hover{border-color:#d4af37}
+.product-size-btn.selected{background:#d4af37;color:#090909;border-color:#d4af37}
+.product-quantity{border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.04);color:#fff}
+.product-quantity button{background:transparent;color:#fff}
+.product-quantity span{color:#fff}
+.product-add-cart{background:#fff;color:#090909;border-color:#fff}
+.product-add-cart:hover{background:#d4af37;color:#090909;border-color:#d4af37}
+.product-buy-now{background:transparent;color:#fff;border-color:rgba(255,255,255,.45)}
+.product-buy-now:hover{background:rgba(255,255,255,.08);color:#fff}
+.product-favorite-row{color:#d0d0d0}
+.product-favorite-mini{
+  border-color:rgba(255,255,255,.28);
+  background:rgba(255,255,255,.04);
+  color:#fff;
+  transition:.25s ease;
+}
+.product-favorite-mini:hover{border-color:#d4af37;color:#d4af37}
+.product-favorite-mini.active{
+  background:#d4af37;
+  border-color:#d4af37;
+  color:#090909;
+  box-shadow:0 0 0 4px rgba(212,175,55,.12);
+}
+.product-favorite-row.favorite-active span{color:#d4af37}
+.product-detail-note{color:#bcbcbc}
+.product-detail-close{
+  border-color:rgba(255,255,255,.24);
+  background:rgba(0,0,0,.32);
+  color:#fff;
+  backdrop-filter:blur(8px);
+}
+.product-detail-close:hover{background:#d4af37;color:#090909;border-color:#d4af37}
+
+/* FAVORİLER — ürün kartları */
+.favorites-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:18px;
+  margin-top:20px;
+}
+.favorite-mini-card{
+  overflow:hidden;
+  background:#0b0b0b;
+  border:1px solid rgba(212,175,55,.32);
+  transition:.3s ease;
+}
+.favorite-mini-card:hover{border-color:#d4af37;transform:translateY(-3px)}
+.favorite-mini-card img{width:100%;height:230px;object-fit:cover;display:block}
+.favorite-mini-info{padding:13px 14px 15px;background:#0b0b0b}
+.favorite-mini-info h3{margin:0 0 5px;color:#fff;font-family:'Playfair Display',serif;font-size:16px;font-weight:500}
+.favorite-mini-info p{margin:0;color:#d4af37;font-size:13px}
+
+@media(max-width:768px){
+  .product-detail-layout{min-height:100dvh}
+  .product-detail-media{position:absolute;inset:0;height:100%;min-height:0}
+  .product-detail-media img{height:100%;min-height:0;max-height:none;object-fit:cover}
+  .product-detail-info{
+    position:absolute;
+    left:0;right:0;top:auto;bottom:0;
+    width:100%;
+    padding:90px 22px 30px;
+    background:linear-gradient(0deg,rgba(7,7,7,.96),rgba(7,7,7,.68) 65%,transparent);
+  }
+  .product-detail-title{font-size:28px}
+  .product-detail-price{font-size:17px;margin-bottom:20px}
+  .product-detail-close{top:11px;right:11px;width:40px;height:40px}
 }
 
 </style>
@@ -2146,6 +2311,10 @@ function openProductDetail(product){
   if(favorite){
     favorite.textContent='♡';
     favorite.classList.remove('active');
+    const row=favorite.closest('.product-favorite-row');
+    if(row) row.classList.remove('favorite-active');
+    const label=row?.querySelector('span');
+    if(label) label.textContent='Favorilere ekle';
   }
   syncProductDetailFavoriteState();
 
@@ -2347,6 +2516,10 @@ async function syncProductDetailFavoriteState(){
     const snap=await getDoc(favoriteRef);
     btn.classList.toggle('active',snap.exists());
     btn.textContent=snap.exists()?'♥':'♡';
+    const row=btn.closest('.product-favorite-row');
+    if(row) row.classList.toggle('favorite-active',snap.exists());
+    const label=row?.querySelector('span');
+    if(label) label.textContent=snap.exists()?'Favorilerde':'Favorilere ekle';
   }catch(error){
     console.error('Ürün favori durumu alınamadı:',error);
     btn.textContent='♡';
@@ -2382,16 +2555,30 @@ async function toggleProductDetailFavorite(){
       if(btn){
         btn.classList.remove('active');
         btn.textContent='♡';
+        const row=btn.closest('.product-favorite-row');
+        if(row) row.classList.remove('favorite-active');
+        const label=row?.querySelector('span');
+        if(label) label.textContent='Favorilere ekle';
       }
     }else{
       await setDoc(favoriteRef,{
         kullaniciId:user.uid,
         urunId:productId,
-        eklenmeTarihi:new Date().toISOString()
+        eklenmeTarihi:new Date().toISOString(),
+        urunData:{
+          id:productId,
+          reklam:nerisSelectedProduct.reklam||'Neris Ürün',
+          fiyat:nerisSelectedProduct.fiyat||'0',
+          resim:nerisSelectedProduct.resim||''
+        }
       });
       if(btn){
         btn.classList.add('active');
         btn.textContent='♥';
+        const row=btn.closest('.product-favorite-row');
+        if(row) row.classList.add('favorite-active');
+        const label=row?.querySelector('span');
+        if(label) label.textContent='Favorilerde';
       }
     }
 
@@ -2640,19 +2827,52 @@ const querySnapshot =
 }
     window.loadFavoritesModal = async function(){
       const container=document.getElementById('favoritesContent'); if(!container)return;
-      if(!authInitialized){container.innerHTML='<div class="favorites-empty"><div class="favorites-icon">♡</div><h3>Hesabınız kontrol ediliyor</h3><p>Lütfen bir saniye bekleyin.</p></div>';return;}
+      if(!authInitialized){
+        container.innerHTML='<div class="favorites-empty"><div class="favorites-icon">♡</div><h3>Hesabınız kontrol ediliyor</h3><p>Lütfen bir saniye bekleyin.</p></div>';
+        return;
+      }
       const user=auth.currentUser;
-      if(!user){container.innerHTML='<div class="login-required"><div class="login-required-icon">♡</div><h3>Favorilerinizi oluşturun</h3><p>Favori ürünlerinizi kaydetmek ve daha sonra görüntülemek için hesabınıza giriş yapın.</p><div class="login-required-actions"><a href="giris.html">GİRİŞ YAP</a><button type="button" onclick="closeInfo()">VAZGEÇ</button></div></div>';return;}
+      if(!user){
+        container.innerHTML='<div class="login-required"><div class="login-required-icon">♡</div><h3>Favorilerinizi oluşturun</h3><p>Favori ürünlerinizi kaydetmek ve daha sonra görüntülemek için hesabınıza giriş yapın.</p><div class="login-required-actions"><a href="giris.html">GİRİŞ YAP</a><button type="button" onclick="closeInfo()">VAZGEÇ</button></div></div>';
+        return;
+      }
       try{
-        const fs=await getDocs(collection(db,'favoriler')); const favs=[];
-        fs.forEach(d=>{const x=d.data();if(x.kullaniciId===user.uid&&x.urunId)favs.push(x)});
-        if(!favs.length){container.innerHTML='<div class="favorites-empty"><div class="favorites-icon">♡</div><h3>Henüz favoriniz yok</h3><p>Beğendiğiniz ürünleri kalp ikonuna basarak burada saklayabilirsiniz.</p></div>';return;}
-        const ps=await getDocs(collection(db,'Ürünler')); const products={}; ps.forEach(d=>products[d.id]={...d.data(),id:d.id});
-        let html='<div class="favorites-grid">';
-        favs.forEach(f=>{const p=products[f.urunId];if(!p)return;const n=String(p.reklam||'Neris Ürün').replace(/"/g,'&quot;');html+=`<div class="favorite-mini-card"><img src="${p.resim||'https://picsum.photos/300/400'}" alt="${n}"><div class="favorite-mini-info"><h3>${p.reklam||'Neris Ürün'}</h3><p>₺${p.fiyat||'0'}</p></div></div>`});
-        html+='</div>';container.innerHTML=html;
-      }catch(error){console.error('Favoriler yüklenemedi:',error);container.innerHTML='<div class="favorites-empty"><div class="favorites-icon">!</div><h3>Bir sorun oluştu</h3><p>Favorileriniz şu anda yüklenemiyor. Lütfen tekrar deneyin.</p></div>';}
-    };
+        const fs=await getDocs(collection(db,'favoriler'));
+        const favs=[];
+        fs.forEach(d=>{
+          const x=d.data();
+          if(x.kullaniciId===user.uid&&x.urunId) favs.push({id:d.id,...x});
+        });
+        if(!favs.length){
+          container.innerHTML='<div class="favorites-empty"><div class="favorites-icon">♡</div><h3>Henüz favoriniz yok</h3><p>Beğendiğiniz ürünleri ürün detayındaki kalp ile burada saklayabilirsiniz.</p></div>';
+          return;
+        }
+
+        const ps=await getDocs(collection(db,'Ürünler'));
+        const products={};
+        ps.forEach(d=>products[d.id]={...d.data(),id:d.id});
+
+        const cards=favs.map(f=>{
+          const p=products[f.urunId]||f.urunData;
+          if(!p)return '';
+          const n=String(p.reklam||'Neris Ürün').replace(/"/g,'&quot;');
+          return `<div class="favorite-mini-card">
+            <img src="${p.resim||'https://picsum.photos/300/400'}" alt="${n}">
+            <div class="favorite-mini-info">
+              <h3>${p.reklam||'Neris Ürün'}</h3>
+              <p>₺${p.fiyat||'0'}</p>
+            </div>
+          </div>`;
+        }).join('');
+
+        container.innerHTML=cards
+          ? '<div class="favorites-grid">'+cards+'</div>'
+          : '<div class="favorites-empty"><div class="favorites-icon">♡</div><h3>Favori ürünleriniz bulunamadı</h3><p>Favori kaydı var ancak ürün bilgisi bulunamadı.</p></div>';
+      }catch(error){
+        console.error('Favoriler yüklenemedi:',error);
+        container.innerHTML='<div class="favorites-empty"><div class="favorites-icon">!</div><h3>Bir sorun oluştu</h3><p>Favorileriniz şu anda yüklenemiyor. Lütfen tekrar deneyin.</p></div>';
+      }
+    };;
 
     document.addEventListener("click", async (e) => {
     const button = e.target.closest(".favorite-btn");
