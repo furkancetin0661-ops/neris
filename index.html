@@ -25,6 +25,8 @@
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;width:100%;overflow-x:hidden}
 body{margin:0;width:100%;min-width:0;font-family:Poppins,sans-serif;background:#0a0a0a;color:#fff;overflow-x:hidden}
+html.neris-scroll-locked,body.neris-scroll-locked{overflow:hidden!important;overscroll-behavior:none!important}
+body.neris-scroll-locked{position:fixed!important;width:100%!important;left:0!important;right:0!important}
 a{color:inherit}
 img{max-width:100%}
 button,input,textarea{font:inherit}
@@ -254,7 +256,37 @@ button,input,textarea{font:inherit}
   .premium-info-form{width:100%;max-width:560px;margin:28px auto 0;text-align:left;animation:infoForm .55s ease .14s both}.premium-info-form .form-label{margin:0 0 7px;color:#d4af37;font-size:10px;letter-spacing:2px}.premium-info-form input,.premium-info-form textarea{width:100%;box-sizing:border-box;background:#080808;color:#fff;border:1px solid rgba(255,255,255,.16);padding:15px 16px;margin-bottom:18px;font-family:Poppins,sans-serif;font-size:14px;outline:none;transition:border-color .25s ease,box-shadow .25s ease,transform .25s ease}.premium-info-form textarea{resize:vertical;min-height:125px}.premium-info-form input:focus,.premium-info-form textarea:focus{border-color:#d4af37;box-shadow:0 0 0 3px rgba(212,175,55,.07);transform:translateY(-1px)}.premium-info-form button{width:100%;min-height:52px;border:1px solid #d4af37;background:#d4af37;color:#080808;font-weight:700;letter-spacing:1px;cursor:pointer;transition:transform .25s ease,box-shadow .25s ease}.premium-info-form button:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(212,175,55,.18)}
   .form-note{text-align:center;margin-top:13px;color:#666;font-size:11px;line-height:1.7}.favorites-empty{text-align:center;padding:30px 10px 15px}.favorites-icon{font-family:Georgia,serif;font-size:52px;color:#d4af37;margin-bottom:12px}.favorites-empty h3{font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:#fff;margin:0 0 10px}.favorites-empty p{max-width:430px;margin:0 auto 24px;color:#777;font-size:13px;line-height:1.8}.favorites-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:24px}.favorite-mini-card{background:#101010;border:1px solid rgba(212,175,55,.16);overflow:hidden;transition:transform .3s ease,border-color .3s ease}.favorite-mini-card:hover{transform:translateY(-4px);border-color:rgba(212,175,55,.48)}.favorite-mini-card img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover}.favorite-mini-info{padding:12px}.favorite-mini-info h3{margin:0 0 6px;color:#fff;font-size:13px;font-weight:500}.favorite-mini-info p{margin:0;color:#d4af37;font-size:12px}
   .login-required{max-width:420px;margin:20px auto 5px;text-align:center;padding:28px 22px;border:1px solid rgba(212,175,55,.18);background:#0b0b0b}.login-required-icon{font-family:Georgia,serif;font-size:42px;color:#d4af37;margin-bottom:10px}.login-required h3{font-family:'Playfair Display',serif;font-weight:500;margin:0 0 8px;color:#fff}.login-required p{margin:0 0 20px;color:#777;font-size:13px;line-height:1.7}.login-required-actions{display:flex;gap:10px;justify-content:center}.login-required-actions a,.login-required-actions button{min-height:44px;padding:0 22px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-size:11px;font-weight:600;letter-spacing:1px;cursor:pointer}.login-required-actions a{background:#d4af37;color:#080808}.login-required-actions button{background:transparent;color:#aaa;border:1px solid #333}
-  @keyframes infoTitle{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}@keyframes infoContent{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}@keyframes infoForm{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}body.modal-open{overflow:hidden!important}
+  @keyframes infoTitle{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}@keyframes infoContent{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}@keyframes infoForm{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}body.modal-open{overflow:hidden!important;overscroll-behavior:none;touch-action:none}
+html:has(body.modal-open){overflow:hidden!important;overscroll-behavior:none}
+@media(max-width:768px){
+  .product-detail-modal{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;overflow:hidden!important;padding:0!important;align-items:stretch!important;justify-content:stretch!important;overscroll-behavior:contain}
+  .product-detail-box{width:100%!important;height:100dvh!important;max-height:none!important;overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior:contain!important;background:#090909!important;color:#fff!important}
+  .product-detail-layout{display:block!important;min-height:0!important}
+  .product-detail-media{height:44dvh!important;min-height:0!important;background:#080808!important;position:relative!important}
+  .product-detail-media img{width:100%!important;height:44dvh!important;min-height:0!important;max-height:none!important;object-fit:cover!important;display:block!important}
+  .product-detail-info{padding:28px 20px 34px!important;background:linear-gradient(180deg,#0b0b0b 0%,#090909 100%)!important;color:#fff!important}
+  .product-detail-kicker{font-size:9px!important;letter-spacing:3.2px!important;color:#d4af37!important;margin-bottom:10px!important}
+  .product-detail-title{font-size:30px!important;color:#fff!important;margin-bottom:8px!important}
+  .product-detail-price{font-size:22px!important;color:#fff!important;margin-bottom:22px!important}
+  .product-detail-divider{background:rgba(255,255,255,.16)!important;margin-bottom:22px!important}
+  .product-detail-label{color:#fff!important;margin-bottom:10px!important}
+  .product-size-guide{color:#cfcfcf!important}
+  .product-size-options{gap:8px!important;margin-bottom:18px!important}
+  .product-size-btn{min-height:52px!important;background:#111!important;border:1px solid rgba(255,255,255,.20)!important;color:#fff!important}
+  .product-size-btn.selected{background:#d4af37!important;border-color:#d4af37!important;color:#080808!important}
+  .product-quantity-row{gap:9px!important;margin-bottom:10px!important}
+  .product-quantity{height:52px!important;background:#111!important;border-color:rgba(255,255,255,.20)!important;color:#fff!important}
+  .product-quantity button{background:#111!important;color:#fff!important}
+  .product-quantity span{color:#fff!important}
+  .product-add-cart{height:54px!important;background:#d4af37!important;border-color:#d4af37!important;color:#080808!important}
+  .product-buy-now{height:54px!important;background:transparent!important;border-color:rgba(255,255,255,.42)!important;color:#fff!important}
+  .product-favorite-row{margin-top:16px!important;color:#ccc!important}
+  .product-favorite-mini{background:#111!important;border-color:rgba(255,255,255,.28)!important;color:#fff!important}
+  .product-favorite-mini.active{background:#d4af37!important;border-color:#d4af37!important;color:#080808!important}
+  .product-detail-note{margin-top:18px!important;color:#999!important}
+  .product-detail-close{top:12px!important;right:12px!important;width:44px!important;height:44px!important;background:rgba(8,8,8,.62)!important;border:1px solid rgba(255,255,255,.32)!important;color:#fff!important;backdrop-filter:blur(8px)!important;z-index:20!important}
+}
+
 /* MOBILE MENU */
 .mobile-menu{display:none}
 @media(max-width:768px){
@@ -808,8 +840,9 @@ button,input,textarea{font:inherit}
 .benefit:hover .benefit-icon{transform:translateY(-4px);background:rgba(212,175,55,.07);box-shadow:0 10px 30px rgba(212,175,55,.10)}
 .benefit-copy h3{margin:0 0 8px;color:#f4f4f4;font-family:'Playfair Display',serif;font-size:17px;font-weight:500}
 .benefit-copy p{margin:0;color:#777;font-size:12px;line-height:1.7}
-.product-price{display:flex!important;align-items:baseline;gap:7px;margin:0!important;color:#fff!important;font-family:'Playfair Display',serif!important;font-size:24px!important;font-weight:600!important;letter-spacing:.2px}.price-currency{order:2;font-family:Poppins,sans-serif;font-size:15px;color:#d4af37}.price-value{order:1;font-weight:600}
-.price-currency{font-family:Poppins,sans-serif;font-size:15px;color:#d4af37;letter-spacing:0;order:2}.price-value{font-weight:600;order:1}
+.product-price{display:flex!important;align-items:baseline;gap:4px;margin:0!important;color:#d4af37!important;font-family:'Playfair Display',serif!important;font-size:19px!important;letter-spacing:.2px}
+.price-currency{font-family:Poppins,sans-serif;font-size:11px;color:#a98b2b;letter-spacing:.5px}
+.price-value{font-weight:500}
 .card-content{padding:21px 20px 20px}
 .card h3{margin-bottom:11px}
 .buy{margin-top:18px}
@@ -1068,240 +1101,40 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
 .neris-cart-checkout{width:100%;height:50px;border:1px solid #d4af37;background:#d4af37;color:#090909;font-weight:700;letter-spacing:2px;cursor:pointer}
 @media(max-width:768px){.neris-cart-list{max-height:52vh}.neris-cart-item{grid-template-columns:58px 1fr 30px}.neris-cart-item img{width:58px;height:72px}.neris-cart-item-info h3{font-size:14px}}
 
-/* NERIS — PREMIUM ÜRÜN KARTI */
+/* NERIS — ÜRÜN KARTI / DETAY SON SADELEŞTİRME */
 .card{
-  background:#0a0a0a;
-  border:1px solid rgba(212,175,55,.48);
-  overflow:hidden;
-  position:relative;
-  transition:transform .4s ease,border-color .4s ease,box-shadow .4s ease;
+  background:#fff;
+  border:1px solid #e9e9e9;
 }
 .card:hover{
-  transform:translateY(-6px);
-  border-color:#d4af37;
-  box-shadow:0 20px 55px rgba(0,0,0,.42),0 0 0 1px rgba(212,175,55,.12);
-}
-.card-image{
-  height:450px;
-  overflow:hidden;
-  position:relative;
-  background:#111;
-}
-.card-image::after{
-  content:"";
-  position:absolute;
-  left:0;right:0;bottom:0;
-  height:42%;
-  background:linear-gradient(to top,rgba(0,0,0,.90),rgba(0,0,0,.48),transparent);
-  z-index:2;
-  pointer-events:none;
+  border-color:#d8d8d8;
+  box-shadow:0 18px 45px rgba(0,0,0,.18);
 }
 .card-content{
-  position:absolute;
-  left:0;right:0;bottom:0;
-  z-index:4;
-  padding:70px 20px 20px;
-  background:transparent;
-  pointer-events:none;
+  background:#fff;
+  padding:18px 20px 20px;
 }
 .card h3{
-  color:#fff;
-  margin:0 0 7px;
-  font-family:'Playfair Display',serif;
-  font-size:20px;
-  font-weight:500;
-  text-shadow:0 2px 12px rgba(0,0,0,.45);
+  color:#111;
+  margin:0 0 8px;
 }
 .product-price{
-  color:#fff!important;
+  color:#111!important;
   font-family:Poppins,sans-serif!important;
   font-size:14px!important;
   font-weight:500!important;
-  letter-spacing:.2px!important;
-  margin:0!important;
-  text-shadow:0 2px 12px rgba(0,0,0,.45);
+  letter-spacing:0!important;
 }
 .price-currency{
-  color:#d4af37!important;
-  font-size:12px!important;
-  margin-right:2px;
+  color:#111!important;
+  font-size:14px!important;
+  letter-spacing:0!important;
 }
 .price-value{
-  color:#fff!important;
+  color:#111!important;
   font-weight:500!important;
 }
-.card-content .buy{display:none}
 
-/* PREMIUM ÜRÜN DETAYI — beyaz panel yerine görsel üstü içerik */
-.product-detail-box{
-  width:min(980px,100%);
-  max-height:min(90vh,900px);
-  overflow:hidden;
-  background:#090909;
-  color:#fff;
-  border:1px solid rgba(212,175,55,.42);
-  box-shadow:0 35px 100px rgba(0,0,0,.78),0 0 0 1px rgba(212,175,55,.08);
-}
-.product-detail-layout{
-  display:block;
-  min-height:min(720px,82vh);
-  position:relative;
-  overflow:hidden;
-}
-.product-detail-media{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  min-height:0;
-  background:#111;
-}
-.product-detail-media::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:
-    linear-gradient(90deg,rgba(0,0,0,.02) 0%,rgba(0,0,0,.06) 42%,rgba(0,0,0,.55) 72%,rgba(0,0,0,.82) 100%),
-    linear-gradient(0deg,rgba(0,0,0,.88) 0%,rgba(0,0,0,.34) 35%,transparent 65%);
-  pointer-events:none;
-}
-.product-detail-media img{
-  width:100%;
-  height:100%;
-  min-height:0;
-  max-height:none;
-  object-fit:cover;
-  display:block;
-}
-.product-detail-info{
-  position:absolute;
-  right:0;
-  top:0;
-  bottom:0;
-  width:min(48%,500px);
-  box-sizing:border-box;
-  padding:70px 48px 38px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  background:linear-gradient(90deg,rgba(7,7,7,.10),rgba(7,7,7,.78) 22%,rgba(7,7,7,.94));
-  color:#fff;
-  z-index:3;
-}
-.product-detail-kicker{color:#d4af37}
-.product-detail-title{color:#fff}
-.product-detail-price{color:#fff;font-size:28px!important;font-weight:600!important;letter-spacing:.2px}
-.product-detail-divider{background:rgba(255,255,255,.16)}
-.product-detail-label{color:#fff}
-.product-size-guide{color:#c8c8c8}
-.product-size-btn{
-  background:rgba(255,255,255,.04);
-  border-color:rgba(255,255,255,.22);
-  color:#fff;
-}
-.product-size-btn:hover{border-color:#d4af37}
-.product-size-btn.selected{background:#d4af37;color:#090909;border-color:#d4af37}
-.product-quantity{border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.04);color:#fff}
-.product-quantity button{background:transparent;color:#fff}
-.product-quantity span{color:#fff}
-.product-add-cart{background:#fff;color:#090909;border-color:#fff}
-.product-add-cart:hover{background:#d4af37;color:#090909;border-color:#d4af37}
-.product-buy-now{background:transparent;color:#fff;border-color:rgba(255,255,255,.45)}
-.product-buy-now:hover{background:rgba(255,255,255,.08);color:#fff}
-.product-favorite-row{color:#d0d0d0}
-.product-favorite-mini{
-  border-color:rgba(255,255,255,.28);
-  background:rgba(255,255,255,.04);
-  color:#fff;
-  transition:.25s ease;
-}
-.product-favorite-mini:hover{border-color:#d4af37;color:#d4af37}
-.product-favorite-mini.active{
-  background:#d4af37;
-  border-color:#d4af37;
-  color:#090909;
-  box-shadow:0 0 0 4px rgba(212,175,55,.12);
-}
-.product-favorite-row.favorite-active span{color:#d4af37}
-.product-detail-inline-alert{
-  display:none;
-  margin:16px 0 0;
-  padding:12px 14px;
-  border:1px solid rgba(212,175,55,.45);
-  background:rgba(212,175,55,.06);
-  color:#e7e7e7;
-  font-size:11px;
-  line-height:1.6;
-  letter-spacing:.15px;
-}
-.product-detail-inline-alert.show{display:block;animation:inlineAlertIn .25s ease both}
-.product-detail-inline-alert.success{border-color:rgba(212,175,55,.65);color:#d4af37;background:rgba(212,175,55,.08)}
-.product-detail-inline-alert.warning{border-color:rgba(212,175,55,.38);color:#ddd}
-@keyframes inlineAlertIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
-.product-detail-note{color:#bcbcbc}
-.product-detail-close{
-  border-color:rgba(255,255,255,.24);
-  background:rgba(0,0,0,.32);
-  color:#fff;
-  backdrop-filter:blur(8px);
-}
-.product-detail-close:hover{background:#d4af37;color:#090909;border-color:#d4af37}
-
-/* FAVORİLER — ürün kartları */
-.favorites-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:18px;
-  margin-top:20px;
-}
-.favorite-mini-card{
-  overflow:hidden;
-  background:#0b0b0b;
-  border:1px solid rgba(212,175,55,.32);
-  transition:.3s ease;
-}
-.favorite-mini-card:hover{border-color:#d4af37;transform:translateY(-3px)}
-.favorite-mini-card img{width:100%;height:230px;object-fit:cover;display:block}
-.favorite-mini-info{padding:13px 14px 15px;background:#0b0b0b}
-.favorite-mini-info h3{margin:0 0 5px;color:#fff;font-family:'Playfair Display',serif;font-size:16px;font-weight:500}
-.favorite-mini-info p{margin:0;color:#d4af37;font-size:13px}
-
-@media(max-width:768px){
-  /* MOBİL ÜRÜN DETAYI — ürün görseli kontroller tarafından kapatılmasın */
-  .product-detail-modal{align-items:flex-start;padding:10px 0;overflow-y:auto}
-  .product-detail-box{width:100%;max-width:none;max-height:calc(100dvh - 20px);height:auto;overflow-y:auto;border-left:0;border-right:0}
-  .product-detail-layout{display:flex;flex-direction:column;min-height:0;height:auto;overflow:visible;position:relative}
-  .product-detail-media{position:relative;inset:auto;width:100%;height:52dvh;min-height:360px;flex:none;background:#111;overflow:hidden}
-  .product-detail-media::after{background:linear-gradient(0deg,rgba(0,0,0,.18),transparent 45%);}
-  .product-detail-media img{width:100%;height:100%;min-height:0;max-height:none;object-fit:cover;object-position:center center}
-  .product-detail-info{position:relative;left:auto;right:auto;top:auto;bottom:auto;width:100%;min-height:0;padding:28px 22px 30px;background:#090909;color:#fff;display:block;overflow:visible}
-  .product-detail-kicker{font-size:10px;letter-spacing:4px;margin-bottom:10px}
-  .product-detail-title{font-size:29px;line-height:1.15;margin:0 0 8px}
-  .product-detail-price{font-size:24px!important;margin:0 0 18px}
-  .product-detail-divider{margin-bottom:18px}
-  .product-detail-label{font-size:13px;margin-bottom:10px}
-  .product-size-options{grid-template-columns:repeat(3,1fr);gap:8px}
-  .product-size-btn{height:48px}
-  .product-quantity-row{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
-  .product-quantity{height:52px}
-  .product-add-cart,.product-buy-now{width:100%;height:54px}
-  .product-favorite-row{margin-top:18px}
-  .product-detail-inline-alert{margin-top:14px}
-  .product-detail-note{font-size:12px;line-height:1.65;margin-top:18px}
-  .product-detail-close{position:absolute;z-index:10;top:11px;right:11px;width:42px;height:42px}
-}
-
-
-/* NERIS SON ÜRÜN / SEPET / FAVORİ POLISH */
-.card-image{height:450px}
-.product-price{font-size:24px!important;font-weight:600!important;gap:8px!important;color:#fff!important}
-.product-price .price-value{order:1;color:#fff!important;font-size:24px!important;font-weight:600!important}
-.product-price .price-currency{order:2;color:#d4af37!important;font-size:15px!important;font-weight:500!important}
-.product-detail-price{font-size:28px!important;font-weight:600!important;color:#fff!important}
-.product-favorite-row.favorite-active{color:#d4af37!important}
-.product-favorite-row.favorite-active span{color:#d4af37!important;font-weight:600}
-.product-favorite-mini.active{background:#d4af37!important;color:#090909!important;border-color:#d4af37!important}
-@media(max-width:768px){.card-image{height:330px}.product-price{font-size:21px!important}.product-price .price-value{font-size:21px!important}}
 </style>
   <script type="application/ld+json">
 {
@@ -1669,7 +1502,7 @@ document.addEventListener("keydown", function(event) {
           <div class="product-detail-divider"></div>
           <div class="product-detail-label">
             <span>BEDEN</span>
-            <button class="product-size-guide" type="button" onclick="showPremiumAlert('Beden Bilgisi','38 / 40 / 42 / 44 / 46 beden seçenekleri mevcuttur. Ürün kalıbına göre değişiklik gösterebilir.');">Beden rehberi</button>
+            <button class="product-size-guide" type="button" onclick="showPremiumAlert('Beden Bilgisi','36: S — 38: M — 40: L. Ürün kalıbına göre değişiklik gösterebilir.');">Beden rehberi</button>
           </div>
           <div class="product-size-options" id="productSizeOptions">
             <button class="product-size-btn" type="button" data-size="38">38</button>
@@ -1691,7 +1524,6 @@ document.addEventListener("keydown", function(event) {
             <button class="product-favorite-mini" id="productDetailFavorite" type="button" onclick="toggleProductDetailFavorite()" aria-label="Favorilere ekle">♡</button>
             <span>Favorilere ekle</span>
           </div>
-          <div class="product-detail-inline-alert" id="productDetailInlineAlert" role="status" aria-live="polite"></div>
           <p class="product-detail-note">Beden seçiminizi yaptıktan sonra ürünü sepetinize ekleyebilir veya doğrudan ödeme adımına geçebilirsiniz.</p>
         </div>
       </div>
@@ -1744,6 +1576,11 @@ document.addEventListener("keydown", function(event) {
       // sayfayı kilitlemesin.
       window.addEventListener('pageshow', function(event){
         resetPageTransition();
+        if(document.body.classList.contains('neris-scroll-locked')){
+          document.documentElement.classList.remove('neris-scroll-locked');
+          document.body.classList.remove('neris-scroll-locked');
+          document.body.style.top='';
+        }
 
         if(event.persisted){
           hideNerisPageLoader(true);
@@ -1839,13 +1676,11 @@ document.addEventListener("keydown", function(event) {
         backForward = !!(event && event.persisted);
       }
 
+      // Geri/ileri dönüşünde sayfanın milisaniyelik görünmesini engellemek için
+      // geçiş perdesini tekrar açmıyoruz; sayfa doğrudan hazır haliyle gösterilir.
       if(backForward){
-        requestAnimationFrame(function(){
-          layer.classList.add('active');
-          setTimeout(function(){
-            layer.classList.remove('active');
-          }, 520);
-        });
+        layer.classList.remove('active');
+        hideNerisPageLoader(true);
       }
     });
     function handleMobileLoginClick(event){
@@ -2322,20 +2157,19 @@ let nerisSelectedProduct = null;
 let nerisSelectedSize = null;
 let nerisProductQuantity = 1;
 
-function showProductInlineAlert(title, message, type='warning'){
-  const el=document.getElementById('productDetailInlineAlert');
-  if(!el) return;
-  el.className='product-detail-inline-alert show '+(type||'warning');
-  el.innerHTML='<strong style="display:block;margin-bottom:3px;color:#fff">'+escapeHtml(title||'Bilgilendirme')+'</strong><span>'+escapeHtml(message||'')+'</span>';
+let nerisLockedScrollY = 0;
+function lockNerisPageScroll(){
+  nerisLockedScrollY = window.scrollY || window.pageYOffset || 0;
+  document.documentElement.classList.add('neris-scroll-locked');
+  document.body.classList.add('neris-scroll-locked');
+  document.body.style.top = `-${nerisLockedScrollY}px`;
 }
-function clearProductInlineAlert(){
-  const el=document.getElementById('productDetailInlineAlert');
-  if(!el) return;
-  el.className='product-detail-inline-alert';
-  el.textContent='';
+function unlockNerisPageScroll(){
+  document.documentElement.classList.remove('neris-scroll-locked');
+  document.body.classList.remove('neris-scroll-locked');
+  document.body.style.top = '';
+  window.scrollTo(0, nerisLockedScrollY);
 }
-window.showProductInlineAlert=showProductInlineAlert;
-
 function openProductDetail(product){
   if(!product) return;
   nerisSelectedProduct = product;
@@ -2354,17 +2188,12 @@ function openProductDetail(product){
   image.src=product.resim||'https://picsum.photos/700/900';
   image.alt=name;
   title.textContent=name;
-  price.textContent=(product.fiyat||'0')+' ₺';
+  price.textContent='₺'+(product.fiyat||'0');
   if(quantity) quantity.textContent='1';
-  clearProductInlineAlert();
   document.querySelectorAll('#productSizeOptions .product-size-btn').forEach(btn=>btn.classList.remove('selected'));
   if(favorite){
     favorite.textContent='♡';
     favorite.classList.remove('active');
-    const row=favorite.closest('.product-favorite-row');
-    if(row) row.classList.remove('favorite-active');
-    const label=row?.querySelector('span');
-    if(label) label.textContent='Favorilere ekle';
   }
   syncProductDetailFavoriteState();
 
@@ -2378,17 +2207,15 @@ function openProductDetail(product){
 
   modal.classList.add('open');
   document.body.classList.add('modal-open');
+  lockNerisPageScroll();
 }
 window.openProductDetail=openProductDetail;
 
 function closeProductDetail(){
   const modal=document.getElementById('productDetailModal');
   if(modal) modal.classList.remove('open');
-  // Kapatma (X) hiçbir şekilde beden/sepet uyarısı üretmez.
-  if(typeof premiumAlertCallback !== 'undefined') premiumAlertCallback=null;
-  const pa=document.getElementById('premiumAlert');
-  if(pa) pa.classList.remove('open');
   if(!document.getElementById('infoModal')?.classList.contains('open')&&!document.getElementById('premiumAlert')?.classList.contains('open')) document.body.classList.remove('modal-open');
+  unlockNerisPageScroll();
   nerisSelectedProduct=null; nerisSelectedSize=null; nerisProductQuantity=1;
 }
 window.closeProductDetail=closeProductDetail;
@@ -2414,18 +2241,9 @@ function productCheckoutUrl(product,size,quantity){
 }
 
 function addProductToCart(){
-  if(!nerisSelectedProduct){
-    showPremiumAlert('Ürün Bulunamadı','Ürün bilgisi alınamadı. Lütfen ürünü yeniden açın.');
-    return;
-  }
-  const authInstance=window.nerisAuth;
-  const user=authInstance?.currentUser;
-  if(!window.nerisAuthStateReady || !user){
-    navigateWithTransition('giris.html');
-    return;
-  }
+  if(!nerisSelectedProduct) return;
   if(!nerisSelectedSize){
-    showProductInlineAlert('Beden Seçin','Lütfen devam etmeden önce bir beden seçin.','warning');
+    showPremiumAlert('Beden Seçin','Lütfen devam etmeden önce bir beden seçin.');
     return;
   }
   const item={
@@ -2442,8 +2260,8 @@ function addProductToCart(){
   const same=cart.find(x=>x.id===item.id&&x.size===item.size);
   if(same) same.quantity+=item.quantity; else cart.push(item);
   localStorage.setItem('nerisCart',JSON.stringify(cart));
-  updateCartCount();
-  showProductInlineAlert('Sepete Eklendi',`${item.product} — ${item.size} beden, ${item.quantity} adet sepetinize eklendi.`,'success');
+  closeProductDetail();
+  showPremiumAlert('Sepete Eklendi',`${item.product} — ${item.size} beden, ${item.quantity} adet sepetinize eklendi.`);
 }
 window.addProductToCart=addProductToCart;
 
@@ -2463,15 +2281,6 @@ function formatCartPrice(value){
 function renderCartModal(){
   const box=document.getElementById('cartContent');
   if(!box) return;
-  if(!window.nerisAuthStateReady){
-    box.innerHTML='<div class="favorites-empty"><div class="favorites-icon">🛒</div><h3>Hesabınız kontrol ediliyor</h3><p>Lütfen bir saniye bekleyin.</p></div>';
-    return;
-  }
-  if(!window.nerisAuth?.currentUser){
-    box.innerHTML='<div class="login-required"><div class="login-required-icon">🛒</div><h3>Giriş yapmalısınız</h3><p>Sepetinizi görüntülemek ve ürün eklemek için hesabınıza giriş yapın.</p><div class="login-required-actions"><a href="giris.html">GİRİŞ YAP</a><button type="button" onclick="closeInfo()">VAZGEÇ</button></div></div>';
-    updateCartCount();
-    return;
-  }
   const cart=getNerisCart();
   if(!cart.length){
     box.innerHTML='<div class="favorites-empty"><div class="favorites-icon">🛒</div><h3>Sepetiniz boş</h3><p>Beğendiğiniz ürünleri beden seçerek sepetinize ekleyebilirsiniz.</p></div>';
@@ -2527,9 +2336,8 @@ function checkoutCart(){
 window.checkoutCart=checkoutCart;
 
 function updateCartCount(){
+  const count=getNerisCart().reduce((sum,item)=>sum+(Number(item.quantity)||0),0);
   const badge=document.getElementById('cartCountBadge');
-  const loggedIn=!!(window.nerisAuthStateReady && window.nerisAuth?.currentUser);
-  const count=loggedIn ? getNerisCart().reduce((sum,item)=>sum+(Number(item.quantity)||0),0) : 0;
   const cartButton=document.querySelector('.cart-icon-btn');
   if(!badge) return;
 
@@ -2555,19 +2363,14 @@ window.addEventListener('storage',()=>{
 });
 
 function buyProductNow(){
-  if(!nerisSelectedProduct){
-    showPremiumAlert('Ürün Bulunamadı','Ürün bilgisi alınamadı. Lütfen ürünü yeniden açın.');
-    return;
-  }
-  // HEMEN AL misafir kullanıcılar için de açıktır.
-  // Sepete Ekle'den farklı olarak giriş zorunluluğu yoktur.
+  if(!nerisSelectedProduct) return;
   if(!nerisSelectedSize){
-    showProductInlineAlert('Beden Seçin','Lütfen devam etmeden önce bir beden seçin.','warning');
+    showPremiumAlert('Beden Seçin','Lütfen devam etmeden önce bir beden seçin.');
     return;
   }
   const url=productCheckoutUrl(nerisSelectedProduct,nerisSelectedSize,nerisProductQuantity);
   closeProductDetail();
-  setTimeout(()=>{ navigateWithTransition(url); },120);
+  setTimeout(()=>navigateWithTransition(url),120);
 }
 window.buyProductNow=buyProductNow;
 
@@ -2575,8 +2378,8 @@ async function syncProductDetailFavoriteState(){
   const btn=document.getElementById('productDetailFavorite');
   if(!btn || !nerisSelectedProduct) return;
 
-  const user=window.nerisAuth?.currentUser;
-  if(!window.nerisAuthStateReady || !user){
+  const user=auth.currentUser;
+  if(!authInitialized || !user){
     btn.textContent='♡';
     btn.classList.remove('active');
     return;
@@ -2590,22 +2393,14 @@ async function syncProductDetailFavoriteState(){
   }
 
   try{
-    const favoriteRef=window.nerisFirestore.doc(window.nerisDb,'favoriler',`${user.uid}_${productId}`);
-    const snap=await window.nerisFirestore.getDoc(favoriteRef);
+    const favoriteRef=doc(db,'favoriler',`${user.uid}_${productId}`);
+    const snap=await getDoc(favoriteRef);
     btn.classList.toggle('active',snap.exists());
     btn.textContent=snap.exists()?'♥':'♡';
-    const row=btn.closest('.product-favorite-row');
-    if(row) row.classList.toggle('favorite-active',snap.exists());
-    const label=row?.querySelector('span');
-    if(label) label.textContent=snap.exists()?'Favorilerde':'Favorilere ekle';
   }catch(error){
     console.error('Ürün favori durumu alınamadı:',error);
     btn.textContent='♡';
     btn.classList.remove('active');
-    const row=btn.closest('.product-favorite-row');
-    if(row) row.classList.remove('favorite-active');
-    const label=row?.querySelector('span');
-    if(label) label.textContent='Favorilere ekle';
   }
 }
 
@@ -2613,9 +2408,9 @@ async function toggleProductDetailFavorite(){
   if(!nerisSelectedProduct) return;
 
   const btn=document.getElementById('productDetailFavorite');
-  const user=window.nerisAuth?.currentUser;
+  const user=auth.currentUser;
 
-  if(!window.nerisAuthStateReady || !user){
+  if(!authInitialized || !user){
     const goLogin=confirm('Favorilere ürün eklemek için giriş yapmanız gerekmektedir. Giriş sayfasına gitmek ister misiniz?');
     if(goLogin) window.location.href='giris.html';
     return;
@@ -2627,43 +2422,27 @@ async function toggleProductDetailFavorite(){
     return;
   }
 
-  const favoriteRef=window.nerisFirestore.doc(window.nerisDb,'favoriler',`${user.uid}_${productId}`);
+  const favoriteRef=doc(db,'favoriler',`${user.uid}_${productId}`);
 
   try{
-    const snap=await window.nerisFirestore.getDoc(favoriteRef);
+    const snap=await getDoc(favoriteRef);
 
     if(snap.exists()){
-      await window.nerisFirestore.deleteDoc(favoriteRef);
+      await deleteDoc(favoriteRef);
       if(btn){
         btn.classList.remove('active');
         btn.textContent='♡';
-        const row=btn.closest('.product-favorite-row');
-        if(row) row.classList.remove('favorite-active');
-        const label=row?.querySelector('span');
-        if(label) label.textContent='Favorilere ekle';
       }
-      showProductInlineAlert('Favorilerden Çıkarıldı','Bu ürün Favorilerim listenizden kaldırıldı.','warning');
     }else{
-      await window.nerisFirestore.setDoc(favoriteRef,{
+      await setDoc(favoriteRef,{
         kullaniciId:user.uid,
         urunId:productId,
-        eklenmeTarihi:new Date().toISOString(),
-        urunData:{
-          id:productId,
-          reklam:nerisSelectedProduct.reklam||'Neris Ürün',
-          fiyat:nerisSelectedProduct.fiyat||'0',
-          resim:nerisSelectedProduct.resim||''
-        }
+        eklenmeTarihi:new Date().toISOString()
       });
       if(btn){
         btn.classList.add('active');
         btn.textContent='♥';
-        const row=btn.closest('.product-favorite-row');
-        if(row) row.classList.add('favorite-active');
-        const label=row?.querySelector('span');
-        if(label) label.textContent='Favorilerde';
       }
-      showProductInlineAlert('Favorilere Eklendi','Bu ürün Favorilerim listenize eklendi. Favorilerim bölümünden görüntüleyebilirsiniz.','success');
     }
 
     if(document.getElementById('favoritesContent') &&
@@ -2774,14 +2553,6 @@ import {
     const auth = getAuth(app);
     let authInitialized = false;
 
-    // Klasik scriptlerdeki ürün detay/sepet/favori fonksiyonlarının
-    // Firebase oturumuna güvenli şekilde erişebilmesi için global köprü.
-    window.nerisDb = db;
-    window.nerisAuth = auth;
-    window.nerisFirestore = { doc, getDoc, setDoc, deleteDoc, collection, getDocs };
-    window.nerisAuthStateReady = false;
-    window.nerisCurrentUser = null;
-
     // Kullanıcı, yalnızca açıkça "Çıkış Yap" dediğinde oturumdan çıkar.
     // Siparişlerim / Hesabım gibi sayfalar arasında gezinirken oturum korunur.
     setPersistence(auth, browserLocalPersistence)
@@ -2841,7 +2612,7 @@ const querySnapshot =
 
     <h3>${p.reklam || "Ürün"}</h3>
 
-    <p class="product-price"><span class="price-value">${p.fiyat || "0"}</span><span class="price-currency">₺</span></p>
+    <p class="product-price"><span class="price-currency">₺</span><span class="price-value">${p.fiyat || "0"}</span></p>
 
 
 </div>
@@ -2919,56 +2690,19 @@ const querySnapshot =
 }
     window.loadFavoritesModal = async function(){
       const container=document.getElementById('favoritesContent'); if(!container)return;
-      if(!authInitialized){
-        container.innerHTML='<div class="favorites-empty"><div class="favorites-icon">♡</div><h3>Hesabınız kontrol ediliyor</h3><p>Lütfen bir saniye bekleyin.</p></div>';
-        return;
-      }
+      if(!authInitialized){container.innerHTML='<div class="favorites-empty"><div class="favorites-icon">♡</div><h3>Hesabınız kontrol ediliyor</h3><p>Lütfen bir saniye bekleyin.</p></div>';return;}
       const user=auth.currentUser;
-      if(!user){
-        container.innerHTML='<div class="login-required"><div class="login-required-icon">♡</div><h3>Favorilerinizi oluşturun</h3><p>Favori ürünlerinizi kaydetmek ve daha sonra görüntülemek için hesabınıza giriş yapın.</p><div class="login-required-actions"><a href="giris.html">GİRİŞ YAP</a><button type="button" onclick="closeInfo()">VAZGEÇ</button></div></div>';
-        return;
-      }
+      if(!user){container.innerHTML='<div class="login-required"><div class="login-required-icon">♡</div><h3>Favorilerinizi oluşturun</h3><p>Favori ürünlerinizi kaydetmek ve daha sonra görüntülemek için hesabınıza giriş yapın.</p><div class="login-required-actions"><a href="giris.html">GİRİŞ YAP</a><button type="button" onclick="closeInfo()">VAZGEÇ</button></div></div>';return;}
       try{
-        const fs=await getDocs(collection(db,'favoriler'));
-        const favs=[];
-        fs.forEach(d=>{
-          const x=d.data();
-          if(x.kullaniciId===user.uid&&x.urunId) favs.push({id:d.id,...x});
-        });
-        if(!favs.length){
-          container.innerHTML='<div class="favorites-empty"><div class="favorites-icon">♡</div><h3>Henüz favoriniz yok</h3><p>Beğendiğiniz ürünleri ürün detayındaki kalp ile burada saklayabilirsiniz.</p></div>';
-          return;
-        }
-
-        const ps=await getDocs(collection(db,'Ürünler'));
-        const products={};
-        ps.forEach(d=>products[d.id]={...d.data(),id:d.id});
-
-        const cards=favs.map(f=>{
-          const p=products[f.urunId]||f.urunData||{
-            id:f.urunId,
-            reklam:'Neris Ürün',
-            fiyat:'0',
-            resim:''
-          };
-          const n=String(p.reklam||'Neris Ürün').replace(/"/g,'&quot;');
-          return `<div class="favorite-mini-card">
-            <img src="${p.resim||'https://picsum.photos/300/400'}" alt="${n}">
-            <div class="favorite-mini-info">
-              <h3>${p.reklam||'Neris Ürün'}</h3>
-              <p>₺${p.fiyat||'0'}</p>
-            </div>
-          </div>`;
-        }).join('');
-
-        container.innerHTML=cards
-          ? '<div class="favorites-grid">'+cards+'</div>'
-          : '<div class="favorites-empty"><div class="favorites-icon">♡</div><h3>Favori ürünleriniz bulunamadı</h3><p>Favori kaydı var ancak ürün bilgisi bulunamadı.</p></div>';
-      }catch(error){
-        console.error('Favoriler yüklenemedi:',error);
-        container.innerHTML='<div class="favorites-empty"><div class="favorites-icon">!</div><h3>Bir sorun oluştu</h3><p>Favorileriniz şu anda yüklenemiyor. Lütfen tekrar deneyin.</p></div>';
-      }
-    };;
+        const fs=await getDocs(collection(db,'favoriler')); const favs=[];
+        fs.forEach(d=>{const x=d.data();if(x.kullaniciId===user.uid&&x.urunId)favs.push(x)});
+        if(!favs.length){container.innerHTML='<div class="favorites-empty"><div class="favorites-icon">♡</div><h3>Henüz favoriniz yok</h3><p>Beğendiğiniz ürünleri kalp ikonuna basarak burada saklayabilirsiniz.</p></div>';return;}
+        const ps=await getDocs(collection(db,'Ürünler')); const products={}; ps.forEach(d=>products[d.id]={...d.data(),id:d.id});
+        let html='<div class="favorites-grid">';
+        favs.forEach(f=>{const p=products[f.urunId];if(!p)return;const n=String(p.reklam||'Neris Ürün').replace(/"/g,'&quot;');html+=`<div class="favorite-mini-card"><img src="${p.resim||'https://picsum.photos/300/400'}" alt="${n}"><div class="favorite-mini-info"><h3>${p.reklam||'Neris Ürün'}</h3><p>₺${p.fiyat||'0'}</p></div></div>`});
+        html+='</div>';container.innerHTML=html;
+      }catch(error){console.error('Favoriler yüklenemedi:',error);container.innerHTML='<div class="favorites-empty"><div class="favorites-icon">!</div><h3>Bir sorun oluştu</h3><p>Favorileriniz şu anda yüklenemiyor. Lütfen tekrar deneyin.</p></div>';}
+    };
 
     document.addEventListener("click", async (e) => {
     const button = e.target.closest(".favorite-btn");
@@ -3101,9 +2835,6 @@ document.addEventListener("click", function(e) {
 
 onAuthStateChanged(auth,function(user){
   authInitialized=true;
-  window.nerisAuthStateReady=true;
-  window.nerisCurrentUser=user||null;
-  updateCartCount();
   const loginLink=document.getElementById('loginLink');
   const mobileName=document.getElementById('mobileAccountName');
   const mobileButtons=document.getElementById('mobileAccountButtons');
@@ -3111,8 +2842,8 @@ onAuthStateChanged(auth,function(user){
   if(!loginLink)return;
 
   if(user){
-    const userName=(user.displayName && user.displayName.trim()) || (user.email?user.email.split('@')[0]:'HESABIM');
-    if(accountName) accountName.textContent=userName;
+    const userName=user.displayName||(user.email?user.email.split('@')[0]:'HESABIM');
+    accountName.textContent=userName;
     loginLink.href='#';
     loginLink.dataset.loggedIn='true';
 
@@ -3122,7 +2853,7 @@ onAuthStateChanged(auth,function(user){
 
     loadFavorites();
   }else{
-    if(accountName) accountName.textContent='GİRİŞ YAP';
+    accountName.textContent='GİRİŞ YAP';
     loginLink.href='#';
     loginLink.onclick=null;
     loginLink.dataset.loggedIn='false';
