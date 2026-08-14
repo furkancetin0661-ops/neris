@@ -2372,9 +2372,13 @@ function productCheckoutUrl(product,size,quantity){
 }
 
 function addProductToCart(){
-  if(!nerisSelectedProduct) return;
-  const user=auth.currentUser;
-  if(!authInitialized || !user){
+  if(!nerisSelectedProduct){
+    showPremiumAlert('Ürün Bulunamadı','Ürün bilgisi alınamadı. Lütfen ürünü yeniden açın.');
+    return;
+  }
+  const authInstance=window.nerisAuth;
+  const user=authInstance?.currentUser;
+  if(!window.nerisAuthStateReady || !user){
     showPremiumConfirm('Giriş Yapmalısınız','Sepete ürün eklemek için hesabınıza giriş yapın.',()=>navigateWithTransition('giris.html'));
     return;
   }
@@ -2417,11 +2421,11 @@ function formatCartPrice(value){
 function renderCartModal(){
   const box=document.getElementById('cartContent');
   if(!box) return;
-  if(!authInitialized){
+  if(!window.nerisAuthStateReady){
     box.innerHTML='<div class="favorites-empty"><div class="favorites-icon">🛒</div><h3>Hesabınız kontrol ediliyor</h3><p>Lütfen bir saniye bekleyin.</p></div>';
     return;
   }
-  if(!auth.currentUser){
+  if(!window.nerisAuth?.currentUser){
     box.innerHTML='<div class="login-required"><div class="login-required-icon">🛒</div><h3>Giriş yapmalısınız</h3><p>Sepetinizi görüntülemek ve ürün eklemek için hesabınıza giriş yapın.</p><div class="login-required-actions"><a href="giris.html">GİRİŞ YAP</a><button type="button" onclick="closeInfo()">VAZGEÇ</button></div></div>';
     updateCartCount();
     return;
@@ -2482,7 +2486,7 @@ window.checkoutCart=checkoutCart;
 
 function updateCartCount(){
   const badge=document.getElementById('cartCountBadge');
-  const loggedIn=!!(authInitialized && auth.currentUser);
+  const loggedIn=!!(window.nerisAuthStateReady && window.nerisAuth?.currentUser);
   const count=loggedIn ? getNerisCart().reduce((sum,item)=>sum+(Number(item.quantity)||0),0) : 0;
   const cartButton=document.querySelector('.cart-icon-btn');
   if(!badge) return;
@@ -2509,8 +2513,11 @@ window.addEventListener('storage',()=>{
 });
 
 function buyProductNow(){
-  if(!nerisSelectedProduct) return;
-  if(!authInitialized || !auth.currentUser){
+  if(!nerisSelectedProduct){
+    showPremiumAlert('Ürün Bulunamadı','Ürün bilgisi alınamadı. Lütfen ürünü yeniden açın.');
+    return;
+  }
+  if(!window.nerisAuthStateReady || !window.nerisAuth?.currentUser){
     showPremiumConfirm('Giriş Yapmalısınız','Satın alma işlemine devam etmek için hesabınıza giriş yapın.',()=>navigateWithTransition('giris.html'));
     return;
   }
@@ -2528,8 +2535,8 @@ async function syncProductDetailFavoriteState(){
   const btn=document.getElementById('productDetailFavorite');
   if(!btn || !nerisSelectedProduct) return;
 
-  const user=auth.currentUser;
-  if(!authInitialized || !user){
+  const user=window.nerisAuth?.currentUser;
+  if(!window.nerisAuthStateReady || !user){
     btn.textContent='♡';
     btn.classList.remove('active');
     return;
@@ -2543,8 +2550,8 @@ async function syncProductDetailFavoriteState(){
   }
 
   try{
-    const favoriteRef=doc(db,'favoriler',`${user.uid}_${productId}`);
-    const snap=await getDoc(favoriteRef);
+    const favoriteRef=window.nerisFirestore.doc(window.nerisDb,'favoriler',`${user.uid}_${productId}`);
+    const snap=await window.nerisFirestore.getDoc(favoriteRef);
     btn.classList.toggle('active',snap.exists());
     btn.textContent=snap.exists()?'♥':'♡';
     const row=btn.closest('.product-favorite-row');
@@ -2555,6 +2562,10 @@ async function syncProductDetailFavoriteState(){
     console.error('Ürün favori durumu alınamadı:',error);
     btn.textContent='♡';
     btn.classList.remove('active');
+    const row=btn.closest('.product-favorite-row');
+    if(row) row.classList.remove('favorite-active');
+    const label=row?.querySelector('span');
+    if(label) label.textContent='Favorilere ekle';
   }
 }
 
@@ -2562,9 +2573,9 @@ async function toggleProductDetailFavorite(){
   if(!nerisSelectedProduct) return;
 
   const btn=document.getElementById('productDetailFavorite');
-  const user=auth.currentUser;
+  const user=window.nerisAuth?.currentUser;
 
-  if(!authInitialized || !user){
+  if(!window.nerisAuthStateReady || !user){
     const goLogin=confirm('Favorilere ürün eklemek için giriş yapmanız gerekmektedir. Giriş sayfasına gitmek ister misiniz?');
     if(goLogin) window.location.href='giris.html';
     return;
@@ -2576,13 +2587,13 @@ async function toggleProductDetailFavorite(){
     return;
   }
 
-  const favoriteRef=doc(db,'favoriler',`${user.uid}_${productId}`);
+  const favoriteRef=window.nerisFirestore.doc(window.nerisDb,'favoriler',`${user.uid}_${productId}`);
 
   try{
-    const snap=await getDoc(favoriteRef);
+    const snap=await window.nerisFirestore.getDoc(favoriteRef);
 
     if(snap.exists()){
-      await deleteDoc(favoriteRef);
+      await window.nerisFirestore.deleteDoc(favoriteRef);
       if(btn){
         btn.classList.remove('active');
         btn.textContent='♡';
@@ -2593,7 +2604,7 @@ async function toggleProductDetailFavorite(){
       }
       showPremiumAlert('Favorilerden Çıkarıldı','Bu ürün Favorilerim listenizden kaldırıldı.');
     }else{
-      await setDoc(favoriteRef,{
+      await window.nerisFirestore.setDoc(favoriteRef,{
         kullaniciId:user.uid,
         urunId:productId,
         eklenmeTarihi:new Date().toISOString(),
@@ -2722,6 +2733,14 @@ import {
     const db = getFirestore(app);
     const auth = getAuth(app);
     let authInitialized = false;
+
+    // Klasik scriptlerdeki ürün detay/sepet/favori fonksiyonlarının
+    // Firebase oturumuna güvenli şekilde erişebilmesi için global köprü.
+    window.nerisDb = db;
+    window.nerisAuth = auth;
+    window.nerisFirestore = { doc, getDoc, setDoc, deleteDoc, collection, getDocs };
+    window.nerisAuthStateReady = false;
+    window.nerisCurrentUser = null;
 
     // Kullanıcı, yalnızca açıkça "Çıkış Yap" dediğinde oturumdan çıkar.
     // Siparişlerim / Hesabım gibi sayfalar arasında gezinirken oturum korunur.
@@ -3042,6 +3061,8 @@ document.addEventListener("click", function(e) {
 
 onAuthStateChanged(auth,function(user){
   authInitialized=true;
+  window.nerisAuthStateReady=true;
+  window.nerisCurrentUser=user||null;
   updateCartCount();
   const loginLink=document.getElementById('loginLink');
   const mobileName=document.getElementById('mobileAccountName');
@@ -3050,8 +3071,8 @@ onAuthStateChanged(auth,function(user){
   if(!loginLink)return;
 
   if(user){
-    const userName=user.displayName||(user.email?user.email.split('@')[0]:'HESABIM');
-    accountName.textContent=userName;
+    const userName=(user.displayName && user.displayName.trim()) || (user.email?user.email.split('@')[0]:'HESABIM');
+    if(accountName) accountName.textContent=userName;
     loginLink.href='#';
     loginLink.dataset.loggedIn='true';
 
@@ -3061,7 +3082,7 @@ onAuthStateChanged(auth,function(user){
 
     loadFavorites();
   }else{
-    accountName.textContent='GİRİŞ YAP';
+    if(accountName) accountName.textContent='GİRİŞ YAP';
     loginLink.href='#';
     loginLink.onclick=null;
     loginLink.dataset.loggedIn='false';
