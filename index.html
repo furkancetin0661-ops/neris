@@ -1392,6 +1392,72 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
   .product-quantity-row{margin-top:0!important}
   .product-buy-now{margin-top:10px!important;min-height:54px!important}
 }
+
+/* NERIS — PELIA TARZI ANA ÜRÜN KARTI */
+.card{
+  background:#fff!important;
+  border:1px solid #e9e9e9!important;
+  border-radius:2px!important;
+  box-shadow:0 8px 30px rgba(0,0,0,.08)!important;
+  transform:none!important;
+}
+.card:hover{
+  transform:translateY(-4px)!important;
+  border-color:#dedede!important;
+  box-shadow:0 14px 35px rgba(0,0,0,.12)!important;
+}
+.card .badge{display:none!important}
+.card-image{height:476px!important;background:#f7f7f7!important}
+.card-image img{object-fit:cover!important}
+.card-content{
+  background:#fff!important;
+  padding:12px 12px 16px!important;
+  text-align:center!important;
+}
+.card h3{
+  color:#777!important;
+  font-family:Poppins,sans-serif!important;
+  font-size:15px!important;
+  font-weight:400!important;
+  line-height:1.35!important;
+  margin:0 0 2px!important;
+  text-shadow:none!important;
+}
+.card-stock{
+  color:#999!important;
+  font-size:9px!important;
+  line-height:1.4!important;
+  margin:0 0 10px!important;
+}
+.card .product-price{
+  display:flex!important;
+  justify-content:center!important;
+  align-items:baseline!important;
+  gap:4px!important;
+  color:#111!important;
+  font-family:Poppins,sans-serif!important;
+  font-size:20px!important;
+  font-weight:700!important;
+  margin:0!important;
+  text-shadow:none!important;
+}
+.card .product-price .price-value{
+  color:#111!important;
+  font-size:20px!important;
+  font-weight:700!important;
+}
+.card .product-price .price-currency{
+  color:#111!important;
+  font-family:Poppins,sans-serif!important;
+  font-size:13px!important;
+  font-weight:700!important;
+}
+@media(max-width:768px){
+  .card-image{height:420px!important}
+  .card-content{padding:11px 10px 15px!important}
+  .card h3{font-size:14px!important}
+  .card .product-price,.card .product-price .price-value{font-size:19px!important}
+}
 </style>
   <script type="application/ld+json">
 {
@@ -2934,9 +3000,8 @@ const querySnapshot =
 <div class="card-content">
 
     <h3>${p.reklam || "Ürün"}</h3>
-
-    <p class="product-price"><span class="price-value">${p.fiyat || "0"}</span><span class="price-currency">₺</span></p>
-
+    <div class="card-stock">* Bu ürünün seçenekleri mevcut</div>
+    <p class="product-price"><span class="price-value">${Number(String(p.fiyat || "0").replace(/[^0-9.,-]/g, '').replace(/\.(?=.*\.)/g,'').replace(',','.')).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})}</span><span class="price-currency">TL</span></p>
 
 </div>
           `;
