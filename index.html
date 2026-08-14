@@ -2583,7 +2583,54 @@ function getNerisCurrentUser(){
   return window.nerisAuth?.currentUser || window.nerisCurrentUser || null;
 }
 
-function addProductToCart(){
+/* NERIS SEPET SENKRONIZASYONU
+   Sepet artik cihazdaki localStorage yerine Firebase'deki kullaniciya ait
+   "sepetler/{uid}" belgesinde tutulur. Boylece ayni hesapla telefon ve
+   bilgisayarda giris yapildiginda urunler ve adetler ayni kalir. */
+window.nerisCartCache = [];
+window.nerisCartReady = false;
+window.nerisCartReadyPromise = Promise.resolve();
+window.nerisCartUnsubscribe = null;
+window.nerisCartUserId = null;
+
+function getNerisCart(){
+  return Array.isArray(window.nerisCartCache) ? window.nerisCartCache : [];
+}
+
+function normalizeNerisCart(cart){
+  if(!Array.isArray(cart)) return [];
+  return cart.map(item=>({
+    id:String(item?.id||''),
+    product:String(item?.product||'Ürün'),
+    price:String(item?.price||'0'),
+    image:String(item?.image||''),
+    shopier:String(item?.shopier||''),
+    size:String(item?.size||''),
+    quantity:Math.max(1,Number(item?.quantity)||1)
+  })).filter(item=>item.id || item.product);
+}
+
+async function saveNerisCart(cart){
+  const user=getNerisCurrentUser();
+  if(!user || !window.nerisFirestore || !window.nerisDb) return false;
+  const clean=normalizeNerisCart(cart);
+  window.nerisCartCache=clean;
+  try{localStorage.setItem('nerisCart',JSON.stringify(clean));}catch(e){}
+  try{
+    const cartRef=window.nerisFirestore.doc(window.nerisDb,'sepetler',user.uid);
+    await window.nerisFirestore.setDoc(cartRef,{
+      kullaniciId:user.uid,
+      items:clean,
+      updatedAt:new Date().toISOString()
+    },{merge:true});
+    return true;
+  }catch(error){
+    console.error('Sepet Firebase kaydi basarisiz:',error);
+    return false;
+  }
+}
+
+async function addProductToCart(){
   if(!nerisSelectedProduct){
     showPremiumAlert('Ürün Bulunamadı','Ürün bilgisi alınamadı. Lütfen ürünü yeniden açın.');
     return;
@@ -2597,6 +2644,12 @@ function addProductToCart(){
     showProductInlineAlert('Beden Seçin','Lütfen devam etmeden önce bir beden seçin.','warning');
     return;
   }
+
+  /* Firebase sepeti ilk kez yukleniyorsa eski cihaz sepetini ezme. */
+  if(!window.nerisCartReady && window.nerisCartReadyPromise){
+    try{await window.nerisCartReadyPromise;}catch(e){}
+  }
+
   const item={
     id:nerisSelectedProduct.id||'',
     product:nerisSelectedProduct.reklam||'Ürün',
@@ -2606,22 +2659,20 @@ function addProductToCart(){
     size:nerisSelectedSize,
     quantity:nerisProductQuantity
   };
-  let cart=[];
-  try{cart=JSON.parse(localStorage.getItem('nerisCart')||'[]');}catch(e){cart=[];}
+  const cart=[...getNerisCart()];
   const same=cart.find(x=>x.id===item.id&&x.size===item.size);
-  if(same) same.quantity+=item.quantity; else cart.push(item);
-  localStorage.setItem('nerisCart',JSON.stringify(cart));
-  updateCartCount();
-  showProductInlineAlert('Sepete Eklendi',`${item.product} — ${item.size} beden, ${item.quantity} adet sepetinize eklendi.`,'success');
+  if(same) same.quantity=Math.max(1,Number(same.quantity)||1)+item.quantity;
+  else cart.push(item);
+
+  const saved=await saveNerisCart(cart);
+  if(saved){
+    updateCartCount();
+    showProductInlineAlert('Sepete Eklendi',`${item.product} — ${item.size} beden, ${item.quantity} adet sepetinize eklendi.`,'success');
+  }else{
+    showPremiumAlert('Sepet Güncellenemedi','Sepetiniz kaydedilemedi. Lütfen internet bağlantınızı kontrol edip tekrar deneyin.');
+  }
 }
 window.addProductToCart=addProductToCart;
-
-function getNerisCart(){
-  try{
-    const cart=JSON.parse(localStorage.getItem('nerisCart')||'[]');
-    return Array.isArray(cart)?cart:[];
-  }catch(e){ return []; }
-}
 
 function formatCartPrice(value){
   const n=parseFloat(String(value||'0').replace(/[^0-9.,-]/g,'').replace(/\.(?=.*\.)/g,'').replace(',','.'));
@@ -2632,8 +2683,8 @@ function formatCartPrice(value){
 function renderCartModal(){
   const box=document.getElementById('cartContent');
   if(!box) return;
-  if(!window.nerisAuthStateReady){
-    box.innerHTML='<div class="favorites-empty"><div class="favorites-icon">🛒</div><h3>Hesabınız kontrol ediliyor</h3><p>Lütfen bir saniye bekleyin.</p></div>';
+  if(!window.nerisAuthStateReady || !window.nerisCartReady){
+    box.innerHTML='<div class="favorites-empty"><div class="favorites-icon">🛒</div><h3>Sepetiniz yükleniyor</h3><p>Sepetiniz diğer cihazlarınızla senkronize ediliyor.</p></div>';
     return;
   }
   if(!window.nerisAuth?.currentUser){
@@ -2672,12 +2723,12 @@ function escapeHtml(value){
   return String(value??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 }
 
-function removeCartItem(index){
-  const cart=getNerisCart();
+async function removeCartItem(index){
+  const cart=[...getNerisCart()];
   if(index<0 || index>=cart.length) return;
   cart.splice(index,1);
-  localStorage.setItem('nerisCart',JSON.stringify(cart));
-  renderCartModal();
+  const saved=await saveNerisCart(cart);
+  if(saved) renderCartModal();
 }
 window.removeCartItem=removeCartItem;
 
@@ -2697,7 +2748,7 @@ window.checkoutCart=checkoutCart;
 
 function updateCartCount(){
   const badge=document.getElementById('cartCountBadge');
-  const loggedIn=!!(window.nerisAuthStateReady && window.nerisAuth?.currentUser);
+  const loggedIn=!!(window.nerisAuthStateReady && window.nerisAuth?.currentUser && window.nerisCartReady);
   const count=loggedIn ? getNerisCart().reduce((sum,item)=>sum+(Number(item.quantity)||0),0) : 0;
   const cartButton=document.querySelector('.cart-icon-btn');
   if(!badge) return;
@@ -2922,6 +2973,7 @@ function closeMobileMenu() {
 import {
     getAuth,
     onAuthStateChanged,
+    onSnapshot,
     setPersistence,
     browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
@@ -3267,10 +3319,74 @@ document.addEventListener("click", function(e) {
 
 });
 
+async function startNerisCartSync(user){
+  if(window.nerisCartUnsubscribe){
+    try{window.nerisCartUnsubscribe();}catch(e){}
+    window.nerisCartUnsubscribe=null;
+  }
+
+  window.nerisCartReady=false;
+  window.nerisCartUserId=user?.uid||null;
+
+  if(!user){
+    window.nerisCartCache=[];
+    window.nerisCartReady=true;
+    window.nerisCartReadyPromise=Promise.resolve();
+    updateCartCount();
+    return;
+  }
+
+  let resolveReady;
+  window.nerisCartReadyPromise=new Promise(resolve=>{resolveReady=resolve;});
+
+  const cartRef=doc(db,'sepetler',user.uid);
+  let firstSnapshot=true;
+
+  window.nerisCartUnsubscribe=onSnapshot(cartRef,async (snap)=>{
+    try{
+      if(snap.exists()){
+        const data=snap.data()||{};
+        window.nerisCartCache=normalizeNerisCart(data.items||[]);
+        try{localStorage.setItem('nerisCart',JSON.stringify(window.nerisCartCache));}catch(e){}
+      }else{
+        /* Eski surumde bu cihazda localStorage sepeti varsa ilk giriste
+           buluta aktar; baska cihazdaki mevcut Firebase sepetini ezme. */
+        let local=[];
+        try{local=normalizeNerisCart(JSON.parse(localStorage.getItem('nerisCart')||'[]'));}catch(e){local=[];}
+        if(firstSnapshot && local.length){
+          window.nerisCartCache=local;
+          await setDoc(cartRef,{kullaniciId:user.uid,items:local,updatedAt:new Date().toISOString()},{merge:true});
+        }else{
+          window.nerisCartCache=[];
+        }
+        try{localStorage.setItem('nerisCart',JSON.stringify(window.nerisCartCache));}catch(e){}
+      }
+    }catch(error){
+      console.error('Sepet senkronizasyonu basarisiz:',error);
+    }
+
+    firstSnapshot=false;
+    window.nerisCartReady=true;
+    resolveReady();
+    updateCartCount();
+    if(document.getElementById('infoModal')?.classList.contains('open')){
+      const cartContent=document.getElementById('cartContent');
+      if(cartContent) renderCartModal();
+    }
+  },(error)=>{
+    console.error('Sepet dinleme hatasi:',error);
+    window.nerisCartCache=[];
+    window.nerisCartReady=true;
+    resolveReady();
+    updateCartCount();
+  });
+}
+
 onAuthStateChanged(auth,function(user){
   authInitialized=true;
   window.nerisAuthStateReady=true;
   window.nerisCurrentUser=user||null;
+  startNerisCartSync(user);
   updateCartCount();
   const loginLink=document.getElementById('loginLink');
   const mobileName=document.getElementById('mobileAccountName');
