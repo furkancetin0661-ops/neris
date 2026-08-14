@@ -1524,10 +1524,30 @@ document.addEventListener("keydown", function(event) {
     }
 
     // Sayfa geri/ileri ile tekrar kullanılabilir hale getir.
-    window.addEventListener('pageshow', function(){
+    window.addEventListener('pageshow', function(event){
       nerisNavigationLocked = false;
       const layer=document.getElementById('pageTransition');
-      if(layer) layer.classList.remove('active');
+      if(!layer) return;
+
+      layer.classList.remove('active');
+
+      // Tarayıcının geri/ileri tuşuyla Neris'e dönüldüğünde premium geçiş.
+      let backForward = false;
+      try {
+        const nav = performance.getEntriesByType('navigation')[0];
+        backForward = !!(event && event.persisted) || !!(nav && nav.type === 'back_forward');
+      } catch(e) {
+        backForward = !!(event && event.persisted);
+      }
+
+      if(backForward){
+        requestAnimationFrame(function(){
+          layer.classList.add('active');
+          setTimeout(function(){
+            layer.classList.remove('active');
+          }, 520);
+        });
+      }
     });
     function handleMobileLoginClick(event){
       if(event) event.preventDefault();
@@ -2287,7 +2307,9 @@ function closeMobileMenu() {
 
 import {
     getAuth,
-    onAuthStateChanged
+    onAuthStateChanged,
+    setPersistence,
+    browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
     const firebaseConfig = {
@@ -2306,6 +2328,11 @@ import {
     const db = getFirestore(app);
     const auth = getAuth(app);
     let authInitialized = false;
+
+    // Kullanıcı, yalnızca açıkça "Çıkış Yap" dediğinde oturumdan çıkar.
+    // Siparişlerim / Hesabım gibi sayfalar arasında gezinirken oturum korunur.
+    setPersistence(auth, browserLocalPersistence)
+      .catch((error) => console.warn("Neris Auth persistence:", error));
 
 
     async function loadProducts(){
@@ -2537,11 +2564,13 @@ if (loginLink) {
 
         if (auth.currentUser) {
 
+            // Giriş yapılmışsa mevcut hesap menüsü aynen çalışır.
             accountDropdown.classList.toggle("active");
 
         } else {
 
-            window.location.href = "giris.html";
+            // Giriş yapılmamışsa önce premium geçiş, sonra giriş sayfası.
+            navigateWithTransition("giris.html");
 
         }
 
