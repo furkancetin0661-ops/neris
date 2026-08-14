@@ -1223,6 +1223,21 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
   box-shadow:0 0 0 4px rgba(212,175,55,.12);
 }
 .product-favorite-row.favorite-active span{color:#d4af37}
+.product-detail-inline-alert{
+  display:none;
+  margin:16px 0 0;
+  padding:12px 14px;
+  border:1px solid rgba(212,175,55,.45);
+  background:rgba(212,175,55,.06);
+  color:#e7e7e7;
+  font-size:11px;
+  line-height:1.6;
+  letter-spacing:.15px;
+}
+.product-detail-inline-alert.show{display:block;animation:inlineAlertIn .25s ease both}
+.product-detail-inline-alert.success{border-color:rgba(212,175,55,.65);color:#d4af37;background:rgba(212,175,55,.08)}
+.product-detail-inline-alert.warning{border-color:rgba(212,175,55,.38);color:#ddd}
+@keyframes inlineAlertIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
 .product-detail-note{color:#bcbcbc}
 .product-detail-close{
   border-color:rgba(255,255,255,.24);
@@ -1667,6 +1682,7 @@ document.addEventListener("keydown", function(event) {
             <button class="product-favorite-mini" id="productDetailFavorite" type="button" onclick="toggleProductDetailFavorite()" aria-label="Favorilere ekle">♡</button>
             <span>Favorilere ekle</span>
           </div>
+          <div class="product-detail-inline-alert" id="productDetailInlineAlert" role="status" aria-live="polite"></div>
           <p class="product-detail-note">Beden seçiminizi yaptıktan sonra ürünü sepetinize ekleyebilir veya doğrudan ödeme adımına geçebilirsiniz.</p>
         </div>
       </div>
@@ -2297,6 +2313,20 @@ let nerisSelectedProduct = null;
 let nerisSelectedSize = null;
 let nerisProductQuantity = 1;
 
+function showProductInlineAlert(title, message, type='warning'){
+  const el=document.getElementById('productDetailInlineAlert');
+  if(!el) return;
+  el.className='product-detail-inline-alert show '+(type||'warning');
+  el.innerHTML='<strong style="display:block;margin-bottom:3px;color:#fff">'+escapeHtml(title||'Bilgilendirme')+'</strong><span>'+escapeHtml(message||'')+'</span>';
+}
+function clearProductInlineAlert(){
+  const el=document.getElementById('productDetailInlineAlert');
+  if(!el) return;
+  el.className='product-detail-inline-alert';
+  el.textContent='';
+}
+window.showProductInlineAlert=showProductInlineAlert;
+
 function openProductDetail(product){
   if(!product) return;
   nerisSelectedProduct = product;
@@ -2317,6 +2347,7 @@ function openProductDetail(product){
   title.textContent=name;
   price.textContent=(product.fiyat||'0')+' ₺';
   if(quantity) quantity.textContent='1';
+  clearProductInlineAlert();
   document.querySelectorAll('#productSizeOptions .product-size-btn').forEach(btn=>btn.classList.remove('selected'));
   if(favorite){
     favorite.textContent='♡';
@@ -2346,6 +2377,8 @@ function closeProductDetail(){
   if(modal) modal.classList.remove('open');
   // Kapatma (X) hiçbir şekilde beden/sepet uyarısı üretmez.
   if(typeof premiumAlertCallback !== 'undefined') premiumAlertCallback=null;
+  const pa=document.getElementById('premiumAlert');
+  if(pa) pa.classList.remove('open');
   if(!document.getElementById('infoModal')?.classList.contains('open')&&!document.getElementById('premiumAlert')?.classList.contains('open')) document.body.classList.remove('modal-open');
   nerisSelectedProduct=null; nerisSelectedSize=null; nerisProductQuantity=1;
 }
@@ -2383,7 +2416,7 @@ function addProductToCart(){
     return;
   }
   if(!nerisSelectedSize){
-    showPremiumAlert('Beden Seçin','Lütfen devam etmeden önce bir beden seçin.');
+    showProductInlineAlert('Beden Seçin','Lütfen devam etmeden önce bir beden seçin.','warning');
     return;
   }
   const item={
@@ -2400,8 +2433,8 @@ function addProductToCart(){
   const same=cart.find(x=>x.id===item.id&&x.size===item.size);
   if(same) same.quantity+=item.quantity; else cart.push(item);
   localStorage.setItem('nerisCart',JSON.stringify(cart));
-  closeProductDetail();
-  showPremiumAlert('Sepete Eklendi',`${item.product} — ${item.size} beden, ${item.quantity} adet sepetinize eklendi.`);
+  updateCartCount();
+  showProductInlineAlert('Sepete Eklendi',`${item.product} — ${item.size} beden, ${item.quantity} adet sepetinize eklendi.`,'success');
 }
 window.addProductToCart=addProductToCart;
 
@@ -2522,7 +2555,7 @@ function buyProductNow(){
     return;
   }
   if(!nerisSelectedSize){
-    showPremiumAlert('Beden Seçin','Lütfen devam etmeden önce bir beden seçin.');
+    showProductInlineAlert('Beden Seçin','Lütfen devam etmeden önce bir beden seçin.','warning');
     return;
   }
   const url=productCheckoutUrl(nerisSelectedProduct,nerisSelectedSize,nerisProductQuantity);
@@ -2602,7 +2635,7 @@ async function toggleProductDetailFavorite(){
         const label=row?.querySelector('span');
         if(label) label.textContent='Favorilere ekle';
       }
-      showPremiumAlert('Favorilerden Çıkarıldı','Bu ürün Favorilerim listenizden kaldırıldı.');
+      showProductInlineAlert('Favorilerden Çıkarıldı','Bu ürün Favorilerim listenizden kaldırıldı.','warning');
     }else{
       await window.nerisFirestore.setDoc(favoriteRef,{
         kullaniciId:user.uid,
@@ -2623,7 +2656,7 @@ async function toggleProductDetailFavorite(){
         const label=row?.querySelector('span');
         if(label) label.textContent='Favorilerde';
       }
-      showPremiumAlert('Favorilere Eklendi','Bu ürün Favorilerim listenize eklendi. Favorilerim bölümünden görüntüleyebilirsiniz.');
+      showProductInlineAlert('Favorilere Eklendi','Bu ürün Favorilerim listenize eklendi. Favorilerim bölümünden görüntüleyebilirsiniz.','success');
     }
 
     if(document.getElementById('favoritesContent') &&
