@@ -1304,6 +1304,94 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
 .product-favorite-row.favorite-active span{color:#d4af37!important;font-weight:600}
 .product-favorite-mini.active{background:#d4af37!important;color:#090909!important;border-color:#d4af37!important}
 @media(max-width:768px){.card-image{height:330px}.product-price{font-size:21px!important}.product-price .price-value{font-size:21px!important}}
+
+/* NERIS — PELIA TARZI ÜRÜN DETAYI / BUTON HİZALAMA */
+@media(min-width:769px){
+  .product-detail-box{
+    width:min(1080px,94vw);
+    max-height:92vh;
+  }
+  .product-detail-layout{
+    display:grid;
+    grid-template-columns:minmax(0,1.08fr) minmax(430px,.92fr);
+    min-height:680px;
+    height:min(760px,82vh);
+  }
+  .product-detail-media{
+    position:relative;
+    inset:auto;
+    width:100%;
+    height:100%;
+    min-height:0;
+  }
+  .product-detail-media img{
+    height:100%;
+    min-height:0;
+    object-fit:cover;
+  }
+  .product-detail-info{
+    position:relative;
+    right:auto;top:auto;bottom:auto;
+    width:100%;
+    height:100%;
+    min-width:0;
+    padding:56px 42px 34px;
+    box-sizing:border-box;
+    justify-content:flex-start;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    scrollbar-width:thin;
+  }
+  .product-detail-info::-webkit-scrollbar{width:5px}
+  .product-detail-info::-webkit-scrollbar-thumb{background:rgba(212,175,55,.35);border-radius:10px}
+  .product-detail-title{font-size:36px}
+  .product-detail-price{margin-bottom:26px}
+  .product-size-options{margin-bottom:18px}
+  .product-detail-inline-alert{
+    position:relative;
+    order:initial;
+    flex:none;
+    margin:0 0 12px;
+  }
+  .product-quantity-row{
+    display:grid;
+    grid-template-columns:150px minmax(0,1fr);
+    align-items:stretch;
+    gap:10px;
+    margin:0 0 10px;
+  }
+  .product-quantity{height:52px;width:100%;}
+  .product-add-cart{height:52px;width:100%;}
+  .product-buy-now{
+    display:flex;
+    width:100%;
+    height:52px;
+    min-height:52px;
+    margin:0 0 0;
+    box-sizing:border-box;
+    flex:none;
+  }
+  .product-favorite-row{margin-top:16px}
+  .product-detail-note{margin-top:20px}
+}
+
+/* Uyarı açıldığında hiçbir butonun üzerine binmesin */
+.product-detail-inline-alert{
+  position:relative!important;
+  z-index:1;
+  overflow:hidden;
+}
+.product-detail-inline-alert.show{
+  height:auto!important;
+  max-height:120px;
+}
+
+@media(max-width:768px){
+  .product-detail-info{overflow:visible!important}
+  .product-detail-inline-alert{margin:10px 0 10px!important}
+  .product-quantity-row{margin-top:0!important}
+  .product-buy-now{margin-top:10px!important;min-height:54px!important}
+}
 </style>
   <script type="application/ld+json">
 {
