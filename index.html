@@ -2550,14 +2550,15 @@ let nerisProductImageIndex=0;
 function getProductImages(product){
   if(!product) return [];
   const candidates=[
-    product.resim,
-    product.resim2,
-    product['2. resim'],
-    product['resim 2'],
-    product['Resim 2'],
-    product.image2,
-    product.image_2
-  ];
+  product.resim,
+  product.resim2,
+  product.resim3,
+  product['2. resim'],
+  product['resim 2'],
+  product['Resim 2'],
+  product.image2,
+  product.image_2
+];
   return [...new Set(candidates.map(v=>String(v||'').trim()).filter(Boolean))].slice(0,2);
 }
 
