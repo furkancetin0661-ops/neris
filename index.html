@@ -1267,19 +1267,28 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
 .favorite-mini-info p{margin:0;color:#d4af37;font-size:13px}
 
 @media(max-width:768px){
-  .product-detail-layout{min-height:100dvh}
-  .product-detail-media{position:absolute;inset:0;height:100%;min-height:0}
-  .product-detail-media img{height:100%;min-height:0;max-height:none;object-fit:cover}
-  .product-detail-info{
-    position:absolute;
-    left:0;right:0;top:auto;bottom:0;
-    width:100%;
-    padding:90px 22px 30px;
-    background:linear-gradient(0deg,rgba(7,7,7,.96),rgba(7,7,7,.68) 65%,transparent);
-  }
-  .product-detail-title{font-size:28px}
-  .product-detail-price{font-size:17px;margin-bottom:20px}
-  .product-detail-close{top:11px;right:11px;width:40px;height:40px}
+  /* MOBİL ÜRÜN DETAYI — ürün görseli kontroller tarafından kapatılmasın */
+  .product-detail-modal{align-items:flex-start;padding:10px 0;overflow-y:auto}
+  .product-detail-box{width:100%;max-width:none;max-height:calc(100dvh - 20px);height:auto;overflow-y:auto;border-left:0;border-right:0}
+  .product-detail-layout{display:flex;flex-direction:column;min-height:0;height:auto;overflow:visible;position:relative}
+  .product-detail-media{position:relative;inset:auto;width:100%;height:52dvh;min-height:360px;flex:none;background:#111;overflow:hidden}
+  .product-detail-media::after{background:linear-gradient(0deg,rgba(0,0,0,.18),transparent 45%);}
+  .product-detail-media img{width:100%;height:100%;min-height:0;max-height:none;object-fit:cover;object-position:center center}
+  .product-detail-info{position:relative;left:auto;right:auto;top:auto;bottom:auto;width:100%;min-height:0;padding:28px 22px 30px;background:#090909;color:#fff;display:block;overflow:visible}
+  .product-detail-kicker{font-size:10px;letter-spacing:4px;margin-bottom:10px}
+  .product-detail-title{font-size:29px;line-height:1.15;margin:0 0 8px}
+  .product-detail-price{font-size:24px!important;margin:0 0 18px}
+  .product-detail-divider{margin-bottom:18px}
+  .product-detail-label{font-size:13px;margin-bottom:10px}
+  .product-size-options{grid-template-columns:repeat(3,1fr);gap:8px}
+  .product-size-btn{height:48px}
+  .product-quantity-row{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
+  .product-quantity{height:52px}
+  .product-add-cart,.product-buy-now{width:100%;height:54px}
+  .product-favorite-row{margin-top:18px}
+  .product-detail-inline-alert{margin-top:14px}
+  .product-detail-note{font-size:12px;line-height:1.65;margin-top:18px}
+  .product-detail-close{position:absolute;z-index:10;top:11px;right:11px;width:42px;height:42px}
 }
 
 
@@ -2412,7 +2421,7 @@ function addProductToCart(){
   const authInstance=window.nerisAuth;
   const user=authInstance?.currentUser;
   if(!window.nerisAuthStateReady || !user){
-    showPremiumConfirm('Giriş Yapmalısınız','Sepete ürün eklemek için hesabınıza giriş yapın.',()=>navigateWithTransition('giris.html'));
+    navigateWithTransition('giris.html');
     return;
   }
   if(!nerisSelectedSize){
@@ -2550,17 +2559,15 @@ function buyProductNow(){
     showPremiumAlert('Ürün Bulunamadı','Ürün bilgisi alınamadı. Lütfen ürünü yeniden açın.');
     return;
   }
-  if(!window.nerisAuthStateReady || !window.nerisAuth?.currentUser){
-    showPremiumConfirm('Giriş Yapmalısınız','Satın alma işlemine devam etmek için hesabınıza giriş yapın.',()=>navigateWithTransition('giris.html'));
-    return;
-  }
+  // HEMEN AL misafir kullanıcılar için de açıktır.
+  // Sepete Ekle'den farklı olarak giriş zorunluluğu yoktur.
   if(!nerisSelectedSize){
     showProductInlineAlert('Beden Seçin','Lütfen devam etmeden önce bir beden seçin.','warning');
     return;
   }
   const url=productCheckoutUrl(nerisSelectedProduct,nerisSelectedSize,nerisProductQuantity);
   closeProductDetail();
-  setTimeout(()=>{ window.location.href=url; },120);
+  setTimeout(()=>{ navigateWithTransition(url); },120);
 }
 window.buyProductNow=buyProductNow;
 
