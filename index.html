@@ -808,9 +808,8 @@ button,input,textarea{font:inherit}
 .benefit:hover .benefit-icon{transform:translateY(-4px);background:rgba(212,175,55,.07);box-shadow:0 10px 30px rgba(212,175,55,.10)}
 .benefit-copy h3{margin:0 0 8px;color:#f4f4f4;font-family:'Playfair Display',serif;font-size:17px;font-weight:500}
 .benefit-copy p{margin:0;color:#777;font-size:12px;line-height:1.7}
-.product-price{display:flex!important;align-items:baseline;gap:4px;margin:0!important;color:#d4af37!important;font-family:'Playfair Display',serif!important;font-size:19px!important;letter-spacing:.2px}
-.price-currency{font-family:Poppins,sans-serif;font-size:11px;color:#a98b2b;letter-spacing:.5px}
-.price-value{font-weight:500}
+.product-price{display:flex!important;align-items:baseline;gap:7px;margin:0!important;color:#fff!important;font-family:'Playfair Display',serif!important;font-size:24px!important;font-weight:600!important;letter-spacing:.2px}.price-currency{order:2;font-family:Poppins,sans-serif;font-size:15px;color:#d4af37}.price-value{order:1;font-weight:600}
+.price-currency{font-family:Poppins,sans-serif;font-size:15px;color:#d4af37;letter-spacing:0;order:2}.price-value{font-weight:600;order:1}
 .card-content{padding:21px 20px 20px}
 .card h3{margin-bottom:11px}
 .buy{margin-top:18px}
@@ -1083,7 +1082,7 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
   box-shadow:0 20px 55px rgba(0,0,0,.42),0 0 0 1px rgba(212,175,55,.12);
 }
 .card-image{
-  height:390px;
+  height:450px;
   overflow:hidden;
   position:relative;
   background:#111;
@@ -1191,7 +1190,7 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
 }
 .product-detail-kicker{color:#d4af37}
 .product-detail-title{color:#fff}
-.product-detail-price{color:#fff}
+.product-detail-price{color:#fff;font-size:28px!important;font-weight:600!important;letter-spacing:.2px}
 .product-detail-divider{background:rgba(255,255,255,.16)}
 .product-detail-label{color:#fff}
 .product-size-guide{color:#c8c8c8}
@@ -1268,6 +1267,17 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
   .product-detail-close{top:11px;right:11px;width:40px;height:40px}
 }
 
+
+/* NERIS SON ÜRÜN / SEPET / FAVORİ POLISH */
+.card-image{height:450px}
+.product-price{font-size:24px!important;font-weight:600!important;gap:8px!important;color:#fff!important}
+.product-price .price-value{order:1;color:#fff!important;font-size:24px!important;font-weight:600!important}
+.product-price .price-currency{order:2;color:#d4af37!important;font-size:15px!important;font-weight:500!important}
+.product-detail-price{font-size:28px!important;font-weight:600!important;color:#fff!important}
+.product-favorite-row.favorite-active{color:#d4af37!important}
+.product-favorite-row.favorite-active span{color:#d4af37!important;font-weight:600}
+.product-favorite-mini.active{background:#d4af37!important;color:#090909!important;border-color:#d4af37!important}
+@media(max-width:768px){.card-image{height:330px}.product-price{font-size:21px!important}.product-price .price-value{font-size:21px!important}}
 </style>
   <script type="application/ld+json">
 {
@@ -1635,7 +1645,7 @@ document.addEventListener("keydown", function(event) {
           <div class="product-detail-divider"></div>
           <div class="product-detail-label">
             <span>BEDEN</span>
-            <button class="product-size-guide" type="button" onclick="showPremiumAlert('Beden Bilgisi','36: S — 38: M — 40: L. Ürün kalıbına göre değişiklik gösterebilir.');">Beden rehberi</button>
+            <button class="product-size-guide" type="button" onclick="showPremiumAlert('Beden Bilgisi','38 / 40 / 42 / 44 / 46 beden seçenekleri mevcuttur. Ürün kalıbına göre değişiklik gösterebilir.');">Beden rehberi</button>
           </div>
           <div class="product-size-options" id="productSizeOptions">
             <button class="product-size-btn" type="button" data-size="38">38</button>
@@ -2305,7 +2315,7 @@ function openProductDetail(product){
   image.src=product.resim||'https://picsum.photos/700/900';
   image.alt=name;
   title.textContent=name;
-  price.textContent='₺'+(product.fiyat||'0');
+  price.textContent=(product.fiyat||'0')+' ₺';
   if(quantity) quantity.textContent='1';
   document.querySelectorAll('#productSizeOptions .product-size-btn').forEach(btn=>btn.classList.remove('selected'));
   if(favorite){
@@ -2334,6 +2344,8 @@ window.openProductDetail=openProductDetail;
 function closeProductDetail(){
   const modal=document.getElementById('productDetailModal');
   if(modal) modal.classList.remove('open');
+  // Kapatma (X) hiçbir şekilde beden/sepet uyarısı üretmez.
+  if(typeof premiumAlertCallback !== 'undefined') premiumAlertCallback=null;
   if(!document.getElementById('infoModal')?.classList.contains('open')&&!document.getElementById('premiumAlert')?.classList.contains('open')) document.body.classList.remove('modal-open');
   nerisSelectedProduct=null; nerisSelectedSize=null; nerisProductQuantity=1;
 }
@@ -2361,6 +2373,11 @@ function productCheckoutUrl(product,size,quantity){
 
 function addProductToCart(){
   if(!nerisSelectedProduct) return;
+  const user=auth.currentUser;
+  if(!authInitialized || !user){
+    showPremiumConfirm('Giriş Yapmalısınız','Sepete ürün eklemek için hesabınıza giriş yapın.',()=>navigateWithTransition('giris.html'));
+    return;
+  }
   if(!nerisSelectedSize){
     showPremiumAlert('Beden Seçin','Lütfen devam etmeden önce bir beden seçin.');
     return;
@@ -2400,6 +2417,15 @@ function formatCartPrice(value){
 function renderCartModal(){
   const box=document.getElementById('cartContent');
   if(!box) return;
+  if(!authInitialized){
+    box.innerHTML='<div class="favorites-empty"><div class="favorites-icon">🛒</div><h3>Hesabınız kontrol ediliyor</h3><p>Lütfen bir saniye bekleyin.</p></div>';
+    return;
+  }
+  if(!auth.currentUser){
+    box.innerHTML='<div class="login-required"><div class="login-required-icon">🛒</div><h3>Giriş yapmalısınız</h3><p>Sepetinizi görüntülemek ve ürün eklemek için hesabınıza giriş yapın.</p><div class="login-required-actions"><a href="giris.html">GİRİŞ YAP</a><button type="button" onclick="closeInfo()">VAZGEÇ</button></div></div>';
+    updateCartCount();
+    return;
+  }
   const cart=getNerisCart();
   if(!cart.length){
     box.innerHTML='<div class="favorites-empty"><div class="favorites-icon">🛒</div><h3>Sepetiniz boş</h3><p>Beğendiğiniz ürünleri beden seçerek sepetinize ekleyebilirsiniz.</p></div>';
@@ -2455,8 +2481,9 @@ function checkoutCart(){
 window.checkoutCart=checkoutCart;
 
 function updateCartCount(){
-  const count=getNerisCart().reduce((sum,item)=>sum+(Number(item.quantity)||0),0);
   const badge=document.getElementById('cartCountBadge');
+  const loggedIn=!!(authInitialized && auth.currentUser);
+  const count=loggedIn ? getNerisCart().reduce((sum,item)=>sum+(Number(item.quantity)||0),0) : 0;
   const cartButton=document.querySelector('.cart-icon-btn');
   if(!badge) return;
 
@@ -2483,13 +2510,17 @@ window.addEventListener('storage',()=>{
 
 function buyProductNow(){
   if(!nerisSelectedProduct) return;
+  if(!authInitialized || !auth.currentUser){
+    showPremiumConfirm('Giriş Yapmalısınız','Satın alma işlemine devam etmek için hesabınıza giriş yapın.',()=>navigateWithTransition('giris.html'));
+    return;
+  }
   if(!nerisSelectedSize){
     showPremiumAlert('Beden Seçin','Lütfen devam etmeden önce bir beden seçin.');
     return;
   }
   const url=productCheckoutUrl(nerisSelectedProduct,nerisSelectedSize,nerisProductQuantity);
   closeProductDetail();
-  setTimeout(()=>navigateWithTransition(url),120);
+  setTimeout(()=>{ window.location.href=url; },120);
 }
 window.buyProductNow=buyProductNow;
 
@@ -2560,6 +2591,7 @@ async function toggleProductDetailFavorite(){
         const label=row?.querySelector('span');
         if(label) label.textContent='Favorilere ekle';
       }
+      showPremiumAlert('Favorilerden Çıkarıldı','Bu ürün Favorilerim listenizden kaldırıldı.');
     }else{
       await setDoc(favoriteRef,{
         kullaniciId:user.uid,
@@ -2580,6 +2612,7 @@ async function toggleProductDetailFavorite(){
         const label=row?.querySelector('span');
         if(label) label.textContent='Favorilerde';
       }
+      showPremiumAlert('Favorilere Eklendi','Bu ürün Favorilerim listenize eklendi. Favorilerim bölümünden görüntüleyebilirsiniz.');
     }
 
     if(document.getElementById('favoritesContent') &&
@@ -2749,7 +2782,7 @@ const querySnapshot =
 
     <h3>${p.reklam || "Ürün"}</h3>
 
-    <p class="product-price"><span class="price-currency">₺</span><span class="price-value">${p.fiyat || "0"}</span></p>
+    <p class="product-price"><span class="price-value">${p.fiyat || "0"}</span><span class="price-currency">₺</span></p>
 
 
 </div>
@@ -2853,8 +2886,12 @@ const querySnapshot =
         ps.forEach(d=>products[d.id]={...d.data(),id:d.id});
 
         const cards=favs.map(f=>{
-          const p=products[f.urunId]||f.urunData;
-          if(!p)return '';
+          const p=products[f.urunId]||f.urunData||{
+            id:f.urunId,
+            reklam:'Neris Ürün',
+            fiyat:'0',
+            resim:''
+          };
           const n=String(p.reklam||'Neris Ürün').replace(/"/g,'&quot;');
           return `<div class="favorite-mini-card">
             <img src="${p.resim||'https://picsum.photos/300/400'}" alt="${n}">
@@ -3005,6 +3042,7 @@ document.addEventListener("click", function(e) {
 
 onAuthStateChanged(auth,function(user){
   authInitialized=true;
+  updateCartCount();
   const loginLink=document.getElementById('loginLink');
   const mobileName=document.getElementById('mobileAccountName');
   const mobileButtons=document.getElementById('mobileAccountButtons');
