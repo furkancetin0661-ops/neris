@@ -2586,20 +2586,113 @@ function getNerisCurrentUser(){
   return window.nerisAuth?.currentUser || window.nerisCurrentUser || null;
 }
 
-function addProductToCart(){
+let nerisCartCache=[];
+let nerisCartSyncReady=false;
+let nerisCartSyncPromise=Promise.resolve();
+
+function getNerisCartRef(){
+  const user=getNerisCurrentUser();
+  const fs=window.nerisFirestore;
+  const db=window.nerisDb;
+  if(!user || !fs || !db) return null;
+  return fs.doc(db,'sepetler',user.uid);
+}
+
+async function loadNerisCartFromFirebase(){
+  const user=getNerisCurrentUser();
+  const fs=window.nerisFirestore;
+  const db=window.nerisDb;
+
+  if(!user || !fs || !db){
+    nerisCartCache=[];
+    nerisCartSyncReady=true;
+    updateCartCount();
+    return [];
+  }
+
+  try{
+    const ref=fs.doc(db,'sepetler',user.uid);
+    const snap=await fs.getDoc(ref);
+
+    if(snap.exists()){
+      const data=snap.data()||{};
+      nerisCartCache=Array.isArray(data.items)?data.items:[];
+    }else{
+      // Daha önce localStorage ile kullanılan sepet varsa, ilk girişte
+      // kullanıcının kendi Firebase sepetine bir kez aktar.
+      let legacy=[];
+      try{
+        legacy=JSON.parse(localStorage.getItem('nerisCart')||'[]');
+      }catch(e){ legacy=[]; }
+
+      nerisCartCache=Array.isArray(legacy)?legacy:[];
+      if(nerisCartCache.length){
+        await fs.setDoc(ref,{
+          items:nerisCartCache,
+          updatedAt:new Date()
+        },{merge:true});
+      }
+    }
+
+    // Aynı cihazdaki eski genel anahtarı temizle; sepetin tek kaynağı Firebase olsun.
+    try{ localStorage.removeItem('nerisCart'); }catch(e){}
+  }catch(error){
+    console.error('Firebase sepeti yüklenemedi:',error);
+    nerisCartCache=[];
+  }
+
+  nerisCartSyncReady=true;
+  updateCartCount();
+  return nerisCartCache;
+}
+
+async function saveNerisCartToFirebase(){
+  const ref=getNerisCartRef();
+  const fs=window.nerisFirestore;
+  const db=window.nerisDb;
+  if(!ref || !fs || !db) return false;
+
+  try{
+    await fs.setDoc(ref,{
+      items:nerisCartCache,
+      updatedAt:new Date()
+    },{merge:true});
+    return true;
+  }catch(error){
+    console.error('Firebase sepeti kaydedilemedi:',error);
+    showProductInlineAlert('Sepet Kaydedilemedi','Sepetiniz Firebase ile eşitlenirken bir sorun oluştu. Lütfen tekrar deneyin.','warning');
+    return false;
+  }
+}
+
+function queueNerisCartSave(){
+  nerisCartSyncPromise=nerisCartSyncPromise
+    .then(()=>saveNerisCartToFirebase())
+    .catch(()=>false);
+  return nerisCartSyncPromise;
+}
+
+async function addProductToCart(){
   if(!nerisSelectedProduct){
     showPremiumAlert('Ürün Bulunamadı','Ürün bilgisi alınamadı. Lütfen ürünü yeniden açın.');
     return;
   }
+
   const user=getNerisCurrentUser();
   if(!user){
     navigateWithTransition('giris.html');
     return;
   }
+
   if(!nerisSelectedSize){
     showProductInlineAlert('Beden Seçin','Lütfen devam etmeden önce bir beden seçin.','warning');
     return;
   }
+
+  if(!nerisCartSyncReady){
+    await nerisCartSyncPromise;
+  }
+
   const item={
     id:nerisSelectedProduct.id||'',
     product:nerisSelectedProduct.reklam||'Ürün',
@@ -2609,21 +2702,20 @@ function addProductToCart(){
     size:nerisSelectedSize,
     quantity:nerisProductQuantity
   };
-  let cart=[];
-  try{cart=JSON.parse(localStorage.getItem('nerisCart')||'[]');}catch(e){cart=[];}
-  const same=cart.find(x=>x.id===item.id&&x.size===item.size);
-  if(same) same.quantity+=item.quantity; else cart.push(item);
-  localStorage.setItem('nerisCart',JSON.stringify(cart));
+
+  const same=nerisCartCache.find(x=>x.id===item.id&&x.size===item.size);
+  if(same) same.quantity+=item.quantity;
+  else nerisCartCache.push(item);
+
   updateCartCount();
+  await queueNerisCartSave();
+
   showProductInlineAlert('Sepete Eklendi',`${item.product} — ${item.size} beden, ${item.quantity} adet sepetinize eklendi.`,'success');
 }
 window.addProductToCart=addProductToCart;
 
 function getNerisCart(){
-  try{
-    const cart=JSON.parse(localStorage.getItem('nerisCart')||'[]');
-    return Array.isArray(cart)?cart:[];
-  }catch(e){ return []; }
+  return Array.isArray(nerisCartCache)?nerisCartCache:[];
 }
 
 function formatCartPrice(value){
@@ -2675,11 +2767,13 @@ function escapeHtml(value){
   return String(value??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 }
 
-function removeCartItem(index){
+async function removeCartItem(index){
   const cart=getNerisCart();
   if(index<0 || index>=cart.length) return;
   cart.splice(index,1);
-  localStorage.setItem('nerisCart',JSON.stringify(cart));
+  nerisCartCache=cart;
+  updateCartCount();
+  await queueNerisCartSave();
   renderCartModal();
 }
 window.removeCartItem=removeCartItem;
@@ -3282,6 +3376,9 @@ onAuthStateChanged(auth,function(user){
   if(!loginLink)return;
 
   if(user){
+    nerisCartSyncReady=false;
+    nerisCartCache=[];
+    nerisCartSyncPromise=loadNerisCartFromFirebase();
     const userName=(user.displayName && user.displayName.trim()) || (user.email?user.email.split('@')[0]:'HESABIM');
     if(accountName) accountName.textContent=userName;
     loginLink.href='#';
@@ -3293,6 +3390,9 @@ onAuthStateChanged(auth,function(user){
 
     loadFavorites();
   }else{
+    nerisCartSyncReady=true;
+    nerisCartCache=[];
+    nerisCartSyncPromise=Promise.resolve();
     if(accountName) accountName.textContent='GİRİŞ YAP';
     loginLink.href='#';
     loginLink.onclick=null;
