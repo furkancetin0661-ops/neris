@@ -1206,7 +1206,7 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
 .product-quantity span{color:#fff}
 .product-add-cart{background:#fff;color:#090909;border-color:#fff}
 .product-add-cart:hover{background:#d4af37;color:#090909;border-color:#d4af37}
-.product-buy-now{background:transparent;color:#fff;border-color:rgba(255,255,255,.45)}
+.product-buy-now{background:rgba(0,0,0,.18);color:#fff;border-color:rgba(255,255,255,.45);display:flex;align-items:center;justify-content:center;position:relative;z-index:2;margin-top:10px}
 .product-buy-now:hover{background:rgba(255,255,255,.08);color:#fff}
 .product-favorite-row{color:#d0d0d0}
 .product-favorite-mini{
@@ -1225,8 +1225,10 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
 .product-favorite-row.favorite-active span{color:#d4af37}
 .product-detail-inline-alert{
   display:none;
-  margin:16px 0 0;
-  padding:12px 14px;
+  width:100%;
+  box-sizing:border-box;
+  margin:12px 0 0;
+  padding:11px 14px;
   border:1px solid rgba(212,175,55,.45);
   background:rgba(212,175,55,.06);
   color:#e7e7e7;
@@ -1284,9 +1286,9 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
   .product-size-btn{height:48px}
   .product-quantity-row{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
   .product-quantity{height:52px}
-  .product-add-cart,.product-buy-now{width:100%;height:54px}
+  .product-add-cart,.product-buy-now{width:100%;height:54px;display:flex;align-items:center;justify-content:center}
   .product-favorite-row{margin-top:18px}
-  .product-detail-inline-alert{margin-top:14px}
+  .product-detail-inline-alert{margin-top:10px}
   .product-detail-note{font-size:12px;line-height:1.65;margin-top:18px}
   .product-detail-close{position:absolute;z-index:10;top:11px;right:11px;width:42px;height:42px}
 }
@@ -1678,6 +1680,7 @@ document.addEventListener("keydown", function(event) {
             <button class="product-size-btn" type="button" data-size="44">44</button>
             <button class="product-size-btn" type="button" data-size="46">46</button>
           </div>
+          <div class="product-detail-inline-alert" id="productDetailInlineAlert" role="status" aria-live="polite"></div>
           <div class="product-quantity-row">
             <div class="product-quantity">
               <button type="button" onclick="changeProductQuantity(-1)" aria-label="Azalt">−</button>
@@ -1691,7 +1694,7 @@ document.addEventListener("keydown", function(event) {
             <button class="product-favorite-mini" id="productDetailFavorite" type="button" onclick="toggleProductDetailFavorite()" aria-label="Favorilere ekle">♡</button>
             <span>Favorilere ekle</span>
           </div>
-          <div class="product-detail-inline-alert" id="productDetailInlineAlert" role="status" aria-live="polite"></div>
+          
           <p class="product-detail-note">Beden seçiminizi yaptıktan sonra ürünü sepetinize ekleyebilir veya doğrudan ödeme adımına geçebilirsiniz.</p>
         </div>
       </div>
@@ -2413,14 +2416,17 @@ function productCheckoutUrl(product,size,quantity){
   return 'checkout.html?'+params.toString();
 }
 
+function getNerisCurrentUser(){
+  return window.nerisAuth?.currentUser || window.nerisCurrentUser || null;
+}
+
 function addProductToCart(){
   if(!nerisSelectedProduct){
     showPremiumAlert('Ürün Bulunamadı','Ürün bilgisi alınamadı. Lütfen ürünü yeniden açın.');
     return;
   }
-  const authInstance=window.nerisAuth;
-  const user=authInstance?.currentUser;
-  if(!window.nerisAuthStateReady || !user){
+  const user=getNerisCurrentUser();
+  if(!user){
     navigateWithTransition('giris.html');
     return;
   }
@@ -2575,8 +2581,8 @@ async function syncProductDetailFavoriteState(){
   const btn=document.getElementById('productDetailFavorite');
   if(!btn || !nerisSelectedProduct) return;
 
-  const user=window.nerisAuth?.currentUser;
-  if(!window.nerisAuthStateReady || !user){
+  const user=getNerisCurrentUser();
+  if(!user){
     btn.textContent='♡';
     btn.classList.remove('active');
     return;
@@ -2613,9 +2619,9 @@ async function toggleProductDetailFavorite(){
   if(!nerisSelectedProduct) return;
 
   const btn=document.getElementById('productDetailFavorite');
-  const user=window.nerisAuth?.currentUser;
+  const user=getNerisCurrentUser();
 
-  if(!window.nerisAuthStateReady || !user){
+  if(!user){
     const goLogin=confirm('Favorilere ürün eklemek için giriş yapmanız gerekmektedir. Giriş sayfasına gitmek ister misiniz?');
     if(goLogin) window.location.href='giris.html';
     return;
