@@ -73,8 +73,25 @@ const firebaseConfig={
 const app=initializeApp(firebaseConfig);
 const db=getFirestore(app);
 const auth=getAuth(app);
-setPersistence(auth,browserLocalPersistence).catch(()=>{});
+
 const panel=document.getElementById('ordersPanel');
+
+async function startNerisOrders(){
+  try{
+    // Auth listener çalışmadan önce kalıcı oturumu garanti et.
+    await setPersistence(auth,browserLocalPersistence);
+  }catch(error){
+    console.warn('Neris Auth persistence:',error);
+  }
+
+  onAuthStateChanged(auth,user=>{
+    if(user){
+      loadOrders(user);
+    }else{
+      showLoggedOut();
+    }
+  });
+}
 
 function showLoggedOut(){
   panel.innerHTML=`<div class="state">
@@ -127,10 +144,7 @@ async function loadOrders(user){
   }
 }
 
-onAuthStateChanged(auth,user=>{
-  if(user) loadOrders(user);
-  else showLoggedOut();
-});
+startNerisOrders();
 </script>
 </body>
 </html>
