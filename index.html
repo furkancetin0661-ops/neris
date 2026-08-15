@@ -1314,15 +1314,7 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
   min-height:0;
   background:#111;
 }
-.product-detail-media::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:
-    linear-gradient(90deg,rgba(0,0,0,.02) 0%,rgba(0,0,0,.06) 42%,rgba(0,0,0,.55) 72%,rgba(0,0,0,.82) 100%),
-    linear-gradient(0deg,rgba(0,0,0,.88) 0%,rgba(0,0,0,.34) 35%,transparent 65%);
-  pointer-events:none;
-}
+.product-detail-media::after{content:none!important;pointer-events:none}
 .product-detail-media img{
   width:100%;
   height:100%;
@@ -1365,6 +1357,17 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
 .product-gallery-arrow.hidden{display:none}
 .product-gallery-dots{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);display:flex;gap:7px;z-index:4;padding:6px 10px;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.28);backdrop-filter:blur(7px);border-radius:999px}
 .product-gallery-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.45);transition:.2s ease}.product-gallery-dot.active{width:18px;border-radius:5px;background:#d4af37}
+.neris-image-zoom{position:fixed;inset:0;z-index:1000005;background:rgba(0,0,0,.94);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .25s ease,visibility .25s ease;padding:24px;box-sizing:border-box}
+.neris-image-zoom.open{opacity:1;visibility:visible;pointer-events:auto}
+.neris-image-zoom-stage{width:min(1200px,94vw);height:min(900px,92vh);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;touch-action:none}
+.neris-image-zoom-stage img{max-width:100%;max-height:100%;object-fit:contain;transform:scale(1);transform-origin:center center;cursor:grab;user-select:none;-webkit-user-drag:none;transition:transform .18s ease}
+.neris-image-zoom-stage img:active{cursor:grabbing}
+.neris-image-zoom-close{position:absolute;top:18px;right:20px;width:46px;height:46px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.35);color:#fff;font-size:28px;cursor:pointer;z-index:2}
+.neris-image-zoom-controls{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:7px;border:1px solid rgba(255,255,255,.18);background:rgba(10,10,10,.72);backdrop-filter:blur(10px);border-radius:999px;z-index:2}
+.neris-image-zoom-controls button{width:38px;height:34px;border:0;background:transparent;color:#fff;font-size:20px;cursor:pointer}
+.neris-image-zoom-controls button:hover{color:#d4af37}
+.neris-image-zoom-hint{color:#999;font-size:10px;letter-spacing:1px;padding:0 8px}
+@media(max-width:768px){.neris-image-zoom{padding:10px}.neris-image-zoom-stage{width:100%;height:88vh}.neris-image-zoom-close{top:10px;right:10px}.neris-image-zoom-hint{display:none}}
 @media(max-width:768px){.product-gallery-arrow{width:42px;height:42px;font-size:31px}.product-gallery-prev{left:10px}.product-gallery-next{right:10px}.product-gallery-dots{bottom:12px}}
 .product-detail-info{
   position:absolute;
@@ -1513,7 +1516,7 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
   .product-detail-layout{display:flex;flex-direction:column;min-height:0;height:auto;overflow:visible;position:relative}
   .product-detail-media{position:relative;inset:auto;width:100%;height:52dvh;min-height:360px;flex:none;background:#111;overflow:hidden}
   .product-detail-media::after{background:linear-gradient(0deg,rgba(0,0,0,.18),transparent 45%);}
-  .product-detail-media img{width:100%;height:100%;min-height:0;max-height:none;object-fit:contain;object-position:center center}
+  .product-detail-media img{width:100%;height:100%;min-height:0;max-height:none;object-fit:contain;object-position:center center;cursor:zoom-in}
   .product-detail-info{position:relative;left:auto;right:auto;top:auto;bottom:auto;width:100%;min-height:0;padding:28px 22px 30px;background:#090909;color:#fff;display:block;overflow:visible}
   .product-detail-kicker{font-size:10px;letter-spacing:4px;margin-bottom:10px}
   .product-detail-title{font-size:29px;line-height:1.15;margin:0 0 8px}
@@ -1565,7 +1568,8 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
   .product-detail-media img{
     height:100%;
     min-height:0;
-    object-fit:cover;
+    object-fit:contain;
+    object-position:center center;
   }
   .product-detail-info{
     position:relative;
@@ -2106,13 +2110,27 @@ document.addEventListener("keydown", function(event) {
   </div>
 </div>
 
+  <!-- NERIS ÜRÜN GÖRSELİ ZOOM -->
+  <div class="neris-image-zoom" id="nerisImageZoom" onclick="if(event.target===this)closeNerisImageZoom()">
+    <button class="neris-image-zoom-close" type="button" onclick="closeNerisImageZoom()" aria-label="Görseli kapat">×</button>
+    <div class="neris-image-zoom-stage" id="nerisImageZoomStage">
+      <img id="nerisImageZoomImage" src="" alt="">
+    </div>
+    <div class="neris-image-zoom-controls">
+      <button type="button" onclick="changeNerisZoom(-0.2)" aria-label="Uzaklaştır">−</button>
+      <span class="neris-image-zoom-hint">YAKINLAŞTIR</span>
+      <button type="button" onclick="changeNerisZoom(0.2)" aria-label="Yakınlaştır">+</button>
+      <button type="button" onclick="resetNerisZoom()" aria-label="Sıfırla">↺</button>
+    </div>
+  </div>
+
   <!-- NERIS ÜRÜN DETAYI -->
   <div class="product-detail-modal" id="productDetailModal" onclick="if(event.target===this)closeProductDetail()">
     <div class="product-detail-box" role="dialog" aria-modal="true" aria-labelledby="productDetailTitle">
       <button class="product-detail-close" type="button" onclick="closeProductDetail()" aria-label="Ürün detayını kapat">×</button>
       <div class="product-detail-layout">
         <div class="product-detail-media" id="productDetailMedia">
-          <img id="productDetailImage" src="" alt="">
+          <img id="productDetailImage" src="" alt="" onclick="openNerisImageZoom()" title="Büyütmek için tıklayın">
           <button class="product-gallery-arrow product-gallery-prev" id="productGalleryPrev" type="button" aria-label="Önceki görsel" onclick="changeProductImage(-1)">‹</button>
           <button class="product-gallery-arrow product-gallery-next" id="productGalleryNext" type="button" aria-label="Sonraki görsel" onclick="changeProductImage(1)">›</button>
           <div class="product-gallery-dots" id="productGalleryDots" aria-hidden="true"></div>
@@ -3053,6 +3071,56 @@ function openProductDetail(product){
   document.body.classList.add('modal-open');
 }
 window.openProductDetail=openProductDetail;
+
+let nerisZoomLevel=1;
+function openNerisImageZoom(){
+  const source=document.getElementById('productDetailImage');
+  const modal=document.getElementById('nerisImageZoom');
+  const target=document.getElementById('nerisImageZoomImage');
+  if(!source||!modal||!target||!source.src) return;
+  target.src=source.currentSrc||source.src;
+  target.alt=source.alt||'Ürün görseli';
+  nerisZoomLevel=1;
+  target.style.transform='scale(1)';
+  modal.classList.add('open');
+  document.body.classList.add('modal-open');
+}
+function closeNerisImageZoom(){
+  const modal=document.getElementById('nerisImageZoom');
+  if(modal) modal.classList.remove('open');
+  if(!document.getElementById('productDetailModal')?.classList.contains('open')) document.body.classList.remove('modal-open');
+}
+function changeNerisZoom(delta){
+  const target=document.getElementById('nerisImageZoomImage');
+  if(!target) return;
+  nerisZoomLevel=Math.max(1,Math.min(3,nerisZoomLevel+delta));
+  target.style.transform=`scale(${nerisZoomLevel})`;
+}
+function resetNerisZoom(){
+  const target=document.getElementById('nerisImageZoomImage');
+  if(!target) return;
+  nerisZoomLevel=1;
+  target.style.transform='scale(1)';
+}
+window.openNerisImageZoom=openNerisImageZoom;
+window.closeNerisImageZoom=closeNerisImageZoom;
+window.changeNerisZoom=changeNerisZoom;
+window.resetNerisZoom=resetNerisZoom;
+document.addEventListener('keydown',function(e){
+  const modal=document.getElementById('nerisImageZoom');
+  if(!modal?.classList.contains('open')) return;
+  if(e.key==='Escape') closeNerisImageZoom();
+  if(e.key==='+'||e.key==='=') changeNerisZoom(.2);
+  if(e.key==='-') changeNerisZoom(-.2);
+});
+const zoomStage=document.getElementById('nerisImageZoomStage');
+if(zoomStage){
+  zoomStage.addEventListener('wheel',function(e){
+    if(!document.getElementById('nerisImageZoom')?.classList.contains('open')) return;
+    e.preventDefault();
+    changeNerisZoom(e.deltaY<0?.2:-.2);
+  },{passive:false});
+}
 
 function closeProductDetail(){
   const modal=document.getElementById('productDetailModal');
