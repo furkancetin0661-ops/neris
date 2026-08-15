@@ -1916,6 +1916,8 @@ document.addEventListener("keydown", function(event) {
 }
 .product-favorite-row{color:#555!important}
 .product-favorite-row span{color:#555!important}
+.product-favorite-mini{color:#222!important;background:#fff!important;border-color:#ddd!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;visibility:visible!important;opacity:1!important}
+.product-favorite-mini.active{background:#d4af37!important;color:#090909!important;border-color:#d4af37!important}
 .product-detail-note{color:#777!important}
 .product-detail-close{
   background:rgba(255,255,255,.96)!important;
@@ -3684,6 +3686,7 @@ function openProductDetail(product){
 
   modal.classList.add('open');
   document.body.classList.add('modal-open');
+  if(typeof window.ensureProductDetailActions==='function') window.ensureProductDetailActions();
 }
 window.openProductDetail=openProductDetail;
 
@@ -3895,7 +3898,7 @@ async function addProductToCart(){
   else nerisCartCache.push(item);
 
   updateCartCount();
-  await queueNerisCartSave();
+  try{ await queueNerisCartSave(); }catch(e){ console.warn('Sepet senkronizasyonu atlandı:',e); }
 
   showProductInlineAlert('Sepete Eklendi',`${item.product} — ${item.size} beden, ${item.quantity} adet sepetinize eklendi.`,'success');
 }
@@ -4020,7 +4023,7 @@ function buyProductNow(){
   }
   const url=productCheckoutUrl(nerisSelectedProduct,nerisSelectedSize,nerisProductQuantity);
   closeProductDetail();
-  setTimeout(()=>{ navigateWithTransition(url); },120);
+  setTimeout(()=>{ if(typeof navigateWithTransition==='function') navigateWithTransition(url); else window.location.href=url; },120);
 }
 window.buyProductNow=buyProductNow;
 
@@ -4129,6 +4132,20 @@ async function toggleProductDetailFavorite(){
   }
 }
 window.toggleProductDetailFavorite=toggleProductDetailFavorite;
+
+// NERIS — ürün detay aksiyon güvenliği
+(function(){
+  const ensureProductDetailActions=()=>{
+    const add=document.querySelector('.product-add-cart');
+    const buy=document.querySelector('.product-buy-now');
+    const fav=document.getElementById('productDetailFavorite');
+    if(add) add.onclick=()=>window.addProductToCart();
+    if(buy) buy.onclick=()=>window.buyProductNow();
+    if(fav) fav.onclick=()=>window.toggleProductDetailFavorite();
+  };
+  window.ensureProductDetailActions=ensureProductDetailActions;
+  document.addEventListener('DOMContentLoaded',ensureProductDetailActions);
+})();
 
 function closeInfo(){
   const modal=document.getElementById('infoModal');
@@ -4350,6 +4367,7 @@ const querySnapshot =
       yaka: "Degaje Yaka",
       kalip: "Standart Kalıp",
       bedenler: "36 – 46",
+      Bağlantı: "https://www.shopier.com/nerisbutik_/49854673",
       rozet: "YENİ"
     };
 
@@ -4364,6 +4382,7 @@ const querySnapshot =
       card.innerHTML = `
         <div class="card-image">
           <div class="badge">${nerisSecondProduct.rozet}</div>
+          <button class="favorite-btn" type="button" data-id="${nerisSecondProduct.id}" aria-label="Favorilere ekle">♡</button>
           <img src="${nerisSecondProduct.resim}" alt="${nerisSecondProduct.reklam}">
         </div>
         <div class="card-content">
