@@ -175,7 +175,7 @@ button,input,textarea{font:inherit}
   width:56px;
 }
 .footer-payment-logo.mastercard-logo{
-  width:76px;
+  width:108px;
 }
 .footer-iyzico-logo{
   display:block;
@@ -1900,10 +1900,10 @@ document.addEventListener("keydown", function(event) {
                 </svg>
             </span>
             <span class="footer-payment-badge mastercard" aria-label="Mastercard">
-                <svg class="footer-payment-logo mastercard-logo" viewBox="0 0 110 28" role="img" aria-hidden="true">
-                    <circle cx="38" cy="14" r="11" fill="#eb001b"/>
-                    <circle cx="52" cy="14" r="11" fill="#f79e1b"/>
-                    <text x="67" y="18" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="700" fill="#fff">Mastercard</text>
+                <svg class="footer-payment-logo mastercard-logo" viewBox="0 0 140 32" role="img" aria-hidden="true">
+                    <circle cx="22" cy="16" r="12" fill="#eb001b"/>
+                    <circle cx="36" cy="16" r="12" fill="#f79e1b"/>
+                    <text x="52" y="20" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="700" fill="#fff">Mastercard</text>
                 </svg>
             </span>
             <img
@@ -2389,53 +2389,125 @@ shipping: {
 distance: {
     title: 'Mesafeli Satış Sözleşmesi',
     body: `
-        <div style="
-            text-align:center;
-            color:#d4af37;
-            font-family:Georgia,serif;
-            font-size:24px;
-            letter-spacing:4px;
-            margin-bottom:25px;
-        ">
-            NERIS
+        <div class="neris-legal-content" style="color:#b8b8b8;line-height:1.8;font-size:14px;">
+            <div style="text-align:center;color:#d4af37;font-family:Georgia,serif;font-size:24px;letter-spacing:4px;margin-bottom:25px;">
+                NERIS
+            </div>
+
+            <h3 style="color:#d4af37;font-family:Georgia,serif;">1. Taraflar</h3>
+            <p>
+                İşbu Mesafeli Satış Sözleşmesi, NERIS internet sitesi üzerinden
+                elektronik ortamda gerçekleştirilen ürün satışlarında Satıcı ile
+                Alıcı'nın karşılıklı hak ve yükümlülüklerini düzenler.
+            </p>
+            <p>
+                <strong>Satıcı:</strong> NERIS<br>
+                <strong>İnternet Sitesi:</strong> https://neris.com.tr/<br>
+                <strong>İletişim:</strong> NERIS internet sitesindeki iletişim kanalları üzerinden
+            </p>
+            <p>
+                <strong>Alıcı:</strong> Sipariş sırasında ödeme ve teslimat bilgilerini bildiren tüketici.
+            </p>
+
+            <h3 style="color:#d4af37;font-family:Georgia,serif;">2. Sözleşmenin Konusu</h3>
+            <p>
+                İşbu sözleşmenin konusu, Alıcı'nın NERIS internet sitesinde elektronik
+                ortamda sipariş verdiği ürünün satışı ve teslimi ile tarafların hak ve
+                yükümlülüklerinin belirlenmesidir.
+            </p>
+
+            <h3 style="color:#d4af37;font-family:Georgia,serif;">3. Ürün, Fiyat ve Ödeme</h3>
+            <p>
+                Satışa konu ürünün adı, temel özellikleri, satış bedeli, varsa indirimleri,
+                vergiler dahil toplam tutarı ve teslimata ilişkin bilgiler sipariş sırasında
+                Alıcı'ya gösterilir. Alıcı, siparişi onaylamadan önce sipariş özetini ve toplam
+                ödeme tutarını kontrol eder.
+            </p>
+            <p>
+                Ödeme işlemleri sitede sunulan güvenli ödeme altyapısı üzerinden
+                gerçekleştirilir. Siparişin oluşturulması, ödeme işleminin başarılı olması
+                ve sipariş bilgilerinin sistem tarafından kaydedilmesiyle satış süreci başlar.
+            </p>
+
+            <h3 style="color:#d4af37;font-family:Georgia,serif;">4. Teslimat</h3>
+            <p>
+                Ürün, Alıcı'nın sipariş sırasında bildirdiği teslimat adresine gönderilir.
+                Siparişin hazırlanması ve kargoya teslim edilmesi sonrasında teslimat,
+                seçilen kargo hizmetinin çalışma sürecine göre gerçekleştirilir.
+            </p>
+            <p>
+                Teslimatla ilgili özel bir süre ürün sayfasında veya sipariş sırasında
+                belirtilmişse ilgili süre uygulanır. Mücbir sebepler ve taşıyıcıdan
+                kaynaklanan gecikmelerde Alıcı bilgilendirilir.
+            </p>
+
+            <h3 style="color:#d4af37;font-family:Georgia,serif;">5. Alıcının Beyan ve Yükümlülükleri</h3>
+            <p>
+                Alıcı, sipariş sırasında verdiği ad, adres, telefon ve diğer bilgilerin doğru
+                ve güncel olduğunu kabul eder. Hatalı veya eksik bilgi verilmesinden kaynaklanan
+                teslimat sorunlarından Alıcı sorumludur.
+            </p>
+
+            <h3 style="color:#d4af37;font-family:Georgia,serif;">6. Cayma Hakkı</h3>
+            <p>
+                Tüketici, mevzuatta öngörülen istisnalar saklı kalmak kaydıyla, satın aldığı
+                ürün kendisine veya belirlediği üçüncü kişiye teslim edildiği tarihten itibaren
+                14 gün içinde herhangi bir gerekçe göstermeksizin ve cezai şart ödemeksizin
+                cayma hakkını kullanabilir.
+            </p>
+            <p>
+                Cayma hakkının kullanılması için NERIS'e açık bir bildirimde bulunulması
+                yeterlidir. Cayma hakkına ilişkin yasal istisnalar ve iade şartları ayrıca
+                sitede yer alan İptal ve İade Koşulları'nda belirtilir.
+            </p>
+
+            <h3 style="color:#d4af37;font-family:Georgia,serif;">7. Cayma Hakkının Kullanılması ve İade</h3>
+            <p>
+                Cayma hakkı kullanılan ürün, mevzuata uygun şekilde Satıcı'ya gönderilir.
+                Ürünün iade edilmesi, ürünün kullanılmamış olması ve varsa ürünle birlikte
+                gönderilen aksesuarların eksiksiz şekilde teslim edilmesi gibi iade koşulları
+                ürünün niteliğine ve yürürlükteki mevzuata göre değerlendirilir.
+            </p>
+            <p>
+                Cayma hakkının geçerli olduğu durumlarda bedel iadesi, mevzuatta öngörülen
+                süre ve yöntemlere uygun şekilde gerçekleştirilir.
+            </p>
+
+            <h3 style="color:#d4af37;font-family:Georgia,serif;">8. Ayıplı Ürün ve Yasal Haklar</h3>
+            <p>
+                Alıcı'nın ayıplı mal, eksik teslimat veya mevzuattan doğan diğer tüketici
+                hakları saklıdır. Ürünle ilgili bir sorun olması halinde Alıcı NERIS'in
+                iletişim kanallarından Satıcı'ya ulaşabilir.
+            </p>
+
+            <h3 style="color:#d4af37;font-family:Georgia,serif;">9. Kişisel Verilerin Korunması</h3>
+            <p>
+                Siparişin alınması ve yerine getirilmesi amacıyla paylaşılan kişisel veriler,
+                yürürlükteki kişisel verilerin korunmasına ilişkin mevzuata uygun olarak işlenir.
+                Ayrıntılı bilgiler sitedeki KVKK ve Gizlilik metninde yer almaktadır.
+            </p>
+
+            <h3 style="color:#d4af37;font-family:Georgia,serif;">10. Uyuşmazlıkların Çözümü</h3>
+            <p>
+                İşbu sözleşmeden doğan uyuşmazlıklarda yürürlükteki tüketici mevzuatı uygulanır.
+                Tüketicinin başvurabileceği Tüketici Hakem Heyetleri ve Tüketici Mahkemeleri
+                bakımından kanunen yetkili merciler saklıdır.
+            </p>
+
+            <h3 style="color:#d4af37;font-family:Georgia,serif;">11. Yürürlük ve Kabul</h3>
+            <p>
+                Alıcı, siparişini elektronik ortamda onaylayarak işbu sözleşmede yer alan
+                hükümleri okuduğunu ve kabul ettiğini beyan eder. Sözleşme, siparişin
+                elektronik ortamda onaylanmasıyla yürürlüğe girer.
+            </p>
+
+            <div style="width:60px;height:1px;background:#d4af37;margin:30px auto;"></div>
+
+            <p style="font-size:13px;color:#999;text-align:center;">
+                Bu metin NERIS internet sitesinde müşterinin sipariş öncesinde erişebileceği
+                Mesafeli Satış Sözleşmesi olarak sunulmaktadır.
+            </p>
         </div>
-
-        <p style="
-            font-size:14px;
-            line-height:1.8;
-            color:#b8b8b8;
-        ">
-            Bu sözleşme, NERIS üzerinden gerçekleştirilen ürün satışlarında
-            alıcı ve satıcının hak ve yükümlülüklerini düzenlemek amacıyla
-            hazırlanmıştır.
-        </p>
-
-        <p style="
-            font-size:14px;
-            line-height:1.8;
-            color:#b8b8b8;
-        ">
-            Siparişin oluşturulmasıyla birlikte ürün, fiyat, ödeme,
-            teslimat ve iade koşulları alıcıya sunulan bilgiler kapsamında
-            değerlendirilir.
-        </p>
-
-        <div style="
-            width:60px;
-            height:1px;
-            background:#d4af37;
-            margin:25px auto;
-        "></div>
-
-        <p style="
-            font-size:13px;
-            line-height:1.8;
-            color:#999;
-            text-align:center;
-        ">
-            Sözleşmenin güncel ve hukuken geçerli tam metni,
-            satış işlemi sırasında müşteriye sunulacaktır.
-        </p>
     `
 },
 privacy: {
