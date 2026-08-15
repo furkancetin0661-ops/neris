@@ -2195,6 +2195,83 @@ document.addEventListener("keydown", function(event) {
   }
 }
 
+
+
+/* NERIS — MOBİL ÜRÜN DETAYI: TEK PARÇA SCROLL */
+@media(max-width:768px){
+  .product-detail-modal{
+    position:fixed!important;
+    inset:0!important;
+    width:100vw!important;
+    height:100dvh!important;
+    padding:0!important;
+    overflow:hidden!important;
+    align-items:flex-start!important;
+  }
+  .product-detail-box{
+    width:100vw!important;
+    max-width:none!important;
+    height:100dvh!important;
+    max-height:100dvh!important;
+    min-height:0!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior:contain!important;
+  }
+  .product-detail-layout{
+    display:flex!important;
+    flex-direction:column!important;
+    min-height:0!important;
+    height:auto!important;
+    overflow:visible!important;
+  }
+  .product-detail-media{
+    flex:0 0 52dvh!important;
+    width:100%!important;
+    height:52dvh!important;
+    min-height:360px!important;
+    overflow:hidden!important;
+  }
+  .product-detail-info{
+    position:relative!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    overflow:visible!important;
+    display:block!important;
+    padding:28px 22px 34px!important;
+  }
+  .product-quantity-row{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+    margin:0 0 10px!important;
+  }
+  .product-add-cart{
+    width:100%!important;
+    height:54px!important;
+  }
+  .product-buy-now{
+    display:flex!important;
+    width:100%!important;
+    height:54px!important;
+    min-height:54px!important;
+    margin:0 0 18px!important;
+    box-sizing:border-box!important;
+  }
+  .product-info-card{
+    width:100%!important;
+    margin:0 0 18px!important;
+  }
+  .product-favorite-row{
+    margin:0 0 12px!important;
+  }
+  .product-detail-note{
+    margin:0!important;
+  }
+}
+
 </style>
 </head>
 
@@ -2592,8 +2669,8 @@ document.addEventListener("keydown", function(event) {
             </div>
             <button class="product-add-cart" type="button" onclick="addProductToCart()">SEPETE EKLE</button>
           </div>
-          
-<div class="product-info-card">
+          <button class="product-buy-now" type="button" onclick="buyProductNow()">HEMEN AL</button>
+          <div class="product-info-card">
             <h3 class="product-info-card-title">ÜRÜN BİLGİLERİ</h3>
             <div class="product-info-grid">
               <div class="product-info-item">
@@ -2622,9 +2699,7 @@ document.addEventListener("keydown", function(event) {
               </div>
             </div>
           </div>
-
-          <button class="product-buy-now" type="button" onclick="buyProductNow()">HEMEN AL</button>
-          <div class="product-favorite-row">
+<div class="product-favorite-row">
             <button class="product-favorite-mini" id="productDetailFavorite" type="button" onclick="toggleProductDetailFavorite()" aria-label="Favorilere ekle">♡</button>
             <span>Favorilere ekle</span>
           </div>
