@@ -2455,7 +2455,62 @@ document.addEventListener("keydown", function(event) {
 <body>
 
 
-<!-- NERIS ANA SAYFA GİRİŞ ANİMASYONU -->
+<!-- NE
+<style id="neris-mobile-product-full-scroll-fix">
+/* NERIS — MOBİL ÜRÜN DETAYI: FOTOĞRAF + BİLGİ TEK PARÇA KAYAR */
+@media (max-width:768px){
+  /* Dış modal sabit ekranı tutar; scroll sadece ürün kutusunda olur */
+  .product-detail-modal{
+    overflow:hidden!important;
+    align-items:flex-start!important;
+    justify-content:center!important;
+  }
+
+  /* Ürün detayının tamamı tek scroll alanı */
+  .product-detail-box{
+    width:100vw!important;
+    height:100dvh!important;
+    min-height:100dvh!important;
+    max-height:100dvh!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior-y:contain!important;
+  }
+
+  /* Fotoğraf ve alt bilgiler aynı sayfanın devamı olsun */
+  .product-detail-layout{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    overflow:visible!important;
+  }
+
+  .product-detail-media{
+    width:100%!important;
+    flex:0 0 48dvh!important;
+    height:48dvh!important;
+    min-height:0!important;
+    overflow:hidden!important;
+  }
+
+  /* Alt bilgi kendi içinde ASLA scroll yapmasın */
+  .product-detail-info{
+    position:relative!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    flex:none!important;
+    overflow:visible!important;
+    overflow-y:visible!important;
+    overflow-x:visible!important;
+  }
+}
+</style>
+
+RIS ANA SAYFA GİRİŞ ANİMASYONU -->
   <div class="neris-page-loader" id="nerisPageLoader" aria-hidden="true">
     <div class="neris-loader-content">
       <div class="neris-loader-logo">NERIS</div>
