@@ -2364,6 +2364,59 @@ document.addEventListener("keydown", function(event) {
 }
 
 </style>
+
+<style id="neris-benefits-white-final">
+/* SADECE NERIS AVANTAJLAR ALANI */
+.benefits{
+  background:#fff !important;
+  color:#222 !important;
+  border-top:1px solid rgba(184,145,35,.22) !important;
+  border-bottom:1px solid rgba(184,145,35,.22) !important;
+  box-shadow:none !important;
+}
+.benefits-heading span{
+  color:#b58a20 !important;
+}
+.benefits-heading h2{
+  color:#222 !important;
+}
+.benefits-heading p{
+  color:#777 !important;
+}
+.benefit{
+  background:transparent !important;
+}
+.benefit h3,
+.benefit-copy h3{
+  color:#222 !important;
+}
+.benefit p,
+.benefit-copy p{
+  color:#777 !important;
+}
+.benefit-icon{
+  background:#fff !important;
+  color:#b58a20 !important;
+  border-color:rgba(184,145,35,.72) !important;
+  box-shadow:none !important;
+}
+.benefit-icon svg{
+  width:23px !important;
+  height:23px !important;
+  fill:none !important;
+  stroke:currentColor !important;
+  stroke-width:1.45 !important;
+  stroke-linecap:round !important;
+  stroke-linejoin:round !important;
+}
+.benefit:not(:last-child)::after{
+  background:linear-gradient(180deg,transparent,rgba(184,145,35,.22),transparent) !important;
+}
+@media(max-width:768px){
+  .benefits{background:#fff !important;}
+}
+</style>
+
 </head>
 
 <body>
@@ -2500,35 +2553,58 @@ document.addEventListener("keydown", function(event) {
 
   <div class="benefits-grid">
     <div class="benefit">
-        <div class="benefit-icon">✦</div>
-        <div class="benefit-copy">
-          <h3>Ücretsiz Kargo</h3>
-          <p>2.500 TL üzeri siparişlerde kargo bizden.</p>
-        </div>
+      <div class="benefit-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 6h11v10H3z"/>
+          <path d="M14 9h4l3 3v4h-7z"/>
+          <circle cx="7" cy="18" r="2"/>
+          <circle cx="18" cy="18" r="2"/>
+        </svg>
+      </div>
+      <div class="benefit-copy">
+        <h3>Ücretsiz Kargo</h3>
+        <p>Tüm siparişlerde kargo ücretsizdir.</p>
+      </div>
     </div>
 
     <div class="benefit">
-        <div class="benefit-icon">↺</div>
-        <div class="benefit-copy">
-          <h3>Kolay İade</h3>
-          <p>14 gün içinde güvenli ve kolay iade.</p>
-        </div>
+      <div class="benefit-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20 7v5h-5"/>
+          <path d="M19 12a7 7 0 1 1-2-5"/>
+          <path d="M20 7l-3 3"/>
+        </svg>
+      </div>
+      <div class="benefit-copy">
+        <h3>Kolay İade</h3>
+        <p>14 gün içinde güvenli ve kolay iade.</p>
+      </div>
     </div>
 
     <div class="benefit">
-        <div class="benefit-icon">♢</div>
-        <div class="benefit-copy">
-          <h3>Güvenli Ödeme</h3>
-          <p>Ödeme bilgileriniz güvenli altyapıyla korunur.</p>
-        </div>
+      <div class="benefit-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3l7 4v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V7z"/>
+          <path d="M9 12l2 2 4-4"/>
+        </svg>
+      </div>
+      <div class="benefit-copy">
+        <h3>Güvenli Ödeme</h3>
+        <p>Ödeme bilgileriniz güvenli altyapıyla korunur.</p>
+      </div>
     </div>
 
     <div class="benefit">
-        <div class="benefit-icon">✧</div>
-        <div class="benefit-copy">
-          <h3>Özenli Paketleme</h3>
-          <p>Her sipariş NERIS dokunuşuyla hazırlanır.</p>
-        </div>
+      <div class="benefit-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5z"/>
+          <path d="M19 16l.7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7z"/>
+        </svg>
+      </div>
+      <div class="benefit-copy">
+        <h3>Özenli Paketleme</h3>
+        <p>Her sipariş NERIS dokunuşuyla hazırlanır.</p>
+      </div>
     </div>
   </div>
 </section>
