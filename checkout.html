@@ -300,19 +300,35 @@ function renderSummary(items){
     return;
   }
 
-  const subtotal = list.reduce((sum,item)=>{
+  /* Aynı ürün + aynı beden tek satırda birleşir.
+     Örn: aynı elbiseden 2 adet varsa tek satırda "2 adet" görünür.
+     Aynı ürün farklı bedendeyse ayrı satır kalır. */
+  const grouped = [];
+
+  list.forEach(item=>{
+    const key = `${item.id || item.product || item.reklam || ''}__${item.size || ''}`;
+    const existing = grouped.find(x=>x._key === key);
+
+    if(existing){
+      existing.quantity = getQuantity(existing) + getQuantity(item);
+    }else{
+      grouped.push({...item, quantity:getQuantity(item), _key:key});
+    }
+  });
+
+  const subtotal = grouped.reduce((sum,item)=>{
     return sum + getPrice(item) * getQuantity(item);
   },0);
 
   const shipping = 0;
   const total = subtotal + shipping;
+  const totalQuantity = grouped.reduce((n,x)=>n+getQuantity(x),0);
 
   sc.innerHTML = `
     <div class="checkout-items">
-      ${list.map((item,index)=>{
+      ${grouped.map((item,index)=>{
         const qty = getQuantity(item);
-        const unit = getPrice(item);
-        const lineTotal = unit * qty;
+        const lineTotal = getPrice(item) * qty;
         const image = getImage(item);
 
         return `
@@ -323,7 +339,7 @@ function renderSummary(items){
             <div class="product-info">
               <div class="product-name">${escapeHtml(item.product || item.reklam || 'Neris Ürün')}</div>
               <div class="product-meta">
-                ${qty} ürün${item.size ? ` · Beden ${escapeHtml(item.size)}` : ''} · Neris
+                ${qty} adet${item.size ? ` · Beden ${escapeHtml(item.size)}` : ''} · Neris
               </div>
               <div class="price">${fmt(lineTotal)}</div>
             </div>
@@ -333,7 +349,7 @@ function renderSummary(items){
 
     <div class="totals">
       <div class="line">
-        <span>Ürün (${list.reduce((n,x)=>n+getQuantity(x),0)} adet)</span>
+        <span>Ürün (${totalQuantity} adet)</span>
         <span>${fmt(subtotal)}</span>
       </div>
       <div class="line">
@@ -363,7 +379,7 @@ function renderSummary(items){
     }
 
     sessionStorage.setItem('nerisCheckout',JSON.stringify({
-      items:list,
+      items:grouped,
       subtotal,
       shipping,
       total,
@@ -372,65 +388,10 @@ function renderSummary(items){
       ]))
     }));
 
-    /* İyzico entegrasyonu bağlandığında bu noktadan ödeme oturumu açılacak. */
     document.getElementById('overlay').classList.add('show');
   });
 }
 
-async function loadFirebaseCart(){
-  const {initializeApp} =
-    await import("https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js");
-
-  const {getFirestore,doc,getDoc} =
-    await import("https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js");
-
-  const {getAuth,onAuthStateChanged} =
-    await import("https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js");
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const auth = getAuth(app);
-
-  return new Promise(resolve=>{
-    let finished=false;
-
-    const finish = async user=>{
-      if(finished) return;
-      finished=true;
-
-      if(!user){
-        renderSummary([]);
-        resolve([]);
-        return;
-      }
-
-      try{
-        const snap = await getDoc(doc(db,'sepetler',user.uid));
-
-        if(!snap.exists()){
-          renderSummary([]);
-          resolve([]);
-          return;
-        }
-
-        const data=snap.data() || {};
-        const items=Array.isArray(data.items) ? data.items : [];
-
-        renderSummary(items);
-        resolve(items);
-      }catch(error){
-        console.error('Firebase sepeti okunamadı:',error);
-        renderSummary([]);
-        resolve([]);
-      }
-    };
-
-    onAuthStateChanged(auth,finish);
-  });
-}
-
-/* Eski checkout URL'sinden tek ürünle gelinirse de destekle.
-   Normal kullanımda kaynak Firebase sepetidir. */
 function getLegacyUrlItem(){
   if(!(q.has('product') || q.has('price') || q.has('image'))) return null;
 
