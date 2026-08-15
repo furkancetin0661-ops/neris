@@ -1385,6 +1385,51 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
 .product-detail-title{color:#fff}
 .product-detail-price{color:#fff;font-size:28px!important;font-weight:600!important;letter-spacing:.2px}
 .product-detail-divider{background:rgba(255,255,255,.16)}
+.product-info-card{
+  margin:0 0 24px;
+  padding:16px 18px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.025);
+}
+.product-info-card-title{
+  margin:0 0 13px;
+  color:#d4af37;
+  font-size:9px;
+  font-weight:600;
+  letter-spacing:2.4px;
+}
+.product-info-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0 24px;
+}
+.product-info-item{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:12px;
+  padding:9px 0;
+  border-top:1px solid rgba(255,255,255,.07);
+}
+.product-info-item:nth-child(-n+2){border-top:0}
+.product-info-item span:first-child{
+  color:#858585;
+  font-size:10px;
+  letter-spacing:.5px;
+}
+.product-info-item strong{
+  color:#f2f2f2;
+  font-size:11px;
+  font-weight:500;
+  text-align:right;
+}
+@media(max-width:768px){
+  .product-info-card{margin-bottom:18px;padding:14px 15px}
+  .product-info-grid{grid-template-columns:1fr}
+  .product-info-item:nth-child(2){border-top:1px solid rgba(255,255,255,.07)}
+  .product-info-item:first-child{border-top:0}
+}
+
 .product-detail-label{color:#fff}
 .product-size-guide{color:#c8c8c8}
 .product-size-btn{
@@ -2077,6 +2122,37 @@ document.addEventListener("keydown", function(event) {
           <h2 class="product-detail-title" id="productDetailTitle">Ürün</h2>
           <p class="product-detail-price" id="productDetailPrice">₺0</p>
           <div class="product-detail-divider"></div>
+
+          <div class="product-info-card">
+            <h3 class="product-info-card-title">ÜRÜN BİLGİLERİ</h3>
+            <div class="product-info-grid">
+              <div class="product-info-item">
+                <span>Ürün Adı</span>
+                <strong id="productInfoName">Neris Balerin Yaka Şifon Elbise</strong>
+              </div>
+              <div class="product-info-item">
+                <span>Renk</span>
+                <strong>Siyah</strong>
+              </div>
+              <div class="product-info-item">
+                <span>Kumaş</span>
+                <strong>Şifon</strong>
+              </div>
+              <div class="product-info-item">
+                <span>Yaka</span>
+                <strong>Balerin Yaka</strong>
+              </div>
+              <div class="product-info-item">
+                <span>Kalıp</span>
+                <strong>Standart Kalıp</strong>
+              </div>
+              <div class="product-info-item">
+                <span>Bedenler</span>
+                <strong>38 – 46</strong>
+              </div>
+            </div>
+          </div>
+
           <div class="product-detail-label">
             <span>BEDEN</span>
             <button class="product-size-guide" id="productSizeGuideBtn" type="button" aria-label="Beden rehberini aç">Beden rehberi</button>
@@ -2924,6 +3000,7 @@ function openProductDetail(product){
   const image=document.getElementById('productDetailImage');
   const title=document.getElementById('productDetailTitle');
   const price=document.getElementById('productDetailPrice');
+  const productInfoName=document.getElementById('productInfoName');
   const quantity=document.getElementById('productQuantity');
   const favorite=document.getElementById('productDetailFavorite');
   if(!modal||!image||!title||!price) return;
@@ -2935,6 +3012,7 @@ function openProductDetail(product){
   image.alt=name;
   renderProductGallery();
   title.textContent=name;
+  if(productInfoName) productInfoName.textContent=name;
   const rawPrice=String(product.fiyat||'0').replace(/[^0-9,.-]/g,'').replace(',', '.');
   const numericPrice=Number.parseFloat(rawPrice)||0;
   price.textContent=numericPrice.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})+' TL';
