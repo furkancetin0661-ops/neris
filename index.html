@@ -117,6 +117,82 @@ button,input,textarea{font:inherit}
 .footer-line{width:60px;height:1px;background:#d4af37;margin:25px auto}
 .footer-copyright{display:flex;justify-content:center;align-items:center;gap:15px;color:#777;font-size:11px;letter-spacing:.5px}
 .footer-separator{color:#d4af37}
+/* NERIS — GÜVENLİ ÖDEME ALANI */
+.footer-payment{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  margin:30px auto 0;
+  padding-top:25px;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+.footer-payment-title{
+  margin:0 0 12px;
+  color:#d4af37;
+  font-size:9px;
+  font-weight:600;
+  letter-spacing:2.8px;
+}
+.footer-payment-badges{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.footer-payment-badge{
+  height:31px;
+  min-width:64px;
+  padding:0 12px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid rgba(255,255,255,.16);
+  background:#111;
+  color:#eee;
+  border-radius:3px;
+  font-family:Arial,sans-serif;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.5px;
+}
+.footer-payment-badge.visa{font-style:italic;letter-spacing:1px}
+.footer-payment-badge.mastercard{font-size:9px}
+.footer-payment-badge.iyzico{
+  min-width:82px;
+  color:#fff;
+  font-size:12px;
+  letter-spacing:-.3px;
+}
+.footer-iyzico-logo{
+  display:block;
+  height:29px;
+  width:auto;
+  max-width:110px;
+  object-fit:contain;
+  background:#fff;
+  border-radius:3px;
+  padding:4px 9px;
+}
+.footer-payment-note{
+  margin:10px 0 0;
+  color:#666;
+  font-size:9px;
+  line-height:1.6;
+  letter-spacing:.2px;
+  text-align:center;
+}
+@media(max-width:768px){
+  .footer-payment{margin-top:24px;padding-top:20px}
+  .footer-payment-badges{gap:6px}
+  .footer-payment-badge{height:28px;min-width:58px;padding:0 9px}
+  .footer-payment-badge.iyzico{min-width:74px;font-size:11px}
+  .footer-iyzico-logo{height:27px}
+  .footer-payment-note{max-width:300px;font-size:8.5px}
+}
+
 
 /* ACCOUNT */
 .account-menu-wrapper{position:relative;display:inline-block}
@@ -1733,6 +1809,7 @@ document.addEventListener("keydown", function(event) {
 
             <a href="#products">Ürünler</a>
                     <a href="#" onclick="openInfo('story'); return false;">Hikayemiz</a>
+            <a href="hakkimizda.html">Hakkımızda</a>
             <a href="#" onclick="openInfo('contact'); return false;">İletişim</a>
         </div>
 
@@ -1756,6 +1833,9 @@ document.addEventListener("keydown", function(event) {
             <a href="#" onclick="openInfo('preinfo'); return false;">
     Ön Bilgilendirme Formu
 </a>
+            <a href="teslimat-iade.html">Teslimat ve İade</a>
+            <a href="gizlilik.html">Gizlilik ve KVKK</a>
+
         </div>
 
 
@@ -1796,6 +1876,26 @@ document.addEventListener("keydown", function(event) {
             <a href="#products">Tüm Ürünler</a>
         </div>
 
+    </div>
+
+
+    <!-- GÜVENLİ ÖDEME -->
+    <div class="footer-payment" aria-label="Güvenli ödeme yöntemleri">
+        <div class="footer-payment-title">GÜVENLİ ÖDEME</div>
+        <div class="footer-payment-badges">
+            <span class="footer-payment-badge visa">VISA</span>
+            <span class="footer-payment-badge mastercard">Mastercard</span>
+            <img
+                class="footer-iyzico-logo"
+                src="images/iyzico-logo.png"
+                alt="iyzico ile Öde"
+                onerror="this.style.display='none'"
+            >
+            <span class="footer-payment-badge iyzico" aria-label="iyzico">iyzico</span>
+        </div>
+        <div class="footer-payment-note">
+            Ödeme işlemleriniz güvenli ödeme altyapısı üzerinden gerçekleştirilir.
+        </div>
     </div>
 
 
