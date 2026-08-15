@@ -118,6 +118,44 @@ body{
 }
 .pay-note .shield{color:#b18a1b!important;}
 
+.free-shipping-box{
+  display:flex!important;
+  align-items:center!important;
+  gap:15px!important;
+  padding:18px 20px!important;
+  margin:0 0 18px!important;
+  background:#fafaf8!important;
+  border:1px solid #e5e3dc!important;
+  color:#111!important;
+}
+.free-shipping-icon{
+  width:38px!important;
+  height:38px!important;
+  flex:0 0 38px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid #d4af37!important;
+  border-radius:50%!important;
+  color:#b18a1b!important;
+  font-size:15px!important;
+}
+.free-shipping-box strong{
+  display:block!important;
+  color:#111!important;
+  font-size:12px!important;
+  font-weight:600!important;
+  margin-bottom:4px!important;
+}
+.free-shipping-box span{
+  display:block!important;
+  color:#777!important;
+  font-size:10px!important;
+  line-height:1.6!important;
+}
+@media(max-width:800px){
+  .free-shipping-box{padding:16px!important;}
+}
+
 .summary .panel-head{
   background:#fff!important;
 }
@@ -198,7 +236,14 @@ body{
 <section class="panel"><div class="panel-head"><h2>Teslimat Bilgileri</h2><p>Siparişinizin gönderileceği bilgileri eksiksiz doldurun.</p></div><div class="form">
 <h3 class="section-title">Kişisel Bilgiler</h3><div class="row"><div class="field"><label>Ad Soyad</label><input id="name" autocomplete="name" placeholder="Adınız Soyadınız"></div><div class="field"><label>Telefon</label><input id="phone" autocomplete="tel" placeholder="05XX XXX XX XX"></div></div><div class="field"><label>E-posta</label><input id="email" type="email" autocomplete="email" placeholder="ornek@mail.com"></div>
 <h3 class="section-title" style="margin-top:25px">Teslimat Adresi</h3><div class="field"><label>Adres</label><input id="address" autocomplete="street-address" placeholder="Mahalle, sokak, bina ve daire no"></div><div class="row"><div class="field"><label>İl</label><input id="city" autocomplete="address-level2" placeholder="Ankara"></div><div class="field"><label>İlçe</label><input id="district" autocomplete="address-level3" placeholder="İlçe"></div></div>
-<h3 class="section-title" style="margin-top:25px">Kargo</h3><div class="delivery"><div class="choice active"><strong>Standart Kargo</strong><span>2–4 iş günü · 90 TL</span></div><div class="choice"><strong>Mağazadan Teslim</strong><span>Yakında aktif olacak</span></div></div>
+<h3 class="section-title" style="margin-top:25px">Teslimat</h3>
+<div class="free-shipping-box">
+  <div class="free-shipping-icon">✦</div>
+  <div>
+    <strong>Ücretsiz Kargo</strong>
+    <span>2–4 iş günü içerisinde adresinize güvenli teslimat.</span>
+  </div>
+</div>
 <div class="pay-note"><span class="shield">♢</span><span>Ödeme aşamasında kart bilgileriniz Neris tarafından saklanmaz. Gerçek kart ödemesi, güvenli ödeme sağlayıcısı üzerinden gerçekleştirilecektir.</span></div>
 </div></section>
 <aside class="panel summary"><div class="panel-head"><h2>Sipariş Özeti</h2><p>Seçtiğiniz ürün ve toplam tutar</p></div><div id="summaryContent" class="summary"></div></aside>
