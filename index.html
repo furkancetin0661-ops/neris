@@ -2208,7 +2208,7 @@ document.addEventListener("keydown", function(event) {
       if(!modal)return;
       premiumAlertCallback=null;
       document.getElementById('premiumAlertTitle').textContent=title||'Bilgilendirme';
-      document.getElementById('premiumAlertMessage').textContent=message||'';
+      document.getElementById('premiumAlertMessage').innerHTML=message||'';
       document.getElementById('premiumAlertActions').innerHTML='<button type="button" class="premium-alert-primary" onclick="closePremiumAlert()">TAMAM</button>';
       modal.classList.add('open');
       document.body.classList.add('modal-open');
@@ -2218,7 +2218,7 @@ document.addEventListener("keydown", function(event) {
       if(!modal)return;
       premiumAlertCallback=onConfirm||null;
       document.getElementById('premiumAlertTitle').textContent=title||'Devam Edelim mi?';
-      document.getElementById('premiumAlertMessage').textContent=message||'';
+      document.getElementById('premiumAlertMessage').innerHTML=message||'';
       document.getElementById('premiumAlertActions').innerHTML='<button type="button" class="premium-alert-secondary" onclick="closePremiumAlert()">VAZGEÇ</button><button type="button" class="premium-alert-primary" onclick="confirmPremiumAlert()">GİRİŞ YAP</button>';
       modal.classList.add('open');
       document.body.classList.add('modal-open');
