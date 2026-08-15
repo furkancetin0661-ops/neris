@@ -4323,8 +4323,12 @@ function closeMobileMenu() {
 
     import {
     getFirestore,
+    initializeFirestore,
+    persistentLocalCache,
+    persistentMultipleTabManager,
     collection,
     getDocs,
+    getDocsFromCache,
     doc,
     setDoc,
     deleteDoc,
@@ -4351,7 +4355,20 @@ import {
 
     const app = initializeApp(firebaseConfig);
 
-    const db = getFirestore(app);
+    // Firestore'un kalıcı yerel önbelleğini aç: ilk ziyaret sonrası ürünler
+    // ağ beklenmeden cihazdan okunabilir; Firebase arka planda güncellenir.
+    let db;
+    try {
+      db = initializeFirestore(app, {
+        localCache: persistentLocalCache({
+          tabManager: persistentMultipleTabManager()
+        })
+      });
+    } catch (e) {
+      // Aynı uygulama daha önce initialize edildiyse normal Firestore'a düş.
+      console.warn("Neris Firestore cache başlatılamadı, standart moda geçiliyor:", e);
+      db = getFirestore(app);
+    }
     const auth = getAuth(app);
     let authInitialized = false;
 
@@ -4448,8 +4465,22 @@ import {
       }
 
       try{
-        const querySnapshot = await getDocs(collection(db, "Ürünler"));
+        const productsRef = collection(db, "Ürünler");
 
+        // Firestore'un kalıcı cihaz önbelleğinden mümkün olan en erken anda oku.
+        // Ağ isteğini ayrıca başlatıyoruz; güncel veri geldiğinde ekrandaki liste yenilenir.
+        try{
+          const cacheSnap = await getDocsFromCache(productsRef);
+          if(!cacheSnap.empty){
+            const cachedProducts = [];
+            cacheSnap.forEach((docSnap)=>cachedProducts.push({...docSnap.data(),id:docSnap.id}));
+            renderProducts(cachedProducts);
+          }
+        }catch(cacheError){
+          // İlk ziyaret gibi durumlarda yerel Firestore cache'i henüz olmayabilir.
+        }
+
+        const querySnapshot = await getDocs(productsRef);
         if(querySnapshot.empty){
           return;
         }
