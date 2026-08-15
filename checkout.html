@@ -16,6 +16,177 @@ a{text-decoration:none;color:inherit}.top{height:78px;border-bottom:1px solid #2
 .delivery{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px}.choice{border:1px solid #303030;background:#090909;padding:15px;cursor:pointer;transition:.25s}.choice.active,.choice:hover{border-color:var(--gold);background:#111}.choice strong{display:block;font-size:12px}.choice span{display:block;color:#777;font-size:10px;margin-top:5px}.pay-note{display:flex;gap:10px;align-items:flex-start;padding:14px;border:1px solid #292929;background:#0a0a0a;color:#888;font-size:10px;line-height:1.7}.shield{color:var(--gold);font-size:16px}.summary{padding:25px;position:sticky;top:100px}.product{display:flex;gap:15px;padding-bottom:22px;border-bottom:1px solid #292929}.product img{width:90px;height:112px;object-fit:cover;background:#161616;border:1px solid #292929}.product-info{min-width:0}.product-name{font:600 17px 'Playfair Display',serif;margin:2px 0 8px}.product-meta{font-size:10px;color:#777}.price{font-size:14px;color:var(--gold);margin-top:12px}.totals{padding:20px 0}.line{display:flex;justify-content:space-between;font-size:12px;color:#999;margin:12px 0}.line.total{border-top:1px solid #292929;padding-top:18px;margin-top:18px;color:#fff;font-size:15px}.line.total strong{color:var(--gold);font-size:20px}.pay{width:100%;height:56px;border:1px solid var(--gold);background:linear-gradient(135deg,#d4af37,#a98516);color:#080808;font-weight:600;letter-spacing:1.7px;font-size:11px;cursor:pointer;transition:.3s}.pay:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(212,175,55,.18)}.pay:active{transform:scale(.98)}.secure{text-align:center;color:#666;font-size:9px;line-height:1.6;margin-top:12px}.empty{padding:35px;color:#888;text-align:center}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);display:grid;place-items:center;opacity:0;visibility:hidden;transition:.35s;z-index:50}.overlay.show{opacity:1;visibility:visible}.modal{width:min(440px,90%);background:#0d0d0d;border:1px solid #3a321e;box-shadow:0 25px 80px #000;padding:32px;text-align:center;transform:translateY(18px) scale(.97);transition:.35s}.overlay.show .modal{transform:none}.modal h3{font:600 25px 'Playfair Display',serif;margin:0 0 10px}.modal p{color:#888;font-size:11px;line-height:1.7}.modal button{margin-top:14px;padding:12px 25px;background:transparent;border:1px solid var(--gold);color:var(--gold);cursor:pointer}
 @media(max-width:800px){.top{height:68px;padding:0 20px}.logo{font-size:24px;letter-spacing:5px}.wrap{width:92%;margin-top:30px}.steps{transform:scale(.88);white-space:nowrap}.grid{grid-template-columns:1fr}.summary{position:static;order:-1}.row,.delivery{grid-template-columns:1fr}.panel-head,.form,.summary{padding:20px}.product img{width:76px;height:96px}.title{font-size:35px}.bar{width:25px;margin:0 7px}}
+
+
+/* NERIS CHECKOUT — LIVE SAYFA PREMIUM BEYAZ */
+html,body{
+  background:#f7f7f5!important;
+  color:#111!important;
+}
+body{
+  font-family:Poppins,Arial,Helvetica,sans-serif!important;
+}
+.top{
+  background:#fff!important;
+  border-bottom:1px solid #e7e4dc!important;
+}
+.top .logo,
+.logo{
+  color:#d4af37!important;
+  -webkit-text-fill-color:#d4af37!important;
+}
+.top .back{
+  color:#555!important;
+}
+.top .back:hover{color:#a27d18!important;}
+
+.wrap{background:#f7f7f5!important;}
+.title{
+  color:#111!important;
+  font-family:Georgia,"Times New Roman",serif!important;
+}
+.sub{color:#777!important;}
+.eyebrow{
+  color:#a27d18!important;
+  letter-spacing:4px!important;
+}
+.steps{color:#777!important;}
+.step.active{color:#111!important;}
+.step .dot{
+  background:#fff!important;
+  border-color:#d4af37!important;
+  color:#111!important;
+}
+.bar{background:#deddd8!important;}
+
+.grid{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:24px!important;
+}
+.grid > section.panel{
+  order:1!important;
+  width:100%!important;
+}
+.grid > aside.panel.summary{
+  order:2!important;
+  width:100%!important;
+  position:static!important;
+}
+
+.panel{
+  background:#fff!important;
+  color:#111!important;
+  border:1px solid #e5e3dd!important;
+  box-shadow:0 14px 40px rgba(0,0,0,.055)!important;
+}
+.panel-head{
+  background:#fff!important;
+  border-bottom:1px solid #e9e7e1!important;
+}
+.panel-head h2{
+  color:#111!important;
+  font-family:Georgia,"Times New Roman",serif!important;
+}
+.panel-head p{color:#777!important;}
+
+.section-title{
+  color:#a27d18!important;
+  border-bottom-color:#dedbd2!important;
+  letter-spacing:2px!important;
+}
+.field label{color:#555!important;}
+.field input,
+.field select{
+  background:#fff!important;
+  color:#111!important;
+  border:1px solid #d9d7d0!important;
+}
+.field input::placeholder{color:#999!important;}
+.field input:focus,
+.field select:focus{
+  border-color:#d4af37!important;
+  box-shadow:0 0 0 3px rgba(212,175,55,.10)!important;
+}
+
+.delivery{display:none!important;}
+
+.pay-note{
+  background:#fafaf8!important;
+  border:1px solid #e5e3dc!important;
+  color:#666!important;
+}
+.pay-note .shield{color:#b18a1b!important;}
+
+.summary .panel-head{
+  background:#fff!important;
+}
+.summary .product{
+  background:#fff!important;
+  border-color:#e7e5df!important;
+}
+.product img{
+  background:#f3f2ee!important;
+  border-color:#e1dfd8!important;
+}
+.product-name{
+  color:#111!important;
+  font-family:Georgia,"Times New Roman",serif!important;
+}
+.product-meta{color:#777!important;}
+.price{color:#a27d18!important;}
+
+.totals{background:#fff!important;}
+.line{
+  color:#666!important;
+  border-color:#e7e5df!important;
+}
+.line.total{
+  color:#111!important;
+  border-top-color:#dedbd3!important;
+}
+.line.total strong{color:#a27d18!important;}
+
+.pay,
+#payBtn{
+  background:#111!important;
+  color:#fff!important;
+  border:1px solid #111!important;
+}
+.pay:hover,
+#payBtn:hover{
+  background:#292929!important;
+}
+.secure{color:#777!important;}
+
+.overlay{
+  background:rgba(255,255,255,.78)!important;
+}
+.modal{
+  background:#fff!important;
+  color:#111!important;
+  border:1px solid #e1d6b7!important;
+  box-shadow:0 25px 70px rgba(0,0,0,.16)!important;
+}
+.modal h3{color:#111!important;}
+.modal p{color:#666!important;}
+
+@media(max-width:800px){
+  .grid{
+    display:flex!important;
+    flex-direction:column!important;
+  }
+  .grid > section.panel{order:1!important;}
+  .grid > aside.panel.summary{
+    order:2!important;
+    position:static!important;
+  }
+  .top .logo{
+    color:#d4af37!important;
+    -webkit-text-fill-color:#d4af37!important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -37,9 +208,9 @@ a{text-decoration:none;color:inherit}.top{height:78px;border-bottom:1px solid #2
 const q=new URLSearchParams(location.search);
 const product={name:q.get('product')||'Siyah Elbise',price:Number((q.get('price')||'2399').replace(/[^0-9.,]/g,'').replace(/\./g,'').replace(',','.'))||2399,image:q.get('image')||'',shopier:q.get('shopier')||'https://www.shopier.com/nerisbutik_/49854673',id:q.get('id')||''};
 const fmt=n=>new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY',maximumFractionDigits:2}).format(n);
-const shipping=90,total=product.price+shipping;
+const shipping=0,total=product.price;
 const sc=document.getElementById('summaryContent');
-sc.innerHTML=`<div class="product"><img src="${product.image||'https://picsum.photos/200/260'}" alt=""><div class="product-info"><div class="product-name">${escapeHtml(product.name)}</div><div class="product-meta">1 ürün · Neris</div><div class="price">${fmt(product.price)}</div></div></div><div class="totals"><div class="line"><span>Ürün</span><span>${fmt(product.price)}</span></div><div class="line"><span>Kargo</span><span>${fmt(shipping)}</span></div><div class="line total"><span>Ödenecek Tutar</span><strong>${fmt(total)}</strong></div></div><button class="pay" id="payBtn">ÖDEMEYE GEÇ</button><div class="secure">⌁ Güvenli ödeme · Kart bilgileriniz Neris üzerinde tutulmaz.</div>`;
+sc.innerHTML=`<div class="product"><img src="${product.image||'https://picsum.photos/200/260'}" alt=""><div class="product-info"><div class="product-name">${escapeHtml(product.name)}</div><div class="product-meta">1 ürün · Neris</div><div class="price">${fmt(product.price)}</div></div></div><div class="totals"><div class="line"><span>Ürün</span><span>${fmt(product.price)}</span></div><div class="line"><span>Kargo</span><span>Ücretsiz</span></div><div class="line total"><span>Ödenecek Tutar</span><strong>${fmt(total)}</strong></div></div><button class="pay" id="payBtn">ÖDEMEYE GEÇ</button><div class="secure">⌁ Güvenli ödeme · Kart bilgileriniz Neris üzerinde tutulmaz.</div>`;
 function escapeHtml(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 function closeModal(){document.getElementById('overlay').classList.remove('show')}
 document.querySelectorAll('.choice').forEach(c=>c.addEventListener('click',()=>{document.querySelectorAll('.choice').forEach(x=>x.classList.remove('active'));c.classList.add('active')}));
