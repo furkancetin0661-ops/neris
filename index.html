@@ -426,7 +426,166 @@ button,input,textarea{font:inherit}
   .info-close:hover{transform:rotate(90deg);color:#d4af37;border-color:rgba(212,175,55,.55)}
   .info-form{display:grid;gap:10px;margin-top:20px}.info-form input,.info-form textarea{width:100%;padding:12px;background:#080808;border:1px solid #333;color:#fff;font-family:Poppins,sans-serif;outline:none}.info-form textarea{min-height:110px;resize:vertical}.info-form button{padding:12px;border:1px solid #d4af37;background:#d4af37;color:#000;font-weight:600;cursor:pointer}
   .premium-info-form{width:100%;max-width:560px;margin:28px auto 0;text-align:left;animation:infoForm .55s ease .14s both}.premium-info-form .form-label{margin:0 0 7px;color:#d4af37;font-size:10px;letter-spacing:2px}.premium-info-form input,.premium-info-form textarea{width:100%;box-sizing:border-box;background:#080808;color:#fff;border:1px solid rgba(255,255,255,.16);padding:15px 16px;margin-bottom:18px;font-family:Poppins,sans-serif;font-size:14px;outline:none;transition:border-color .25s ease,box-shadow .25s ease,transform .25s ease}.premium-info-form textarea{resize:vertical;min-height:125px}.premium-info-form input:focus,.premium-info-form textarea:focus{border-color:#d4af37;box-shadow:0 0 0 3px rgba(212,175,55,.07);transform:translateY(-1px)}.premium-info-form button{width:100%;min-height:52px;border:1px solid #d4af37;background:#d4af37;color:#080808;font-weight:700;letter-spacing:1px;cursor:pointer;transition:transform .25s ease,box-shadow .25s ease}.premium-info-form button:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(212,175,55,.18)}
-  .form-note{text-align:center;margin-top:13px;color:#666;font-size:11px;line-height:1.7}.favorites-empty{text-align:center;padding:30px 10px 15px}.favorites-icon{font-family:Georgia,serif;font-size:52px;color:#d4af37;margin-bottom:12px}.favorites-empty h3{font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:#fff;margin:0 0 10px}.favorites-empty p{max-width:430px;margin:0 auto 24px;color:#777;font-size:13px;line-height:1.8}.favorites-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:24px}.favorite-mini-card{background:#101010;border:1px solid rgba(212,175,55,.16);overflow:hidden;transition:transform .3s ease,border-color .3s ease}.favorite-mini-card:hover{transform:translateY(-4px);border-color:rgba(212,175,55,.48)}.favorite-mini-card img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover}.favorite-mini-info{padding:12px}.favorite-mini-info h3{margin:0 0 6px;color:#fff;font-size:13px;font-weight:500}.favorite-mini-info p{margin:0;color:#d4af37;font-size:12px}
+  .form-note{text-align:center;margin-top:13px;color:#666;font-size:11px;line-height:1.7}
+  /* NERIS — BEYAZ / MİNİMAL PREMIUM İLETİŞİM MODALI */
+  .info-box.contact-mode{
+    width:min(760px,100%);
+    max-height:min(90vh,900px);
+    background:#fff;
+    color:#171717;
+    border:1px solid #e8e8e8;
+    box-shadow:0 35px 100px rgba(0,0,0,.28);
+    padding:48px 54px 46px;
+  }
+  .info-box.contact-mode::before{
+    left:18%;
+    right:18%;
+    background:linear-gradient(90deg,transparent,#d4af37,transparent);
+  }
+  .info-box.contact-mode h2{
+    color:#171717;
+    font-family:'Playfair Display',serif;
+    font-size:36px;
+    font-weight:500;
+    letter-spacing:.2px;
+    margin:0 0 10px;
+  }
+  .info-box.contact-mode .info-description{
+    color:#737373;
+    font-size:13px;
+    line-height:1.8;
+    text-align:center;
+  }
+  .info-box.contact-mode .info-description > p{
+    max-width:600px;
+    margin:0 auto;
+  }
+  .contact-brand{
+    width:max-content;
+    margin:0 auto 16px;
+    padding-top:13px;
+    border-top:1px solid #d4af37;
+    color:#c59f2c;
+    font-family:Poppins,sans-serif;
+    font-size:9px;
+    font-weight:600;
+    letter-spacing:5px;
+    line-height:1;
+  }
+  .info-box.contact-mode .premium-info-form{
+    max-width:560px;
+    margin:30px auto 0;
+  }
+  .info-box.contact-mode .premium-info-form .form-label{
+    margin:0 0 7px;
+    color:#b18b1e;
+    font-size:9px;
+    font-weight:600;
+    letter-spacing:2.2px;
+  }
+  .info-box.contact-mode .premium-info-form input,
+  .info-box.contact-mode .premium-info-form textarea{
+    background:#fff;
+    color:#222;
+    border:1px solid #dedede;
+    border-radius:0;
+    padding:14px 15px;
+    margin-bottom:19px;
+    font-family:Poppins,sans-serif;
+    font-size:13px;
+    box-shadow:none;
+  }
+  .info-box.contact-mode .premium-info-form input::placeholder,
+  .info-box.contact-mode .premium-info-form textarea::placeholder{
+    color:#a2a2a2;
+    opacity:1;
+  }
+  .info-box.contact-mode .premium-info-form input:focus,
+  .info-box.contact-mode .premium-info-form textarea:focus{
+    border-color:#d4af37;
+    box-shadow:0 0 0 3px rgba(212,175,55,.08);
+    transform:none;
+  }
+  .info-box.contact-mode .premium-info-form textarea{
+    min-height:125px;
+  }
+  .info-box.contact-mode .premium-info-form button{
+    min-height:52px;
+    margin-top:1px;
+    border:1px solid #d4af37;
+    border-radius:0;
+    background:#d4af37;
+    color:#111;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:1.7px;
+    box-shadow:none;
+  }
+  .info-box.contact-mode .premium-info-form button:hover{
+    background:#c9a329;
+    color:#111;
+    transform:translateY(-2px);
+    box-shadow:0 10px 26px rgba(212,175,55,.18);
+  }
+  .info-box.contact-mode .info-close{
+    top:15px;
+    right:17px;
+    width:38px;
+    height:38px;
+    background:#fff;
+    color:#222;
+    border:1px solid #e3e3e3;
+  }
+  .info-box.contact-mode .info-close:hover{
+    color:#111;
+    background:#fafafa;
+    border-color:#d4af37;
+    transform:rotate(90deg);
+  }
+
+  @media(max-width:768px){
+    .info-box.contact-mode{
+      width:100%;
+      height:100dvh;
+      max-height:100dvh;
+      padding:58px 22px 34px;
+      border:0;
+      background:#fff;
+    }
+    .info-box.contact-mode h2{
+      font-size:30px;
+      padding:0;
+      margin-bottom:10px;
+    }
+    .info-box.contact-mode .info-description{
+      font-size:12px;
+      line-height:1.75;
+    }
+    .contact-brand{
+      margin-bottom:14px;
+      font-size:8px;
+      letter-spacing:4px;
+    }
+    .info-box.contact-mode .premium-info-form{
+      margin-top:25px;
+    }
+    .info-box.contact-mode .premium-info-form input,
+    .info-box.contact-mode .premium-info-form textarea{
+      padding:14px;
+      margin-bottom:17px;
+      font-size:13px;
+    }
+    .info-box.contact-mode .premium-info-form textarea{
+      min-height:115px;
+    }
+    .info-box.contact-mode .info-close{
+      top:13px;
+      right:13px;
+      width:40px;
+      height:40px;
+    }
+  }
+.favorites-empty{text-align:center;padding:30px 10px 15px}.favorites-icon{font-family:Georgia,serif;font-size:52px;color:#d4af37;margin-bottom:12px}.favorites-empty h3{font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:#fff;margin:0 0 10px}.favorites-empty p{max-width:430px;margin:0 auto 24px;color:#777;font-size:13px;line-height:1.8}.favorites-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:24px}.favorite-mini-card{background:#101010;border:1px solid rgba(212,175,55,.16);overflow:hidden;transition:transform .3s ease,border-color .3s ease}.favorite-mini-card:hover{transform:translateY(-4px);border-color:rgba(212,175,55,.48)}.favorite-mini-card img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover}.favorite-mini-info{padding:12px}.favorite-mini-info h3{margin:0 0 6px;color:#fff;font-size:13px;font-weight:500}.favorite-mini-info p{margin:0;color:#d4af37;font-size:12px}
   .login-required{max-width:420px;margin:20px auto 5px;text-align:center;padding:28px 22px;border:1px solid rgba(212,175,55,.18);background:#0b0b0b}.login-required-icon{font-family:Georgia,serif;font-size:42px;color:#d4af37;margin-bottom:10px}.login-required h3{font-family:'Playfair Display',serif;font-weight:500;margin:0 0 8px;color:#fff}.login-required p{margin:0 0 20px;color:#777;font-size:13px;line-height:1.7}.login-required-actions{display:flex;gap:10px;justify-content:center}.login-required-actions a,.login-required-actions button{min-height:44px;padding:0 22px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-size:11px;font-weight:600;letter-spacing:1px;cursor:pointer}.login-required-actions a{background:#d4af37;color:#080808}.login-required-actions button{background:transparent;color:#aaa;border:1px solid #333}
   @keyframes infoTitle{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}@keyframes infoContent{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}@keyframes infoForm{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}body.modal-open{overflow:hidden!important}
 /* MOBILE MENU */
@@ -2568,8 +2727,6 @@ RIS ANA SAYFA GİRİŞ ANİMASYONU -->
       <a href="#" onclick="openInfo('story');return false;">HİKAYEMİZ</a>
       <span class="topbar-separator"></span>
       <a href="#" onclick="openInfo('tracking');return false;">SİPARİŞ TAKİP</a>
-      <span class="topbar-separator"></span>
-      <a href="#" class="optional-link" onclick="openInfo('contact');return false;">BİZE ULAŞIN</a>
     </div>
 
     <div class="topbar-right">
@@ -3696,7 +3853,7 @@ preinfo: {
         },
         contact: {
           title:'Bize Ulaşın',
-          body:'<p>Neris hakkında bilgi, sipariş desteği veya iş birliği talepleriniz için bize ulaşabilirsiniz.</p>',
+          body:'<div class="contact-brand">NERIS</div><p>Neris hakkında bilgi, sipariş desteği veya iş birliği talepleriniz için bize ulaşabilirsiniz.</p>',
           form:`<div class="premium-info-form"><div class="form-label">AD SOYAD</div><input id="contactName" type="text" placeholder="Ad Soyad" autocomplete="name"><div class="form-label">E-POSTA</div><input id="contactEmail" type="email" placeholder="ornek@mail.com" autocomplete="email"><div class="form-label">MESAJ</div><textarea id="contactMessage" placeholder="Mesajınızı yazın..." rows="5"></textarea><button type="button" onclick="sendContactMessage()">MESAJ GÖNDER</button></div>`
         },
         login: {
@@ -3715,6 +3872,8 @@ preinfo: {
       };
       const item = data[type] || data.story;
       content.innerHTML = '<h2>'+item.title+'</h2><div class="info-description">'+item.body+'</div>' + (item.form || '');
+      const infoBox = document.querySelector('#infoModal .info-box');
+      if(infoBox) infoBox.classList.toggle('contact-mode', type === 'contact');
       document.getElementById('infoModal').classList.add('open');
       document.body.classList.add('modal-open');
       if(type === 'favorites' && typeof window.loadFavoritesModal === 'function'){ window.loadFavoritesModal(); }
@@ -3729,6 +3888,8 @@ preinfo: {
     const modal = document.getElementById("infoModal");
     if (modal && modal.classList.contains("open")) {
         modal.classList.remove("open");
+        const infoBox = document.querySelector('#infoModal .info-box');
+        if(infoBox) infoBox.classList.remove('contact-mode');
         document.body.classList.remove("modal-open");
     }
 });
@@ -4391,7 +4552,9 @@ window.toggleProductDetailFavorite=toggleProductDetailFavorite;
 
 function closeInfo(){
   const modal=document.getElementById('infoModal');
+  const infoBox=document.querySelector('#infoModal .info-box');
   if(modal)modal.classList.remove('open');
+  if(infoBox)infoBox.classList.remove('contact-mode');
   document.body.classList.remove('modal-open');
   if(location.hash==='#info')history.replaceState(null,'',location.pathname+location.search);
 }
