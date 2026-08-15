@@ -24,6 +24,11 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
+  <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js">
+  <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js">
+  <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js">
+
+
   <style>
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;width:100%;overflow-x:hidden}
@@ -77,6 +82,34 @@ button,input,textarea{font:inherit}
 .benefit-icon{width:46px;height:46px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;border:1px solid #d4af37;border-radius:50%;color:#d4af37;font-size:20px}
 .benefit h3{margin:0 0 10px;color:#fff;font-family:'Playfair Display',serif;font-size:18px;font-weight:500}
 .benefit p{margin:0;color:#999;font-size:13px;line-height:1.6}
+
+
+/* FAST PRODUCT FIRST PAINT */
+#productsGrid{min-height:390px}
+.product-skeleton{background:#111;border:1px solid rgba(255,255,255,.06);overflow:hidden}
+.product-skeleton .skeleton-image{
+  height:390px;
+  background:linear-gradient(100deg,#111 30%,#1b1b1b 45%,#111 60%);
+  background-size:220% 100%;
+  animation:nerisSkeleton 1.15s ease-in-out infinite;
+}
+.product-skeleton .skeleton-line{
+  height:12px;
+  margin-left:20px;
+  background:#1b1b1b;
+  border-radius:2px;
+  animation:nerisSkeleton 1.15s ease-in-out infinite;
+}
+.product-skeleton .skeleton-title{width:58%;margin-top:22px}
+.product-skeleton .skeleton-price{width:28%;margin-top:12px;margin-bottom:20px}
+@keyframes nerisSkeleton{0%{background-position:120% 0}100%{background-position:-80% 0}}
+@media(max-width:768px){
+  #productsGrid{min-height:520px}
+  .product-skeleton .skeleton-image{height:260px}
+  .product-skeleton .skeleton-line{margin-left:12px}
+  .product-skeleton .skeleton-title{margin-top:14px}
+  .product-skeleton .skeleton-price{margin-bottom:14px}
+}
 
 /* PRODUCTS */
 .products{max-width:1280px;margin:0 auto;padding:80px 35px}
@@ -2534,8 +2567,10 @@ document.addEventListener("keydown", function(event) {
     </div>
 
     <div class="grid" id="productsGrid">
-
-      
+      <div class="product-skeleton"><div class="skeleton-image"></div><div class="skeleton-line skeleton-title"></div><div class="skeleton-line skeleton-price"></div></div>
+      <div class="product-skeleton"><div class="skeleton-image"></div><div class="skeleton-line skeleton-title"></div><div class="skeleton-line skeleton-price"></div></div>
+      <div class="product-skeleton"><div class="skeleton-image"></div><div class="skeleton-line skeleton-title"></div><div class="skeleton-line skeleton-price"></div></div>
+      <div class="product-skeleton"><div class="skeleton-image"></div><div class="skeleton-line skeleton-title"></div><div class="skeleton-line skeleton-price"></div></div>
     </div>
 
   </section>
@@ -4334,95 +4369,120 @@ import {
       .catch((error) => console.warn("Neris Auth persistence:", error));
 
 
-    async function loadProducts(){
+    function renderProducts(products){
+      const container = document.getElementById("productsGrid");
+      if(!container) return;
 
-      try{
+      container.innerHTML = "";
 
-const querySnapshot =
-    await getDocs(collection(db, "Ürünler"));
+      products.forEach((p,index)=>{
+        const card = document.createElement("div");
+        card.className = "card";
 
-        const container =
-          document.getElementById("productsGrid");
+        const price = Number(
+          String(p.fiyat || "0")
+            .replace(/[^0-9.,-]/g,'')
+            .replace(/\.(?=.*\.)/g,'')
+            .replace(',','.')
+        );
 
+        card.innerHTML = `
+          <div class="card-image">
+            <div class="badge">${p.rozet || "NEW"}</div>
+            <img
+              src="${p.resim || 'https://picsum.photos/500/650'}"
+              alt="${p.reklam || 'Neris Ürün'}"
+              ${index < 4 ? 'fetchpriority="high"' : 'loading="lazy"'}
+              decoding="async"
+            >
+          </div>
+          <div class="card-content">
+            <h3>${p.reklam || "Ürün"}</h3>
+            <div class="card-stock">* Bu ürünün seçenekleri mevcut</div>
+            <p class="product-price">
+              <span class="price-value">${price.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
+              <span class="price-currency">TL</span>
+            </p>
+          </div>
+        `;
 
-        if(querySnapshot.empty){
+        container.appendChild(card);
 
-          return;
+        const productImage = card.querySelector(".card-image img");
+        if(productImage){
+          productImage.style.cursor = "pointer";
+          productImage.setAttribute("tabindex","0");
+          productImage.setAttribute("role","button");
+          productImage.setAttribute("aria-label",`${p.reklam || "Ürün"} detaylarını aç`);
 
+          productImage.addEventListener("click",function(){
+            if(typeof window.openProductDetail === "function"){
+              window.openProductDetail(p);
+            }
+          });
+
+          productImage.addEventListener("keydown",function(event){
+            if((event.key==="Enter" || event.key===" ") &&
+               typeof window.openProductDetail === "function"){
+              event.preventDefault();
+              window.openProductDetail(p);
+            }
+          });
         }
+      });
+    }
 
+    async function loadProducts(){
+      const CACHE_KEY = "nerisProductsCacheV2";
+      const CACHE_TTL = 10 * 60 * 1000; // 10 dakika
 
-        container.innerHTML = "";
-
-
-        querySnapshot.forEach((doc)=>{
-
-          const p = {
-    ...doc.data(),
-    id: doc.id
-};
-
-
-          const card = document.createElement("div");
-
-          card.className = "card";
-
-
-          card.innerHTML = `
-
-            
-
-            <div class="card-image">
-
-    <div class="badge">${p.rozet || "NEW"}</div>
-
-    <img
-        src="${p.resim || 'https://picsum.photos/500/650'}"
-        alt="${p.reklam || 'Neris Ürün'}"
-    >
-
-</div>
-
-<div class="card-content">
-
-    <h3>${p.reklam || "Ürün"}</h3>
-    <div class="card-stock">* Bu ürünün seçenekleri mevcut</div>
-    <p class="product-price"><span class="price-value">${Number(String(p.fiyat || "0").replace(/[^0-9.,-]/g, '').replace(/\.(?=.*\.)/g,'').replace(',','.')).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})}</span><span class="price-currency">TL</span></p>
-
-</div>
-          `;
-
-
-          container.appendChild(card);
-
-          /* Ürün görseli -> premium ürün detay penceresi */
-          const productImage = card.querySelector(".card-image img");
-          if (productImage) {
-            productImage.style.cursor = "pointer";
-            productImage.setAttribute("tabindex", "0");
-            productImage.setAttribute("role", "button");
-            productImage.setAttribute("aria-label", `${p.reklam || "Ürün"} detaylarını aç`);
-            productImage.addEventListener("click", function () {
-              if (typeof window.openProductDetail === "function") window.openProductDetail(p);
-            });
-            productImage.addEventListener("keydown", function (event) {
-              if ((event.key === "Enter" || event.key === " ") &&
-                  typeof window.openProductDetail === "function") {
-                event.preventDefault();
-                window.openProductDetail(p);
-              }
-            });
-          }
-
-        });
-
-
+      // Önce cihazdaki son ürün listesini anında göster.
+      // Böylece Firebase cevap verene kadar sayfa boş kalmaz.
+      try{
+        const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
+        if(cached && Array.isArray(cached.products) && cached.products.length){
+          renderProducts(cached.products);
+        }
       }catch(error){
-
-        console.error("Ürünler yüklenirken hata:",error);
-
+        console.warn("Neris ürün önbelleği okunamadı:",error);
       }
 
+      try{
+        const querySnapshot = await getDocs(collection(db, "Ürünler"));
+
+        if(querySnapshot.empty){
+          return;
+        }
+
+        const products = [];
+        querySnapshot.forEach((docSnap)=>{
+          products.push({
+            ...docSnap.data(),
+            id: docSnap.id
+          });
+        });
+
+        // Firebase'den güncel liste gelir gelmez ekrandaki cache'i yenile.
+        renderProducts(products);
+
+        try{
+          localStorage.setItem(CACHE_KEY,JSON.stringify({
+            savedAt:Date.now(),
+            products
+          }));
+        }catch(error){
+          console.warn("Neris ürün önbelleği kaydedilemedi:",error);
+        }
+
+      }catch(error){
+        console.error("Ürünler yüklenirken hata:",error);
+
+        // Firebase geçici olarak cevap vermezse eski cache ekranda kalır.
+        const container=document.getElementById("productsGrid");
+        if(container && !container.querySelector(".card")){
+          container.innerHTML="";
+        }
+      }
     }
 
     // Ürünlerin tamamı Firebase / Firestore'daki "Ürünler" koleksiyonundan gelir.
