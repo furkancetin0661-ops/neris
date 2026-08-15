@@ -2079,7 +2079,7 @@ document.addEventListener("keydown", function(event) {
           <div class="product-detail-divider"></div>
           <div class="product-detail-label">
             <span>BEDEN</span>
-            <button class="product-size-guide" type="button" onclick="showSizeGuide()">Beden rehberi</button>
+            <button class="product-size-guide" id="productSizeGuideBtn" type="button" aria-label="Beden rehberini aç">Beden rehberi</button>
           </div>
           <div class="product-size-options" id="productSizeOptions">
             <button class="product-size-btn" type="button" data-size="38">38</button>
@@ -3835,6 +3835,33 @@ onAuthStateChanged(auth,function(user){
     window.loadFavoritesModal();
   }
 });
+</script>
+
+<script>
+(function(){
+  function openNerisSizeGuide(){
+    const modal=document.getElementById('premiumAlert');
+    const title=document.getElementById('premiumAlertTitle');
+    const message=document.getElementById('premiumAlertMessage');
+    const actions=document.getElementById('premiumAlertActions');
+    if(!modal||!title||!message||!actions) return;
+    title.textContent='Beden Bilgisi';
+    message.innerHTML='<div class="premium-size-guide"><p class="premium-size-guide-note">Balerin Yaka Şifon Elbise için önerilen vücut ölçüleri:</p><div class="premium-size-table-wrap"><table class="premium-size-table"><thead><tr><th>Beden</th><th>Göğüs</th><th>Bel</th><th>Basen</th></tr></thead><tbody><tr><td>38</td><td>88–92 cm</td><td>70–74 cm</td><td>94–98 cm</td></tr><tr><td>40</td><td>92–96 cm</td><td>74–78 cm</td><td>98–102 cm</td></tr><tr><td>42</td><td>96–100 cm</td><td>78–82 cm</td><td>102–106 cm</td></tr><tr><td>44</td><td>100–104 cm</td><td>82–86 cm</td><td>106–110 cm</td></tr><tr><td>46</td><td>104–108 cm</td><td>86–90 cm</td><td>110–114 cm</td></tr></tbody></table></div><p class="premium-size-guide-note bottom">Ölçüler yaklaşık vücut ölçüleridir. Elbisenin kalıbı ve kumaş yapısına göre küçük farklılıklar olabilir.</p></div>';
+    actions.innerHTML='<button type="button" class="premium-alert-primary" id="nerisSizeGuideClose">TAMAM</button>';
+    modal.classList.add('open');
+    document.body.classList.add('modal-open');
+    document.getElementById('nerisSizeGuideClose').onclick=function(){
+      modal.classList.remove('open');
+      document.body.classList.remove('modal-open');
+    };
+  }
+  function bind(){
+    const btn=document.getElementById('productSizeGuideBtn');
+    if(btn){ btn.onclick=openNerisSizeGuide; }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bind); else bind();
+  window.openNerisSizeGuide=openNerisSizeGuide;
+})();
 </script>
 </body>
 </html>
