@@ -164,7 +164,7 @@ button,input,textarea{font:inherit}
 }
 .footer-payment-badge.mastercard{
   min-width:92px;
-  padding:0 10px;
+  padding:0 7px;
 }
 .footer-payment-logo{
   display:block;
@@ -175,7 +175,7 @@ button,input,textarea{font:inherit}
   width:56px;
 }
 .footer-payment-logo.mastercard-logo{
-  width:108px;
+  width:92px;
 }
 .footer-iyzico-logo{
   display:block;
@@ -1269,10 +1269,11 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
   height:100%;
   min-height:0;
   max-height:none;
-  object-fit:cover;
+  object-fit:contain;
+  object-position:center center;
   display:block;
   will-change:transform,opacity;
-  transition:opacity .24s ease,transform .34s cubic-bezier(.22,.61,.36,1);
+  transition:opacity .18s ease,transform .22s cubic-bezier(.22,.61,.36,1);
 }
 .product-detail-media img.gallery-slide-out-left{
   opacity:0;
@@ -1408,7 +1409,7 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
   .product-detail-layout{display:flex;flex-direction:column;min-height:0;height:auto;overflow:visible;position:relative}
   .product-detail-media{position:relative;inset:auto;width:100%;height:52dvh;min-height:360px;flex:none;background:#111;overflow:hidden}
   .product-detail-media::after{background:linear-gradient(0deg,rgba(0,0,0,.18),transparent 45%);}
-  .product-detail-media img{width:100%;height:100%;min-height:0;max-height:none;object-fit:cover;object-position:center center}
+  .product-detail-media img{width:100%;height:100%;min-height:0;max-height:none;object-fit:contain;object-position:center center}
   .product-detail-info{position:relative;left:auto;right:auto;top:auto;bottom:auto;width:100%;min-height:0;padding:28px 22px 30px;background:#090909;color:#fff;display:block;overflow:visible}
   .product-detail-kicker{font-size:10px;letter-spacing:4px;margin-bottom:10px}
   .product-detail-title{font-size:29px;line-height:1.15;margin:0 0 8px}
@@ -1896,11 +1897,11 @@ document.addEventListener("keydown", function(event) {
         <div class="footer-payment-badges">
             <span class="footer-payment-badge visa" aria-label="VISA">
                 <svg class="footer-payment-logo visa-logo" viewBox="0 0 80 28" role="img" aria-hidden="true">
-                    <text x="2" y="22" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="900" font-style="italic" letter-spacing="-1">VISA</text>
+                    <text x="2" y="22" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="900" font-style="italic" letter-spacing="-1" fill="#1a5fb4">VISA</text>
                 </svg>
             </span>
             <span class="footer-payment-badge mastercard" aria-label="Mastercard">
-                <svg class="footer-payment-logo mastercard-logo" viewBox="0 0 140 32" role="img" aria-hidden="true">
+                <svg class="footer-payment-logo mastercard-logo" viewBox="0 0 120 32" role="img" aria-hidden="true">
                     <circle cx="22" cy="16" r="12" fill="#eb001b"/>
                     <circle cx="36" cy="16" r="12" fill="#f79e1b"/>
                     <text x="52" y="20" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="700" fill="#fff">Mastercard</text>
@@ -2785,26 +2786,29 @@ function changeProductImage(direction){
   if(!image) return;
 
   const nextIndex=(nerisProductImageIndex+direction+nerisProductImages.length)%nerisProductImages.length;
-  const outClass=direction>0?'gallery-slide-out-left':'gallery-slide-out-right';
   const inClass=direction>0?'gallery-slide-in-left':'gallery-slide-in-right';
 
   nerisGalleryAnimating=true;
-  image.classList.remove('gallery-slide-in-left','gallery-slide-in-right');
+  image.classList.remove(
+    'gallery-slide-out-left',
+    'gallery-slide-out-right',
+    'gallery-slide-in-left',
+    'gallery-slide-in-right'
+  );
+
+  // Yeni görseli hemen değiştir; eski görselin 240 ms beklemesi kaldırıldı.
+  nerisProductImageIndex=nextIndex;
+  image.src=nerisProductImages[nerisProductImageIndex];
+  renderProductGallery();
+
+  // Sadece yeni görsele kısa ve temiz bir giriş animasyonu uygula.
   void image.offsetWidth;
-  image.classList.add(outClass);
+  image.classList.add(inClass);
 
   window.setTimeout(()=>{
-    nerisProductImageIndex=nextIndex;
-    image.src=nerisProductImages[nerisProductImageIndex];
-    image.classList.remove('gallery-slide-out-left','gallery-slide-out-right');
-    image.classList.add(inClass);
-    renderProductGallery();
-
-    window.setTimeout(()=>{
-      image.classList.remove('gallery-slide-in-left','gallery-slide-in-right');
-      nerisGalleryAnimating=false;
-    },360);
-  },240);
+    image.classList.remove('gallery-slide-in-left','gallery-slide-in-right');
+    nerisGalleryAnimating=false;
+  },230);
 }
 window.changeProductImage=changeProductImage;
 
@@ -2829,7 +2833,9 @@ function openProductDetail(product){
   image.alt=name;
   renderProductGallery();
   title.textContent=name;
-  price.textContent=(product.fiyat||'0')+' ₺';
+  const rawPrice=String(product.fiyat||'0').replace(/[^0-9,.-]/g,'').replace(',', '.');
+  const numericPrice=Number.parseFloat(rawPrice)||0;
+  price.textContent=numericPrice.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})+' TL';
   if(quantity) quantity.textContent='1';
   clearProductInlineAlert();
   document.querySelectorAll('#productSizeOptions .product-size-btn').forEach(btn=>btn.classList.remove('selected'));
