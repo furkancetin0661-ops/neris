@@ -1357,7 +1357,7 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
   object-position:center center;
   display:block;
   will-change:transform,opacity;
-  transition:opacity .18s ease,transform .22s cubic-bezier(.22,.61,.36,1);
+  transition:opacity .14s ease,transform .18s cubic-bezier(.22,.61,.36,1);
 }
 .product-detail-media img.gallery-slide-out-left{
   opacity:0;
@@ -1368,10 +1368,10 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
   transform:translateX(34px);
 }
 .product-detail-media img.gallery-slide-in-left{
-  animation:gallerySlideInLeft .34s cubic-bezier(.22,.61,.36,1) both;
+  animation:gallerySlideInLeft .22s cubic-bezier(.22,.61,.36,1) both;
 }
 .product-detail-media img.gallery-slide-in-right{
-  animation:gallerySlideInRight .34s cubic-bezier(.22,.61,.36,1) both;
+  animation:gallerySlideInRight .22s cubic-bezier(.22,.61,.36,1) both;
 }
 @keyframes gallerySlideInLeft{
   from{opacity:0;transform:translateX(34px)}
@@ -3726,6 +3726,17 @@ function getProductImages(product){
   return [...new Set(candidates.map(v=>String(v||'').trim()).filter(Boolean))].slice(0,2);
 }
 
+function preloadNerisProductImages(images){
+  return Promise.all(images.map(src => new Promise(resolve => {
+    if(!src) return resolve();
+    const probe = new Image();
+    probe.decoding = 'async';
+    probe.onload = () => resolve();
+    probe.onerror = () => resolve();
+    probe.src = src;
+  })));
+}
+
 function renderProductGallery(){
   const image=document.getElementById('productDetailImage');
   const prev=document.getElementById('productGalleryPrev');
@@ -3734,26 +3745,42 @@ function renderProductGallery(){
   if(!image) return;
   const total=nerisProductImages.length;
   if(!total) return;
+
   nerisProductImageIndex=Math.max(0,Math.min(nerisProductImageIndex,total-1));
-  image.src=nerisProductImages[nerisProductImageIndex];
+
   if(prev) prev.classList.toggle('hidden',total<2);
   if(next) next.classList.toggle('hidden',total<2);
+
   if(dots){
-    dots.innerHTML=total>1?nerisProductImages.map((_,i)=>`<span class="product-gallery-dot ${i===nerisProductImageIndex?'active':''}"></span>`).join(''):'';
+    dots.innerHTML=total>1
+      ?nerisProductImages.map((_,i)=>`<span class="product-gallery-dot ${i===nerisProductImageIndex?'active':''}"></span>`).join('')
+      :'';
   }
+
+  const currentSrc=nerisProductImages[nerisProductImageIndex];
+  if(currentSrc && image.src !== currentSrc) image.src=currentSrc;
+
+  const media=document.getElementById('productDetailMedia');
+  if(media && currentSrc) media.style.setProperty('--product-media-bg', `url("${currentSrc}")`);
 }
 
 let nerisGalleryAnimating=false;
 
-function changeProductImage(direction){
+async function changeProductImage(direction){
   if(nerisProductImages.length<2 || nerisGalleryAnimating) return;
+
   const image=document.getElementById('productDetailImage');
   if(!image) return;
 
   const nextIndex=(nerisProductImageIndex+direction+nerisProductImages.length)%nerisProductImages.length;
+  const nextSrc=nerisProductImages[nextIndex];
   const inClass=direction>0?'gallery-slide-in-left':'gallery-slide-in-right';
 
   nerisGalleryAnimating=true;
+
+  // Görsel hazır olmadan animasyonu başlatma: beyazlama/takılma engellenir.
+  await preloadNerisProductImages([nextSrc]);
+
   image.classList.remove(
     'gallery-slide-out-left',
     'gallery-slide-out-right',
@@ -3761,16 +3788,19 @@ function changeProductImage(direction){
     'gallery-slide-in-right'
   );
 
-  // Yeni görseli hemen değiştir; eski görselin 240 ms beklemesi kaldırıldı.
   nerisProductImageIndex=nextIndex;
-  image.src=nerisProductImages[nerisProductImageIndex];
-  const media=document.getElementById('productDetailMedia');
-  if(media){
-    media.style.setProperty('--product-media-bg', `url("${image.src}")`);
-  }
-  renderProductGallery();
+  image.src=nextSrc;
 
-  // Sadece yeni görsele kısa ve temiz bir giriş animasyonu uygula.
+  const media=document.getElementById('productDetailMedia');
+  if(media) media.style.setProperty('--product-media-bg', `url("${nextSrc}")`);
+
+  if(document.getElementById('productGalleryDots')){
+    document.getElementById('productGalleryDots').innerHTML =
+      nerisProductImages.map((_,i)=>
+        `<span class="product-gallery-dot ${i===nerisProductImageIndex?'active':''}"></span>`
+      ).join('');
+  }
+
   void image.offsetWidth;
   image.classList.add(inClass);
 
@@ -3806,6 +3836,9 @@ function openProductDetail(product){
   if(!nerisProductImages.length) nerisProductImages=['https://picsum.photos/700/900'];
   nerisProductImageIndex=0;
   image.alt=name;
+
+  // Ürünün galeri görsellerini modal açılırken önceden yükle.
+  preloadNerisProductImages(nerisProductImages).then(()=>renderProductGallery());
   renderProductGallery();
   title.textContent=name;
   if(productInfoName) productInfoName.textContent=name;
