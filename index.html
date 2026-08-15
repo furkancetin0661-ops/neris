@@ -4349,77 +4349,10 @@ const querySnapshot =
 
     }
 
-
-   loadProducts().then(() => {
-    addNerisSecondProduct();
-    loadFavorites();
-});
-
-    /* NERIS — İKİNCİ ÜRÜN */
-    const nerisSecondProduct = {
-      id: "neris-saten-elbise-02",
-      reklam: "Neris Degaje Yaka Saten Elbise",
-      fiyat: "3499",
-      resim: "images/neris-saten-elbise-on.jpeg",
-      resim2: "images/neris-saten-elbise-arka.jpeg",
-      renk: "Ekru",
-      kumas: "Saten",
-      yaka: "Degaje Yaka",
-      kalip: "Standart Kalıp",
-      bedenler: "36 – 46",
-      Bağlantı: "https://www.shopier.com/nerisbutik_/49854673",
-      rozet: "YENİ"
-    };
-
-    function addNerisSecondProduct(){
-      const container = document.getElementById("productsGrid");
-      if(!container) return;
-      if(container.querySelector('[data-neris-static-product="saten-02"]')) return;
-
-      const card = document.createElement("div");
-      card.className = "card";
-      card.setAttribute("data-neris-static-product", "saten-02");
-      card.innerHTML = `
-        <div class="card-image">
-          <div class="badge">${nerisSecondProduct.rozet}</div>
-          <button class="favorite-btn" type="button" data-id="${nerisSecondProduct.id}" aria-label="Favorilere ekle">♡</button>
-          <img src="${nerisSecondProduct.resim}" alt="${nerisSecondProduct.reklam}">
-        </div>
-        <div class="card-content">
-          <h3>${nerisSecondProduct.reklam}</h3>
-          <div class="card-stock">* Bu ürünün seçenekleri mevcut</div>
-          <p class="product-price">
-            <span class="price-value">${Number(nerisSecondProduct.fiyat).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
-            <span class="price-currency">TL</span>
-          </p>
-        </div>
-      `;
-
-      const image = card.querySelector(".card-image img");
-      image.style.cursor = "pointer";
-      image.setAttribute("tabindex", "0");
-      image.setAttribute("role", "button");
-
-      image.addEventListener("click", () => {
-        if(typeof window.openProductDetail === "function"){
-          window.openProductDetail(nerisSecondProduct);
-        }
-      });
-
-      image.addEventListener("keydown", (event) => {
-        if((event.key === "Enter" || event.key === " ") &&
-           typeof window.openProductDetail === "function"){
-          event.preventDefault();
-          window.openProductDetail(nerisSecondProduct);
-        }
-      });
-
-      if(container.firstElementChild){
-        container.insertBefore(card, container.children[1] || null);
-      }else{
-        container.appendChild(card);
-      }
-    }
+    // Ürünlerin tamamı Firebase / Firestore'daki "Ürünler" koleksiyonundan gelir.
+    loadProducts().then(() => {
+      loadFavorites();
+    });
 
     async function loadFavorites() {
     const user = auth.currentUser;
