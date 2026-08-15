@@ -2193,6 +2193,174 @@ document.addEventListener("keydown", function(event) {
   }
 }
 
+
+/* NERIS - SON ÜRÜN DETAY DÜZENİ: mevcut index üzerinde kesin hizalama */
+@media (min-width:769px){
+  .product-detail-box{
+    width:min(1180px,94vw)!important;
+    height:min(780px,90vh)!important;
+    max-height:90vh!important;
+    overflow:hidden!important;
+  }
+  .product-detail-layout{
+    display:grid!important;
+    grid-template-columns:minmax(0,1.12fr) minmax(420px,.88fr)!important;
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+  }
+  .product-detail-media{
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    background:#eee!important;
+  }
+  .product-detail-media::before{
+    content:""!important;
+    position:absolute!important;
+    inset:0!important;
+    background-image:var(--product-media-bg)!important;
+    background-size:cover!important;
+    background-position:center!important;
+    filter:blur(18px)!important;
+    transform:scale(1.08)!important;
+    opacity:.22!important;
+    z-index:0!important;
+  }
+  .product-detail-media img{
+    position:relative!important;
+    z-index:1!important;
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    max-height:none!important;
+    object-fit:contain!important;
+    object-position:center center!important;
+    background:transparent!important;
+    cursor:zoom-in!important;
+  }
+  .product-detail-info{
+    width:100%!important;
+    height:100%!important;
+    min-width:0!important;
+    min-height:0!important;
+    padding:42px 38px 30px!important;
+    box-sizing:border-box!important;
+    background:#fff!important;
+    color:#111!important;
+    display:block!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+  }
+  .product-detail-title{
+    font-size:31px!important;
+    line-height:1.16!important;
+    margin-bottom:9px!important;
+  }
+  .product-detail-price{
+    font-size:24px!important;
+    margin-bottom:23px!important;
+  }
+  .product-size-options{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:8px!important;
+    margin-bottom:18px!important;
+  }
+  .product-size-btn{
+    min-height:46px!important;
+    color:#222!important;
+    background:#fff!important;
+  }
+  .product-size-btn.selected{
+    background:#111!important;
+    color:#fff!important;
+  }
+  .product-quantity-row{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    gap:9px!important;
+    width:100%!important;
+    margin:0 0 12px!important;
+  }
+  .product-quantity{
+    width:100%!important;
+    height:48px!important;
+    grid-template-columns:48px 1fr 48px!important;
+    color:#222!important;
+    background:#fff!important;
+  }
+  .product-quantity span{
+    color:#222!important;
+    font-size:13px!important;
+    font-weight:500!important;
+  }
+  .product-quantity button{
+    color:#222!important;
+    background:#fff!important;
+  }
+  .product-add-cart,
+  .product-buy-now{
+    width:100%!important;
+    height:50px!important;
+    min-height:50px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    box-sizing:border-box!important;
+  }
+  .product-add-cart{margin:0!important;background:#111!important;color:#fff!important}
+  .product-buy-now{margin:0 0 14px!important;background:#fff!important;color:#111!important}
+  .product-favorite-row{margin:0 0 12px!important}
+  .product-detail-note{margin:0 0 18px!important}
+  .product-info-card{
+    width:100%!important;
+    margin:0!important;
+    padding:0!important;
+    background:#fff!important;
+    border:1px solid #e1e1e1!important;
+  }
+  .product-info-grid{
+    grid-template-columns:1fr 1fr!important;
+  }
+}
+@media (max-width:768px){
+  .product-detail-media img{
+    object-fit:contain!important;
+    object-position:center center!important;
+  }
+  .product-detail-info{
+    background:#fff!important;
+    color:#111!important;
+  }
+  .product-size-options{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:8px!important;
+  }
+  .product-quantity-row{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:9px!important;
+    margin:0 0 10px!important;
+  }
+  .product-quantity{
+    width:100%!important;
+    height:50px!important;
+  }
+  .product-quantity span{color:#222!important}
+  .product-quantity button{color:#222!important;background:#fff!important}
+  .product-add-cart,.product-buy-now{
+    width:100%!important;
+    height:52px!important;
+    min-height:52px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+  }
+  .product-buy-now{margin:0 0 14px!important}
+  .product-info-card{margin-top:18px!important}
+}
+
 </style>
 </head>
 
@@ -2575,6 +2743,7 @@ document.addEventListener("keydown", function(event) {
             <button class="product-size-guide" id="productSizeGuideBtn" type="button" aria-label="Beden rehberini aç">Beden rehberi</button>
           </div>
           <div class="product-size-options" id="productSizeOptions">
+            <button class="product-size-btn" type="button" data-size="36">36</button>
             <button class="product-size-btn" type="button" data-size="38">38</button>
             <button class="product-size-btn" type="button" data-size="40">40</button>
             <button class="product-size-btn" type="button" data-size="42">42</button>
@@ -2591,7 +2760,17 @@ document.addEventListener("keydown", function(event) {
             <button class="product-add-cart" type="button" onclick="addProductToCart()">SEPETE EKLE</button>
           </div>
           
-<div class="product-info-card">
+
+
+          <button class="product-buy-now" type="button" onclick="buyProductNow()">HEMEN AL</button>
+          <div class="product-favorite-row">
+            <button class="product-favorite-mini" id="productDetailFavorite" type="button" onclick="toggleProductDetailFavorite()" aria-label="Favorilere ekle">♡</button>
+            <span>Favorilere ekle</span>
+          </div>
+          
+          <p class="product-detail-note">Beden seçiminizi yaptıktan sonra ürünü sepetinize ekleyebilir veya doğrudan ödeme adımına geçebilirsiniz.</p>
+          
+          <div class="product-info-card">
             <h3 class="product-info-card-title">ÜRÜN BİLGİLERİ</h3>
             <div class="product-info-grid">
               <div class="product-info-item">
@@ -2616,18 +2795,10 @@ document.addEventListener("keydown", function(event) {
               </div>
               <div class="product-info-item">
                 <span>Bedenler</span>
-                <strong>38 – 46</strong>
+                <strong>36 – 46</strong>
               </div>
             </div>
           </div>
-
-          <button class="product-buy-now" type="button" onclick="buyProductNow()">HEMEN AL</button>
-          <div class="product-favorite-row">
-            <button class="product-favorite-mini" id="productDetailFavorite" type="button" onclick="toggleProductDetailFavorite()" aria-label="Favorilere ekle">♡</button>
-            <span>Favorilere ekle</span>
-          </div>
-          
-          <p class="product-detail-note">Beden seçiminizi yaptıktan sonra ürünü sepetinize ekleyebilir veya doğrudan ödeme adımına geçebilirsiniz.</p>
         </div>
       </div>
     </div>
