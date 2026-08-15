@@ -4396,12 +4396,80 @@ function closeInfo(){
   if(location.hash==='#info')history.replaceState(null,'',location.pathname+location.search);
 }
 
-    function sendContactMessage(){
+    async function sendContactMessage(){
       const name=document.getElementById('contactName')?.value.trim();
       const email=document.getElementById('contactEmail')?.value.trim();
       const message=document.getElementById('contactMessage')?.value.trim();
-      if(!name||!email||!message){showPremiumAlert('Eksik Bilgi', 'Lütfen ad soyad, e-posta ve mesaj alanlarını doldurun.');return;}
-      showPremiumAlert('Mesajınız Hazır', 'Mesajınız alındı. Gönderim altyapısı bağlandığında doğrudan NERIS ekibine iletilecek.');
+      const button=document.querySelector('.premium-info-form button[onclick="sendContactMessage()"]');
+
+      if(!name||!email||!message){
+        showPremiumAlert('Eksik Bilgi','Lütfen ad soyad, e-posta ve mesaj alanlarını doldurun.');
+        return;
+      }
+
+      if(!/^\S+@\S+\.\S+$/.test(email)){
+        showPremiumAlert('Geçersiz E-posta','Lütfen geçerli bir e-posta adresi girin.');
+        return;
+      }
+
+      if(button){
+        button.disabled=true;
+        button.dataset.originalText=button.textContent;
+        button.textContent='GÖNDERİLİYOR...';
+      }
+
+      try{
+        const response=await fetch('https://api.web3forms.com/submit',{
+          method:'POST',
+          headers:{
+            'Content-Type':'application/json',
+            'Accept':'application/json'
+          },
+          body:JSON.stringify({
+            access_key:'61e7a4f5-d9f0-4f74-a18a-71655fde72be',
+            subject:'NERIS Web Sitesi - Yeni İletişim Mesajı',
+            from_name:'NERIS Web Sitesi',
+            name:name,
+            email:email,
+            replyto:email,
+            message:message
+          })
+        });
+
+        const result=await response.json();
+
+        if(result.success){
+          const nameInput=document.getElementById('contactName');
+          const emailInput=document.getElementById('contactEmail');
+          const messageInput=document.getElementById('contactMessage');
+
+          if(nameInput)nameInput.value='';
+          if(emailInput)emailInput.value='';
+          if(messageInput)messageInput.value='';
+
+          showPremiumAlert(
+            'Mesajınız Gönderildi',
+            'Mesajınız başarıyla NERIS ekibine iletildi. En kısa sürede sizinle iletişime geçeceğiz.'
+          );
+        }else{
+          console.error('Web3Forms gönderim hatası:',result);
+          showPremiumAlert(
+            'Gönderilemedi',
+            'Mesajınız gönderilemedi. Lütfen birkaç dakika sonra tekrar deneyin.'
+          );
+        }
+      }catch(error){
+        console.error('İletişim formu hatası:',error);
+        showPremiumAlert(
+          'Bağlantı Hatası',
+          'Mesaj gönderilirken bir bağlantı sorunu oluştu. Lütfen tekrar deneyin.'
+        );
+      }finally{
+        if(button){
+          button.disabled=false;
+          button.textContent=button.dataset.originalText||'MESAJ GÖNDER';
+        }
+      }
     }
 
     function trackOrder(){
