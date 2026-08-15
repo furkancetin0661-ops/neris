@@ -158,13 +158,24 @@ button,input,textarea{font:inherit}
   font-weight:700;
   letter-spacing:.5px;
 }
-.footer-payment-badge.visa{font-style:italic;letter-spacing:1px}
-.footer-payment-badge.mastercard{font-size:9px}
-.footer-payment-badge.iyzico{
-  min-width:82px;
-  color:#fff;
-  font-size:12px;
-  letter-spacing:-.3px;
+.footer-payment-badge.visa{
+  min-width:70px;
+  padding:0 10px;
+}
+.footer-payment-badge.mastercard{
+  min-width:92px;
+  padding:0 10px;
+}
+.footer-payment-logo{
+  display:block;
+  width:auto;
+  height:22px;
+}
+.footer-payment-logo.visa-logo{
+  width:56px;
+}
+.footer-payment-logo.mastercard-logo{
+  width:76px;
 }
 .footer-iyzico-logo{
   display:block;
@@ -1883,15 +1894,24 @@ document.addEventListener("keydown", function(event) {
     <div class="footer-payment" aria-label="Güvenli ödeme yöntemleri">
         <div class="footer-payment-title">GÜVENLİ ÖDEME</div>
         <div class="footer-payment-badges">
-            <span class="footer-payment-badge visa">VISA</span>
-            <span class="footer-payment-badge mastercard">Mastercard</span>
+            <span class="footer-payment-badge visa" aria-label="VISA">
+                <svg class="footer-payment-logo visa-logo" viewBox="0 0 80 28" role="img" aria-hidden="true">
+                    <text x="2" y="22" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="900" font-style="italic" letter-spacing="-1">VISA</text>
+                </svg>
+            </span>
+            <span class="footer-payment-badge mastercard" aria-label="Mastercard">
+                <svg class="footer-payment-logo mastercard-logo" viewBox="0 0 110 28" role="img" aria-hidden="true">
+                    <circle cx="38" cy="14" r="11" fill="#eb001b"/>
+                    <circle cx="52" cy="14" r="11" fill="#f79e1b"/>
+                    <text x="67" y="18" font-family="Arial, Helvetica, sans-serif" font-size="9" font-weight="700" fill="#fff">Mastercard</text>
+                </svg>
+            </span>
             <img
                 class="footer-iyzico-logo"
                 src="images/iyzico-logo.png"
                 alt="iyzico ile Öde"
                 onerror="this.style.display='none'"
             >
-            <span class="footer-payment-badge iyzico" aria-label="iyzico">iyzico</span>
         </div>
         <div class="footer-payment-note">
             Ödeme işlemleriniz güvenli ödeme altyapısı üzerinden gerçekleştirilir.
