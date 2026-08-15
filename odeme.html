@@ -158,6 +158,180 @@ button:hover,
   }
 }
 
+
+/* NERIS FINAL CHECKOUT — BEYAZ PREMIUM */
+:root{
+  --bg:#f7f7f5!important;
+  --panel:#ffffff!important;
+  --line:#e6e6e1!important;
+  --gold:#d4af37!important;
+  --text:#111111!important;
+  --muted:#707070!important;
+  --soft:#fafaf8!important;
+}
+html,body{
+  background:var(--bg)!important;
+  color:var(--text)!important;
+}
+body{font-family:Poppins,Arial,sans-serif!important;}
+.top{
+  background:rgba(255,255,255,.96)!important;
+  border-bottom:1px solid var(--line)!important;
+  color:var(--text)!important;
+}
+.top .logo{
+  color:#d4af37!important;
+  -webkit-text-fill-color:#d4af37!important;
+}
+.top .back{color:#555!important;}
+.top .back:hover{color:#d4af37!important;}
+
+.wrap{background:transparent!important;}
+.eyebrow{color:#b18a20!important;}
+.title{
+  color:#111!important;
+  font-family:Playfair Display,Georgia,serif!important;
+}
+.sub{color:#777!important;}
+.steps{color:#888!important;}
+.step.active{color:#a07c19!important;}
+.dot{
+  background:#fff!important;
+  color:#111!important;
+  border-color:#d4af37!important;
+}
+.bar{background:#deded8!important;}
+
+.grid{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:24px!important;
+}
+.grid > section.panel{
+  order:1!important;
+  width:100%!important;
+}
+.grid > aside.panel.summary{
+  order:2!important;
+  width:100%!important;
+  position:static!important;
+  padding:0!important;
+}
+
+.panel{
+  background:#fff!important;
+  border:1px solid var(--line)!important;
+  box-shadow:0 14px 40px rgba(0,0,0,.05)!important;
+}
+.panel-head{
+  background:#fff!important;
+  border-bottom:1px solid var(--line)!important;
+}
+.panel-head h2{
+  color:#111!important;
+  font-family:Playfair Display,Georgia,serif!important;
+}
+.panel-head p{color:#777!important;}
+
+.form{background:#fff!important;}
+.section-title{
+  color:#a27c17!important;
+}
+.section-title:after{background:#e2e2dd!important;}
+
+.field label{color:#555!important;}
+.field input,.field select{
+  background:#fff!important;
+  color:#111!important;
+  border:1px solid #d9d9d4!important;
+}
+.field input::placeholder{color:#999!important;}
+.field input:focus,.field select:focus{
+  border-color:#d4af37!important;
+  box-shadow:0 0 0 3px rgba(212,175,55,.10)!important;
+}
+
+.delivery{display:none!important;}
+
+.pay-note{
+  background:#fafaf8!important;
+  border:1px solid #e5e5df!important;
+  color:#666!important;
+}
+.shield{color:#b18a20!important;}
+
+.summary .panel-head{background:#fff!important;}
+.summary .product{
+  background:#fff!important;
+  border-color:var(--line)!important;
+}
+.product img{
+  background:#f2f2ef!important;
+  border-color:#e1e1dc!important;
+}
+.product-name{
+  color:#111!important;
+  font-family:Playfair Display,Georgia,serif!important;
+}
+.product-meta{color:#777!important;}
+.price{color:#a27c17!important;}
+
+.totals{background:#fff!important;}
+.line{
+  color:#666!important;
+  border-color:var(--line)!important;
+}
+.line.total{
+  color:#111!important;
+  border-top-color:var(--line)!important;
+}
+.line.total strong{color:#a27c17!important;}
+
+.pay{
+  background:#111!important;
+  border:1px solid #111!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+.pay:hover{
+  background:#2a2a2a!important;
+  box-shadow:0 10px 24px rgba(0,0,0,.12)!important;
+}
+.secure{color:#777!important;}
+
+.overlay{
+  background:rgba(255,255,255,.78)!important;
+}
+.modal{
+  background:#fff!important;
+  color:#111!important;
+  border:1px solid #e2d8b8!important;
+  box-shadow:0 25px 70px rgba(0,0,0,.16)!important;
+}
+.modal h3{color:#111!important;}
+.modal p{color:#666!important;}
+.modal button{
+  background:#111!important;
+  color:#fff!important;
+  border-color:#111!important;
+}
+
+@media(max-width:800px){
+  .grid{
+    display:flex!important;
+    flex-direction:column!important;
+  }
+  .grid > section.panel{order:1!important;}
+  .grid > aside.panel.summary{
+    order:2!important;
+    position:static!important;
+  }
+  .top .logo{
+    color:#d4af37!important;
+    -webkit-text-fill-color:#d4af37!important;
+  }
+}
+
 </style>
 </head>
 <body>
