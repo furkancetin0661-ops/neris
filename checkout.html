@@ -249,7 +249,7 @@ body{
 <aside class="panel summary"><div class="panel-head"><h2>Sipariş Özeti</h2><p>Seçtiğiniz ürün ve toplam tutar</p></div><div id="summaryContent" class="summary"></div></aside>
 </div></main>
 <div class="overlay" id="overlay"><div class="modal"><div style="color:var(--gold);letter-spacing:4px;font-size:10px">NERIS</div><h3>Ödeme altyapısı hazır</h3><p>Teslimat bilgilerinizi aldık. Gerçek kart ödemesini açmak için Neris hesabına güvenli bir ödeme sağlayıcısı (ör. iyzico / PayTR) bağlamamız gerekiyor.</p><button onclick="closeModal()">Tamam</button></div></div>
-<script>
+<script type="module">
 /* NERIS CHECKOUT — FIREBASE SEPETİNDEN DİNAMİK SİPARİŞ ÖZETİ */
 const firebaseConfig = {
   apiKey: "AIzaSyAQ0ses6c9fJnk5xDsh37-0-fLcCj-MVQw",
@@ -260,6 +260,14 @@ const firebaseConfig = {
   appId: "1:58960639184:web:dc25f186f8887f64f1dad5",
   measurementId: "G-CVD0X6X882"
 };
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
 const q = new URLSearchParams(location.search);
 const fmt = n => new Intl.NumberFormat('tr-TR',{
@@ -284,6 +292,58 @@ function getPrice(item){
 
 function getQuantity(item){
   return Math.max(1, Number(item.quantity) || 1);
+}
+
+
+async function loadFirebaseCart(){
+  return new Promise(async (resolve)=>{
+    let finished=false;
+
+    const finish=(items)=>{
+      if(finished) return;
+      finished=true;
+      resolve(Array.isArray(items)?items:[]);
+    };
+
+    const timeout=setTimeout(()=>finish([]),6000);
+
+    try{
+      await setPersistence(auth,browserLocalPersistence).catch(()=>{});
+
+      const unsubscribe=onAuthStateChanged(auth, async (user)=>{
+        try{
+          if(!user){
+            clearTimeout(timeout);
+            unsubscribe();
+            finish([]);
+            return;
+          }
+
+          const snap=await getDoc(doc(db,'sepetler',user.uid));
+
+          clearTimeout(timeout);
+          unsubscribe();
+
+          if(!snap.exists()){
+            finish([]);
+            return;
+          }
+
+          const data=snap.data()||{};
+          finish(Array.isArray(data.items)?data.items:[]);
+        }catch(error){
+          console.error('Firebase sepeti yüklenemedi:',error);
+          clearTimeout(timeout);
+          unsubscribe();
+          finish([]);
+        }
+      });
+    }catch(error){
+      console.error('Firebase başlatılamadı:',error);
+      clearTimeout(timeout);
+      finish([]);
+    }
+  });
 }
 
 function renderSummary(items){
@@ -410,10 +470,13 @@ function getLegacyUrlItem(){
   try{
     const items=await loadFirebaseCart();
 
-    if(!items.length){
-      const legacy=getLegacyUrlItem();
-      if(legacy) renderSummary([legacy]);
+    if(items.length){
+      renderSummary(items);
+      return;
     }
+
+    const legacy=getLegacyUrlItem();
+    renderSummary(legacy ? [legacy] : []);
   }catch(error){
     console.error('Checkout başlatılamadı:',error);
     const legacy=getLegacyUrlItem();
