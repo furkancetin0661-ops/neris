@@ -20,20 +20,48 @@ if (!id) {
 
         const product = snap.data();
 
+        const productImage = document.getElementById("productImage");
+        const thumb1 = document.getElementById("thumb1");
+        const thumb2 = document.getElementById("thumb2");
+        const thumb3 = document.getElementById("thumb3");
+
+        // --------------------------------
+        // GÖRSELLER
+        // --------------------------------
+
+        const images = [
+            product.resim,
+            product.resim2 || product.resim,
+            product.resim3 || product.resim
+        ];
+
+        // Görselleri önceden yükle
+        images.forEach(src => {
+            if (src) {
+                const preload = new Image();
+                preload.src = src;
+            }
+        });
+
+        // Ana görsel
+        productImage.src = images[0];
+
         // Ürün bilgileri
-        document.getElementById("productImage").src = product.resim;
-        document.getElementById("productName").textContent = product.reklam;
+        document.getElementById("productName").textContent =
+            product.reklam || "";
+
         document.getElementById("productBadge").textContent =
-product.badge || "";
+            product.badge || "";
+
         document.getElementById("productPrice").textContent =
-"₺" + product.fiyat;
+            "₺" + product.fiyat;
 
-if(product.eskiFiyat){
+        if (product.eskiFiyat) {
 
-    document.getElementById("oldPrice").textContent =
-    "₺" + product.eskiFiyat;
+            document.getElementById("oldPrice").textContent =
+                "₺" + product.eskiFiyat;
 
-}
+        }
 
         document.getElementById("productCategory").textContent =
             "Kategori: " + (product.kategori || "-");
@@ -41,7 +69,10 @@ if(product.eskiFiyat){
         document.getElementById("productDescription").textContent =
             product.aciklama || "Açıklama bulunmuyor.";
 
-        // Stok
+        // --------------------------------
+        // STOK
+        // --------------------------------
+
         const stockText = document.getElementById("stockText");
 
         if (product.stok > 0) {
@@ -56,35 +87,53 @@ if(product.eskiFiyat){
 
         }
 
-        // Satın Al
-        document.getElementById("buyNow").href = product.bağlantı;
+        // --------------------------------
+        // SATIN AL
+        // --------------------------------
 
-        // Galeri
-        document.getElementById("thumb1").src = product.resim;
+        document.getElementById("buyNow").href =
+            product.bağlantı || "#";
 
-document.getElementById("thumb2").src =
-    product.resim2 || product.resim;
+        // --------------------------------
+        // GALERİ
+        // --------------------------------
 
-document.getElementById("thumb3").src =
-    product.resim3 || product.resim;
+        thumb1.src = images[0];
+        thumb2.src = images[1];
+        thumb3.src = images[2];
 
-        document.querySelectorAll(".thumb").forEach(img => {
+        const thumbs = document.querySelectorAll(".thumb");
+
+        function changeImage(src, activeThumb) {
+
+            if (!src) return;
+
+            // Görseli anında değiştir
+            productImage.src = src;
+
+            thumbs.forEach(t => {
+                t.classList.remove("active");
+            });
+
+            if (activeThumb) {
+                activeThumb.classList.add("active");
+            }
+        }
+
+        thumbs.forEach((img) => {
 
             img.addEventListener("click", () => {
 
-                document.getElementById("productImage").src = img.src;
-
-                document.querySelectorAll(".thumb").forEach(t => {
-                    t.classList.remove("active");
-                });
-
-                img.classList.add("active");
+                changeImage(img.src, img);
 
             });
 
         });
 
-        // Beden seçimi
+        // --------------------------------
+        // BEDEN
+        // --------------------------------
+
         let selectedSize = "";
 
         document.querySelectorAll(".sizes button").forEach(btn => {
@@ -103,7 +152,10 @@ document.getElementById("thumb3").src =
 
         });
 
-        // Sepete ekle
+        // --------------------------------
+        // SEPETE EKLE
+        // --------------------------------
+
         document.getElementById("addCart").addEventListener("click", () => {
 
             if (selectedSize === "") {
@@ -114,10 +166,12 @@ document.getElementById("thumb3").src =
 
             }
 
-            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            let cart =
+                JSON.parse(localStorage.getItem("cart")) || [];
 
             const existing = cart.find(item =>
-                item.id === id && item.size === selectedSize
+                item.id === id &&
+                item.size === selectedSize
             );
 
             if (existing) {
@@ -139,9 +193,13 @@ document.getElementById("thumb3").src =
 
             }
 
-            localStorage.setItem("cart", JSON.stringify(cart));
-            console.log(cart);
+            localStorage.setItem(
+                "cart",
+                JSON.stringify(cart)
+            );
+
             updateCartCount();
+
             alert("Ürün sepete eklendi 🛒");
 
         });
@@ -153,8 +211,16 @@ document.getElementById("thumb3").src =
     }
 
 }
+
+
+// --------------------------------
+// SEPET SAYISI
+// --------------------------------
+
 function updateCartCount() {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    const cart =
+        JSON.parse(localStorage.getItem("cart")) || [];
 
     let total = 0;
 
@@ -162,11 +228,13 @@ function updateCartCount() {
         total += item.quantity;
     });
 
-    const badge = document.getElementById("cartCount");
+    const badge =
+        document.getElementById("cartCount");
 
     if (badge) {
         badge.textContent = total;
     }
+
 }
 
 updateCartCount();
