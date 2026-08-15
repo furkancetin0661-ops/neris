@@ -1879,7 +1879,7 @@ document.addEventListener("keydown", function(event) {
   border-color:#111!important;
 }
 .product-info-card{
-  margin:0 0 22px!important;
+  margin:24px 0 18px!important;
   padding:0!important;
   border:1px solid #e2e2e2!important;
   background:#fff!important;
@@ -2350,8 +2350,30 @@ document.addEventListener("keydown", function(event) {
           <h2 class="product-detail-title" id="productDetailTitle">Ürün</h2>
           <p class="product-detail-price" id="productDetailPrice">₺0</p>
           <div class="product-detail-divider"></div>
+</div>
 
-          <div class="product-info-card">
+          <div class="product-detail-label">
+            <span>BEDEN</span>
+            <button class="product-size-guide" id="productSizeGuideBtn" type="button" aria-label="Beden rehberini aç">Beden rehberi</button>
+          </div>
+          <div class="product-size-options" id="productSizeOptions">
+            <button class="product-size-btn" type="button" data-size="38">38</button>
+            <button class="product-size-btn" type="button" data-size="40">40</button>
+            <button class="product-size-btn" type="button" data-size="42">42</button>
+            <button class="product-size-btn" type="button" data-size="44">44</button>
+            <button class="product-size-btn" type="button" data-size="46">46</button>
+          </div>
+          <div class="product-detail-inline-alert" id="productDetailInlineAlert" role="status" aria-live="polite"></div>
+          <div class="product-quantity-row">
+            <div class="product-quantity">
+              <button type="button" onclick="changeProductQuantity(-1)" aria-label="Azalt">−</button>
+              <span id="productQuantity">1</span>
+              <button type="button" onclick="changeProductQuantity(1)" aria-label="Artır">+</button>
+            </div>
+            <button class="product-add-cart" type="button" onclick="addProductToCart()">SEPETE EKLE</button>
+          </div>
+          
+<div class="product-info-card">
             <h3 class="product-info-card-title">ÜRÜN BİLGİLERİ</h3>
             <div class="product-info-grid">
               <div class="product-info-item">
@@ -2379,28 +2401,7 @@ document.addEventListener("keydown", function(event) {
                 <strong>38 – 46</strong>
               </div>
             </div>
-          </div>
 
-          <div class="product-detail-label">
-            <span>BEDEN</span>
-            <button class="product-size-guide" id="productSizeGuideBtn" type="button" aria-label="Beden rehberini aç">Beden rehberi</button>
-          </div>
-          <div class="product-size-options" id="productSizeOptions">
-            <button class="product-size-btn" type="button" data-size="38">38</button>
-            <button class="product-size-btn" type="button" data-size="40">40</button>
-            <button class="product-size-btn" type="button" data-size="42">42</button>
-            <button class="product-size-btn" type="button" data-size="44">44</button>
-            <button class="product-size-btn" type="button" data-size="46">46</button>
-          </div>
-          <div class="product-detail-inline-alert" id="productDetailInlineAlert" role="status" aria-live="polite"></div>
-          <div class="product-quantity-row">
-            <div class="product-quantity">
-              <button type="button" onclick="changeProductQuantity(-1)" aria-label="Azalt">−</button>
-              <span id="productQuantity">1</span>
-              <button type="button" onclick="changeProductQuantity(1)" aria-label="Artır">+</button>
-            </div>
-            <button class="product-add-cart" type="button" onclick="addProductToCart()">SEPETE EKLE</button>
-          </div>
           <button class="product-buy-now" type="button" onclick="buyProductNow()">HEMEN AL</button>
           <div class="product-favorite-row">
             <button class="product-favorite-mini" id="productDetailFavorite" type="button" onclick="toggleProductDetailFavorite()" aria-label="Favorilere ekle">♡</button>
