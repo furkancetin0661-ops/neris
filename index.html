@@ -1793,12 +1793,182 @@ document.addEventListener("keydown", function(event) {
     }
 });
 </script>
+<style id="neris-final-product-modal-style">
+
+/* NERIS FINAL PRODUCT MODAL */
+@media(min-width:769px){
+  .product-detail-box{
+    width:min(1180px,94vw)!important;
+    max-height:92vh!important;
+    background:#fff!important;
+    color:#111!important;
+    border:1px solid rgba(212,175,55,.42)!important;
+  }
+  .product-detail-layout{
+    display:grid!important;
+    grid-template-columns:minmax(470px,.74fr) minmax(500px,1fr)!important;
+    min-height:680px!important;
+    height:min(760px,82vh)!important;
+  }
+  .product-detail-media{
+    position:relative!important;
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    background:#eee!important;
+    overflow:hidden!important;
+    isolation:isolate!important;
+  }
+  .product-detail-media::before{
+    content:""!important;
+    position:absolute!important;
+    inset:0!important;
+    background-image:var(--product-media-bg)!important;
+    background-size:cover!important;
+    background-position:center!important;
+    filter:blur(22px)!important;
+    transform:scale(1.12)!important;
+    opacity:.18!important;
+    z-index:0!important;
+  }
+  .product-detail-media img{
+    position:relative!important;
+    z-index:1!important;
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    max-height:none!important;
+    object-fit:cover!important;
+    object-position:center center!important;
+    background:transparent!important;
+  }
+  .product-detail-info{
+    position:relative!important;
+    width:100%!important;
+    height:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+    padding:48px 42px 34px!important;
+    background:#fff!important;
+    color:#111!important;
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:flex-start!important;
+    overflow-y:auto!important;
+  }
+}
+.product-detail-info{
+  background:#fff!important;
+  color:#111!important;
+}
+.product-detail-kicker{color:#9a7d1f!important}
+.product-detail-title{color:#111!important}
+.product-detail-price{color:#111!important}
+.product-detail-divider{background:#e5e5e5!important}
+.product-detail-label{color:#111!important}
+.product-size-guide{color:#555!important}
+.product-size-btn{
+  background:#fff!important;
+  border:1px solid #d8d8d8!important;
+  color:#222!important;
+}
+.product-size-btn:hover{border-color:#111!important}
+.product-size-btn.selected{
+  background:#111!important;
+  color:#fff!important;
+  border-color:#111!important;
+}
+.product-info-card{
+  margin:0 0 22px!important;
+  padding:0!important;
+  border:1px solid #e2e2e2!important;
+  background:#fff!important;
+}
+.product-info-card-title{
+  padding:13px 15px 11px!important;
+  margin:0!important;
+  color:#8d741e!important;
+  border-bottom:1px solid #e8e8e8!important;
+}
+.product-info-grid{gap:0!important}
+.product-info-item{
+  padding:11px 15px!important;
+  border-top:1px solid #ededed!important;
+}
+.product-info-item:nth-child(-n+2){border-top:0!important}
+.product-info-item span:first-child{color:#777!important}
+.product-info-item strong{color:#222!important}
+.product-quantity{
+  border-color:#d8d8d8!important;
+  background:#fff!important;
+  color:#222!important;
+}
+.product-quantity button{color:#222!important}
+.product-add-cart{
+  background:#111!important;
+  border-color:#111!important;
+  color:#fff!important;
+}
+.product-buy-now{
+  background:#fff!important;
+  border-color:#111!important;
+  color:#111!important;
+}
+.product-favorite-row{color:#555!important}
+.product-favorite-row span{color:#555!important}
+.product-detail-note{color:#777!important}
+.product-detail-close{
+  background:rgba(255,255,255,.96)!important;
+  color:#111!important;
+  border-color:#ddd!important;
+}
+.product-gallery-arrow{
+  background:rgba(255,255,255,.92)!important;
+  color:#111!important;
+  border-color:#ddd!important;
+}
+.product-gallery-arrow:hover{
+  background:#d4af37!important;
+  color:#111!important;
+  border-color:#d4af37!important;
+}
+@media(max-width:768px){
+  .product-detail-media{
+    background:#eee!important;
+    isolation:isolate!important;
+  }
+  .product-detail-media::before{
+    content:""!important;
+    position:absolute!important;
+    inset:0!important;
+    background-image:var(--product-media-bg)!important;
+    background-size:cover!important;
+    background-position:center!important;
+    filter:blur(18px)!important;
+    transform:scale(1.08)!important;
+    opacity:.16!important;
+    z-index:0!important;
+  }
+  .product-detail-media img{
+    position:relative!important;
+    z-index:1!important;
+    object-fit:contain!important;
+    background:transparent!important;
+  }
+  .product-detail-info{
+    background:#fff!important;
+    color:#111!important;
+  }
+}
+
+</style>
 </head>
 
 <body>
 
 
-  <!-- NERIS ANA SAYFA GİRİŞ ANİMASYONU -->
+  
+-- NERIS ANA SAYFA GİRİŞ ANİMASYONU -->
   <div class="neris-page-loader" id="nerisPageLoader" aria-hidden="true">
     <div class="neris-loader-content">
       <div class="neris-loader-logo">NERIS</div>
@@ -4053,116 +4223,3 @@ onAuthStateChanged(auth,function(user){
   window.openNerisSizeGuide=openNerisSizeGuide;
 })();
 </script>
-
-
-/* NERIS — SADE PREMIUM BEYAZ ÜRÜN PANELİ */
-.product-detail-info{
-  background:#fff!important;
-  color:#111!important;
-}
-.product-detail-kicker{color:#a0831f!important}
-.product-detail-title{color:#111!important}
-.product-detail-price{color:#111!important}
-.product-detail-divider{background:#e5e5e5!important}
-.product-detail-label{color:#111!important}
-.product-size-guide{color:#666!important}
-.product-size-btn{
-  background:#fff!important;
-  border-color:#d9d9d9!important;
-  color:#222!important;
-}
-.product-size-btn:hover{
-  border-color:#111!important;
-  color:#111!important;
-}
-.product-size-btn.selected{
-  background:#111!important;
-  color:#fff!important;
-  border-color:#111!important;
-}
-.product-info-card{
-  margin:0 0 22px!important;
-  padding:0!important;
-  border:1px solid #e4e4e4!important;
-  background:#fff!important;
-}
-.product-info-card-title{
-  padding:14px 16px 11px!important;
-  margin:0!important;
-  color:#8d741e!important;
-  border-bottom:1px solid #e8e8e8;
-}
-.product-info-grid{
-  gap:0!important;
-}
-.product-info-item{
-  padding:11px 15px!important;
-  border-top:1px solid #ededed!important;
-}
-.product-info-item:nth-child(-n+2){border-top:0!important}
-.product-info-item span:first-child{color:#777!important}
-.product-info-item strong{color:#222!important}
-.product-quantity{
-  border-color:#d8d8d8!important;
-  background:#fff!important;
-  color:#222!important;
-}
-.product-quantity button{color:#222!important}
-.product-add-cart{
-  background:#111!important;
-  border-color:#111!important;
-  color:#fff!important;
-}
-.product-buy-now{
-  background:#fff!important;
-  border-color:#111!important;
-  color:#111!important;
-}
-.product-favorite-row{color:#555!important}
-.product-favorite-row span{color:#555!important}
-.product-detail-note{color:#777!important}
-.product-detail-close{
-  background:rgba(255,255,255,.94)!important;
-  color:#111!important;
-  border-color:#ddd!important;
-}
-.product-gallery-arrow{
-  background:rgba(255,255,255,.92)!important;
-  color:#111!important;
-  border-color:#ddd!important;
-}
-.product-gallery-arrow:hover{
-  background:#d4af37!important;
-  border-color:#d4af37!important;
-}
-
-
-
-@media(max-width:768px){
-  .product-detail-media{
-    background:#eee!important;
-    isolation:isolate;
-  }
-  .product-detail-media::before{
-    content:"";
-    position:absolute;
-    inset:-6%;
-    background-image:var(--product-media-bg);
-    background-size:cover;
-    background-position:center;
-    filter:blur(16px);
-    transform:scale(1.08);
-    opacity:.9;
-    z-index:-1;
-  }
-  .product-detail-media::after{content:none!important}
-  .product-detail-media img{
-    object-fit:contain!important;
-    background:transparent!important;
-  }
-  .product-detail-info{
-    background:#fff!important;
-    color:#111!important;
-  }
-}
-
