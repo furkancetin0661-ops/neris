@@ -1549,12 +1549,15 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
 /* NERIS — PELIA TARZI ÜRÜN DETAYI / BUTON HİZALAMA */
 @media(min-width:769px){
   .product-detail-box{
-    width:min(1080px,94vw);
+    width:min(1180px,94vw);
     max-height:92vh;
+    background:#fff;
+    color:#111;
+    border:1px solid rgba(212,175,55,.42);
   }
   .product-detail-layout{
     display:grid;
-    grid-template-columns:minmax(0,1.08fr) minmax(430px,.92fr);
+    grid-template-columns:minmax(0,1.12fr) minmax(400px,.88fr);
     min-height:680px;
     height:min(760px,82vh);
   }
@@ -1564,12 +1567,31 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
     width:100%;
     height:100%;
     min-height:0;
+    background:#eee;
+    overflow:hidden;
+    isolation:isolate;
+  }
+  .product-detail-media::before{
+    content:"";
+    position:absolute;
+    inset:-5%;
+    background-image:var(--product-media-bg);
+    background-size:cover;
+    background-position:center;
+    filter:blur(18px);
+    transform:scale(1.08);
+    opacity:.9;
+    z-index:-1;
   }
   .product-detail-media img{
+    position:relative;
+    z-index:1;
+    width:100%;
     height:100%;
     min-height:0;
     object-fit:contain;
     object-position:center center;
+    background:transparent;
   }
   .product-detail-info{
     position:relative;
@@ -1577,7 +1599,13 @@ button:active, .nav-action:active, .cart-btn:active, .favorite-btn:active, .mobi
     width:100%;
     height:100%;
     min-width:0;
-    padding:56px 42px 34px;
+    box-sizing:border-box;
+    padding:52px 42px 34px;
+    background:#fff;
+    color:#111;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
     box-sizing:border-box;
     justify-content:flex-start;
     overflow-y:auto;
@@ -2995,6 +3023,10 @@ function changeProductImage(direction){
   // Yeni görseli hemen değiştir; eski görselin 240 ms beklemesi kaldırıldı.
   nerisProductImageIndex=nextIndex;
   image.src=nerisProductImages[nerisProductImageIndex];
+  const media=document.getElementById('productDetailMedia');
+  if(media){
+    media.style.setProperty('--product-media-bg', `url("${image.src}")`);
+  }
   renderProductGallery();
 
   // Sadece yeni görsele kısa ve temiz bir giriş animasyonu uygula.
@@ -4021,3 +4053,116 @@ onAuthStateChanged(auth,function(user){
   window.openNerisSizeGuide=openNerisSizeGuide;
 })();
 </script>
+
+
+/* NERIS — SADE PREMIUM BEYAZ ÜRÜN PANELİ */
+.product-detail-info{
+  background:#fff!important;
+  color:#111!important;
+}
+.product-detail-kicker{color:#a0831f!important}
+.product-detail-title{color:#111!important}
+.product-detail-price{color:#111!important}
+.product-detail-divider{background:#e5e5e5!important}
+.product-detail-label{color:#111!important}
+.product-size-guide{color:#666!important}
+.product-size-btn{
+  background:#fff!important;
+  border-color:#d9d9d9!important;
+  color:#222!important;
+}
+.product-size-btn:hover{
+  border-color:#111!important;
+  color:#111!important;
+}
+.product-size-btn.selected{
+  background:#111!important;
+  color:#fff!important;
+  border-color:#111!important;
+}
+.product-info-card{
+  margin:0 0 22px!important;
+  padding:0!important;
+  border:1px solid #e4e4e4!important;
+  background:#fff!important;
+}
+.product-info-card-title{
+  padding:14px 16px 11px!important;
+  margin:0!important;
+  color:#8d741e!important;
+  border-bottom:1px solid #e8e8e8;
+}
+.product-info-grid{
+  gap:0!important;
+}
+.product-info-item{
+  padding:11px 15px!important;
+  border-top:1px solid #ededed!important;
+}
+.product-info-item:nth-child(-n+2){border-top:0!important}
+.product-info-item span:first-child{color:#777!important}
+.product-info-item strong{color:#222!important}
+.product-quantity{
+  border-color:#d8d8d8!important;
+  background:#fff!important;
+  color:#222!important;
+}
+.product-quantity button{color:#222!important}
+.product-add-cart{
+  background:#111!important;
+  border-color:#111!important;
+  color:#fff!important;
+}
+.product-buy-now{
+  background:#fff!important;
+  border-color:#111!important;
+  color:#111!important;
+}
+.product-favorite-row{color:#555!important}
+.product-favorite-row span{color:#555!important}
+.product-detail-note{color:#777!important}
+.product-detail-close{
+  background:rgba(255,255,255,.94)!important;
+  color:#111!important;
+  border-color:#ddd!important;
+}
+.product-gallery-arrow{
+  background:rgba(255,255,255,.92)!important;
+  color:#111!important;
+  border-color:#ddd!important;
+}
+.product-gallery-arrow:hover{
+  background:#d4af37!important;
+  border-color:#d4af37!important;
+}
+
+
+
+@media(max-width:768px){
+  .product-detail-media{
+    background:#eee!important;
+    isolation:isolate;
+  }
+  .product-detail-media::before{
+    content:"";
+    position:absolute;
+    inset:-6%;
+    background-image:var(--product-media-bg);
+    background-size:cover;
+    background-position:center;
+    filter:blur(16px);
+    transform:scale(1.08);
+    opacity:.9;
+    z-index:-1;
+  }
+  .product-detail-media::after{content:none!important}
+  .product-detail-media img{
+    object-fit:contain!important;
+    background:transparent!important;
+  }
+  .product-detail-info{
+    background:#fff!important;
+    color:#111!important;
+  }
+}
+
