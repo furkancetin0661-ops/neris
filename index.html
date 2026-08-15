@@ -2450,6 +2450,49 @@ document.addEventListener("keydown", function(event) {
 }
 </style>
 
+
+<style id="neris-instagram-webview-fix">
+/* NERIS — Instagram / uygulama içi tarayıcı mobil viewport sabitleme */
+html, body{
+  overscroll-behavior-y:none;
+  overflow-anchor:none;
+}
+
+@media(max-width:768px){
+  .hero{
+    height:calc(var(--neris-fixed-viewport-height, 100vh) - 72px)!important;
+    min-height:calc(var(--neris-fixed-viewport-height, 100vh) - 72px)!important;
+    max-height:calc(var(--neris-fixed-viewport-height, 100vh) - 72px)!important;
+    overflow:hidden!important;
+    transform:translateZ(0);
+    backface-visibility:hidden;
+    contain:paint;
+  }
+  .hero-image{
+    height:100%!important;
+    transform:translateZ(0);
+    backface-visibility:hidden;
+  }
+}
+</style>
+<script>
+(function(){
+  // Instagram ve benzeri uygulama içi tarayıcılarda adres çubuğu açılıp
+  // kapandığında viewport yüksekliği değişebiliyor. İlk açılıştaki değeri
+  // bir kez alıp hero alanını buna kilitliyoruz.
+  function lockNerisViewport(){
+    if(window.innerWidth <= 768){
+      var h = window.innerHeight;
+      document.documentElement.style.setProperty('--neris-fixed-viewport-height', h + 'px');
+    }
+  }
+  lockNerisViewport();
+  window.addEventListener('orientationchange', function(){
+    setTimeout(lockNerisViewport, 250);
+  }, {passive:true});
+})();
+</script>
+
 </head>
 
 <body>
