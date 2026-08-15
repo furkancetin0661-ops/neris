@@ -250,22 +250,214 @@ body{
 </div></main>
 <div class="overlay" id="overlay"><div class="modal"><div style="color:var(--gold);letter-spacing:4px;font-size:10px">NERIS</div><h3>Ödeme altyapısı hazır</h3><p>Teslimat bilgilerinizi aldık. Gerçek kart ödemesini açmak için Neris hesabına güvenli bir ödeme sağlayıcısı (ör. iyzico / PayTR) bağlamamız gerekiyor.</p><button onclick="closeModal()">Tamam</button></div></div>
 <script>
-const q=new URLSearchParams(location.search);
-const hasProduct=q.has('product')||q.has('price')||q.has('image')||q.has('id');
-const product={name:q.get('product')||'Siyah Elbise',price:Number((q.get('price')||'2399').replace(/[^0-9.,]/g,'').replace(/\./g,'').replace(',','.'))||2399,image:q.get('image')||'',shopier:q.get('shopier')||'https://www.shopier.com/nerisbutik_/49854673',id:q.get('id')||''};
-const fmt=n=>new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY',maximumFractionDigits:2}).format(n);
-const shipping=0,total=product.price+shipping;
-const sc=document.getElementById('summaryContent');
-sc.innerHTML=`<div class="product"><img src="${product.image||'https://picsum.photos/200/260'}" alt=""><div class="product-info"><div class="product-name">${escapeHtml(product.name)}</div><div class="product-meta">1 ürün · Neris</div><div class="price">${fmt(product.price)}</div></div></div><div class="totals"><div class="line"><span>Ürün</span><span>${fmt(product.price)}</span></div><div class="line"><span>Kargo</span><span>Ücretsiz</span></div><div class="line total"><span>Ödenecek Tutar</span><strong>${fmt(total)}</strong></div></div><button class="pay" id="payBtn">ÖDEMEYE GEÇ</button><div class="secure">⌁ Güvenli ödeme · Kart bilgileriniz Neris üzerinde tutulmaz.</div>`;
-function escapeHtml(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
-function closeModal(){document.getElementById('overlay').classList.remove('show')}
+/* NERIS CHECKOUT — FIREBASE SEPETİNDEN DİNAMİK SİPARİŞ ÖZETİ */
+const firebaseConfig = {
+  apiKey: "AIzaSyAQ0ses6c9fJnk5xDsh37-0-fLcCj-MVQw",
+  authDomain: "neris-78944.firebaseapp.com",
+  projectId: "neris-78944",
+  storageBucket: "neris-78944.firebasestorage.app",
+  messagingSenderId: "58960639184",
+  appId: "1:58960639184:web:dc25f186f8887f64f1dad5",
+  measurementId: "G-CVD0X6X882"
+};
 
-document.getElementById('payBtn').addEventListener('click',()=>{
- const required=['name','phone','email','address','city','district'];
- for(const id of required){const el=document.getElementById(id);if(!el.value.trim()){el.focus();el.style.borderColor='var(--gold)';return}}
- sessionStorage.setItem('nerisCheckout',JSON.stringify({product,...Object.fromEntries(required.map(id=>[id,document.getElementById(id).value.trim()]))}));
- // Şimdilik güvenli ödeme adımı Shopier'e devrediliyor. Gerçek Neris içi kart ödeme entegrasyonu ödeme sağlayıcısı hesabı bağlandığında bu satır değiştirilecek.
- window.location.href=product.shopier;
-});
+const q = new URLSearchParams(location.search);
+const fmt = n => new Intl.NumberFormat('tr-TR',{
+  style:'currency', currency:'TRY', maximumFractionDigits:2
+}).format(Number(n)||0);
+
+function escapeHtml(s){
+  return String(s ?? '').replace(/[&<>'"]/g,c=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'
+  }[c]));
+}
+
+function getImage(item){
+  return item.image || item.resim || item.resim2 || '';
+}
+
+function getPrice(item){
+  const raw = item.price ?? item.fiyat ?? 0;
+  if(typeof raw === 'number') return raw;
+  return Number(String(raw).replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.')) || 0;
+}
+
+function getQuantity(item){
+  return Math.max(1, Number(item.quantity) || 1);
+}
+
+function renderSummary(items){
+  const sc = document.getElementById('summaryContent');
+  const list = Array.isArray(items) ? items : [];
+
+  if(!list.length){
+    sc.innerHTML = `
+      <div class="empty">
+        Sepetinizde ürün bulunmuyor.
+        <br><br>
+        <a href="index.html" style="color:#a27d18">Alışverişe dön</a>
+      </div>`;
+    return;
+  }
+
+  const subtotal = list.reduce((sum,item)=>{
+    return sum + getPrice(item) * getQuantity(item);
+  },0);
+
+  const shipping = 0;
+  const total = subtotal + shipping;
+
+  sc.innerHTML = `
+    <div class="checkout-items">
+      ${list.map((item,index)=>{
+        const qty = getQuantity(item);
+        const unit = getPrice(item);
+        const lineTotal = unit * qty;
+        const image = getImage(item);
+
+        return `
+          <div class="product" style="${index ? 'margin-top:20px;padding-top:20px;border-top:1px solid #e7e5df;' : ''}">
+            <img src="${escapeHtml(image || 'https://picsum.photos/200/260')}"
+                 alt="${escapeHtml(item.product || item.reklam || 'Neris Ürün')}"
+                 onerror="this.onerror=null;this.src='https://picsum.photos/200/260';">
+            <div class="product-info">
+              <div class="product-name">${escapeHtml(item.product || item.reklam || 'Neris Ürün')}</div>
+              <div class="product-meta">
+                ${qty} ürün${item.size ? ` · Beden ${escapeHtml(item.size)}` : ''} · Neris
+              </div>
+              <div class="price">${fmt(lineTotal)}</div>
+            </div>
+          </div>`;
+      }).join('')}
+    </div>
+
+    <div class="totals">
+      <div class="line">
+        <span>Ürün (${list.reduce((n,x)=>n+getQuantity(x),0)} adet)</span>
+        <span>${fmt(subtotal)}</span>
+      </div>
+      <div class="line">
+        <span>Kargo</span>
+        <span>Ücretsiz</span>
+      </div>
+      <div class="line total">
+        <span>Ödenecek Tutar</span>
+        <strong>${fmt(total)}</strong>
+      </div>
+    </div>
+
+    <button class="pay" id="payBtn">ÖDEMEYE GEÇ</button>
+    <div class="secure">⌁ Güvenli ödeme · Kart bilgileriniz Neris üzerinde tutulmaz.</div>
+  `;
+
+  document.getElementById('payBtn').addEventListener('click',()=>{
+    const required=['name','phone','email','address','city','district'];
+
+    for(const id of required){
+      const el=document.getElementById(id);
+      if(!el.value.trim()){
+        el.focus();
+        el.style.borderColor='#d4af37';
+        return;
+      }
+    }
+
+    sessionStorage.setItem('nerisCheckout',JSON.stringify({
+      items:list,
+      subtotal,
+      shipping,
+      total,
+      ...Object.fromEntries(required.map(id=>[
+        id,document.getElementById(id).value.trim()
+      ]))
+    }));
+
+    /* İyzico entegrasyonu bağlandığında bu noktadan ödeme oturumu açılacak. */
+    document.getElementById('overlay').classList.add('show');
+  });
+}
+
+async function loadFirebaseCart(){
+  const {initializeApp} =
+    await import("https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js");
+
+  const {getFirestore,doc,getDoc} =
+    await import("https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js");
+
+  const {getAuth,onAuthStateChanged} =
+    await import("https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js");
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+
+  return new Promise(resolve=>{
+    let finished=false;
+
+    const finish = async user=>{
+      if(finished) return;
+      finished=true;
+
+      if(!user){
+        renderSummary([]);
+        resolve([]);
+        return;
+      }
+
+      try{
+        const snap = await getDoc(doc(db,'sepetler',user.uid));
+
+        if(!snap.exists()){
+          renderSummary([]);
+          resolve([]);
+          return;
+        }
+
+        const data=snap.data() || {};
+        const items=Array.isArray(data.items) ? data.items : [];
+
+        renderSummary(items);
+        resolve(items);
+      }catch(error){
+        console.error('Firebase sepeti okunamadı:',error);
+        renderSummary([]);
+        resolve([]);
+      }
+    };
+
+    onAuthStateChanged(auth,finish);
+  });
+}
+
+/* Eski checkout URL'sinden tek ürünle gelinirse de destekle.
+   Normal kullanımda kaynak Firebase sepetidir. */
+function getLegacyUrlItem(){
+  if(!(q.has('product') || q.has('price') || q.has('image'))) return null;
+
+  return {
+    id:q.get('id')||'legacy',
+    product:q.get('product')||'Siyah Elbise',
+    price:Number((q.get('price')||'2399')
+      .replace(/[^0-9.,]/g,'').replace(/\./g,'').replace(',','.'))||2399,
+    image:q.get('image')||'',
+    size:q.get('size')||'',
+    quantity:Number(q.get('quantity')||1)||1
+  };
+}
+
+(async()=>{
+  try{
+    const items=await loadFirebaseCart();
+
+    if(!items.length){
+      const legacy=getLegacyUrlItem();
+      if(legacy) renderSummary([legacy]);
+    }
+  }catch(error){
+    console.error('Checkout başlatılamadı:',error);
+    const legacy=getLegacyUrlItem();
+    renderSummary(legacy ? [legacy] : []);
+  }
+})();
 </script>
 </body></html>
