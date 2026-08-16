@@ -236,6 +236,7 @@ body{
 <div class="grid">
 <section class="panel"><div class="panel-head"><h2>Teslimat Bilgileri</h2><p>Siparişinizin gönderileceği bilgileri eksiksiz doldurun.</p></div><div class="form">
 <h3 class="section-title">Kişisel Bilgiler</h3><div class="row"><div class="field"><label>Ad Soyad</label><input id="name" autocomplete="name" placeholder="Adınız Soyadınız"></div><div class="field"><label>Telefon</label><input id="phone" autocomplete="tel" placeholder="05XX XXX XX XX"></div></div><div class="field"><label>E-posta</label><input id="email" type="email" autocomplete="email" placeholder="ornek@mail.com"></div>
+<div class="field"><label>T.C. Kimlik Numarası</label><input id="identityNumber" inputmode="numeric" maxlength="11" autocomplete="off" placeholder="11 haneli T.C. kimlik numaranız"></div>
 <h3 class="section-title" style="margin-top:25px">Teslimat Adresi</h3><div class="field"><label>Adres</label><input id="address" autocomplete="street-address" placeholder="Mahalle, sokak, bina ve daire no"></div><div class="row"><div class="field"><label>İl</label><input id="city" autocomplete="address-level2" placeholder="Ankara"></div><div class="field"><label>İlçe</label><input id="district" autocomplete="address-level3" placeholder="İlçe"></div></div>
 <h3 class="section-title" style="margin-top:25px">Teslimat</h3>
 <div class="free-shipping-box">
@@ -428,7 +429,7 @@ function renderSummary(items){
   `;
 
   document.getElementById('payBtn').addEventListener('click', async ()=>{
-    const required=['name','phone','email','address','city','district'];
+    const required=['name','phone','email','identityNumber','address','city','district'];
 
     for(const id of required){
       const el=document.getElementById(id);
@@ -437,6 +438,14 @@ function renderSummary(items){
         el.style.borderColor='#d4af37';
         return;
       }
+    }
+
+    const identityNumber = document.getElementById('identityNumber').value.replace(/\D/g,'');
+    if(identityNumber.length !== 11){
+      const el=document.getElementById('identityNumber');
+      el.focus();
+      el.style.borderColor='#d4af37';
+      return;
     }
 
     const customer = Object.fromEntries(required.map(id=>[
@@ -470,17 +479,41 @@ function renderSummary(items){
         body:JSON.stringify({
           price: total.toFixed(2),
           basketId: 'NERIS-' + Date.now(),
+
+          // Worker/iyzico'ya sepet toplamını oluşturan gerçek kalemleri gönderiyoruz.
+          basketItems: [
+            ...grouped.map(item => ({
+              id: String(item.id || item.product || item.reklam || 'NERIS-URUN'),
+              name: String(item.product || item.reklam || 'Neris Ürün'),
+              price: (getPrice(item) * getQuantity(item)).toFixed(2)
+            })),
+            {
+              id: 'NERIS-KARGO',
+              name: 'Kargo',
+              price: shipping.toFixed(2)
+            }
+          ],
+
           productId: first.id || '',
           productName: first.product || first.reklam || 'Neris Ürün',
+
           buyer:{
-            name:customer.name,
-            phone:customer.phone,
-            email:customer.email
+            id: 'NERIS-' + Date.now(),
+            name: customer.name,
+            surname: customer.name.split(/\s+/).slice(1).join(' ') || 'Müşteri',
+            email: customer.email,
+            identityNumber: customer.identityNumber,
+            registrationAddress: customer.address,
+            city: customer.city,
+            country: 'Turkey'
           },
+
           address:{
-            address:customer.address,
-            city:customer.city,
-            district:customer.district
+            contactName: customer.name,
+            address: customer.address,
+            city: customer.city,
+            district: customer.district,
+            country: 'Turkey'
           }
         })
       });
