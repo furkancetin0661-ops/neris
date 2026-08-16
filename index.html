@@ -4715,6 +4715,47 @@ function getNerisCartRef(){
   return fs.doc(db,'sepetler',user.uid);
 }
 
+async function refreshNerisCartProductData(items, persist=true){
+  const fs=window.nerisFirestore;
+  const db=window.nerisDb;
+  if(!fs || !db || !Array.isArray(items) || !items.length) return Array.isArray(items)?items:[];
+
+  const refreshed=await Promise.all(items.map(async item=>{
+    if(!item || !item.id) return item;
+    try{
+      const productSnap=await fs.getDoc(fs.doc(db,'Ürünler',String(item.id)));
+      if(!productSnap.exists()) return item;
+      const product={...productSnap.data(),id:productSnap.id};
+      return {
+        ...item,
+        product:product.reklam || item.product,
+        price:product.fiyat ?? item.price,
+        image:product.resim || item.image,
+        shopier:product["Bağlantı"] || item.shopier
+      };
+    }catch(error){
+      console.warn('Sepet ürünü güncellenemedi:',item.id,error);
+      return item;
+    }
+  }));
+
+  if(persist && refreshed.length){
+    try{
+      const user=getNerisCurrentUser();
+      if(user){
+        await fs.setDoc(fs.doc(db,'sepetler',user.uid),{
+          items:refreshed,
+          updatedAt:new Date()
+        },{merge:true});
+      }
+    }catch(error){
+      console.warn("Güncel sepet fiyatları Firebase'e yazılamadı:",error);
+    }
+  }
+
+  return refreshed;
+}
+
 async function loadNerisCartFromFirebase(){
   const user=getNerisCurrentUser();
   const fs=window.nerisFirestore;
@@ -4733,7 +4774,9 @@ async function loadNerisCartFromFirebase(){
 
     if(snap.exists()){
       const data=snap.data()||{};
-      nerisCartCache=Array.isArray(data.items)?data.items:[];
+      const storedItems=Array.isArray(data.items)?data.items:[];
+      // Sepetteki eski fiyatları değil, Ürünler koleksiyonundaki güncel fiyatı kullan.
+      nerisCartCache=await refreshNerisCartProductData(storedItems,true);
     }else{
       // Daha önce localStorage ile kullanılan sepet varsa, ilk girişte
       // kullanıcının kendi Firebase sepetine bir kez aktar.
@@ -4743,6 +4786,7 @@ async function loadNerisCartFromFirebase(){
       }catch(e){ legacy=[]; }
 
       nerisCartCache=Array.isArray(legacy)?legacy:[];
+      nerisCartCache=await refreshNerisCartProductData(nerisCartCache,false);
       if(nerisCartCache.length){
         await fs.setDoc(ref,{
           items:nerisCartCache,
@@ -4841,7 +4885,7 @@ function formatCartPrice(value){
   return '₺'+n.toLocaleString('tr-TR',{minimumFractionDigits:0,maximumFractionDigits:2});
 }
 
-function renderCartModal(){
+async function renderCartModal(){
   const box=document.getElementById('cartContent');
   if(!box) return;
   if(!window.nerisAuthStateReady){
@@ -4853,7 +4897,13 @@ function renderCartModal(){
     updateCartCount();
     return;
   }
-  const cart=getNerisCart();
+  let cart=getNerisCart();
+  try{
+    cart=await refreshNerisCartProductData(cart,true);
+    nerisCartCache=cart;
+  }catch(error){
+    console.warn('Sepet açılırken ürün fiyatları yenilenemedi:',error);
+  }
   if(!cart.length){
     box.innerHTML='<div class="favorites-empty"><div class="favorites-icon">🛒</div><h3>Sepetiniz boş</h3><p>Beğendiğiniz ürünleri beden seçerek sepetinize ekleyebilirsiniz.</p></div>';
     updateCartCount();
