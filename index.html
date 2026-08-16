@@ -2891,6 +2891,57 @@ html, body{
 })();
 </script>
 
+<style>
+/* NERIS — FINAL MOBILE STORY FIX */
+@media (max-width:768px){
+  html:has(body.info-modal-open){overflow:hidden!important;}
+  body.info-modal-open{
+    overflow:hidden!important;
+    position:relative!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:100%!important;
+    top:auto!important;
+    touch-action:none!important;
+  }
+  body.info-modal-open .info-modal{
+    position:fixed!important;
+    inset:0!important;
+    width:100vw!important;
+    height:100vh!important;
+    min-height:100vh!important;
+    max-height:none!important;
+    margin:0!important;
+    padding:0!important;
+    background:#fff!important;
+    overflow:hidden!important;
+    z-index:9999999!important;
+    touch-action:none!important;
+  }
+  body.info-modal-open .info-modal .info-box.story-mode{
+    width:100vw!important;
+    height:100vh!important;
+    min-height:100vh!important;
+    max-height:none!important;
+    margin:0!important;
+    padding:58px 18px 0!important;
+    background:#fff!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain!important;
+    -webkit-overflow-scrolling:touch!important;
+    touch-action:pan-y!important;
+  }
+  body.info-modal-open .info-modal .info-box.story-mode .neris-story-content{
+    width:100%!important;
+    max-width:760px!important;
+    min-height:0!important;
+    margin:0 auto!important;
+    padding:5px 14px 90px!important;
+    background:#fff!important;
+  }
+}
+</style>
 </head>
 
 <body>
