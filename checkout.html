@@ -249,7 +249,7 @@ body{
 </div></section>
 <aside class="panel summary"><div class="panel-head"><h2>Sipariş Özeti</h2><p>Seçtiğiniz ürün ve toplam tutar</p></div><div id="summaryContent" class="summary"></div></aside>
 </div></main>
-<div class="overlay" id="overlay"><div class="modal"><div style="color:var(--gold);letter-spacing:4px;font-size:10px">NERIS</div><h3>Ödeme altyapısı hazır</h3><p>Teslimat bilgilerinizi aldık. Gerçek kart ödemesini açmak için Neris hesabına güvenli bir ödeme sağlayıcısı (ör. iyzico / PayTR) bağlamamız gerekiyor.</p><button onclick="closeModal()">Tamam</button></div></div>
+<div class="overlay" id="overlay"><div class="modal"><div style="color:var(--gold);letter-spacing:4px;font-size:10px">NERIS</div><h3>Ödeme altyapısı hazır</h3><p>Ödeme bağlantısı başlatılamadı. Lütfen bilgilerinizi kontrol edip tekrar deneyin.</p><button onclick="closeModal()">Tamam</button></div></div>
 <script type="module">
 /* NERIS CHECKOUT — FIREBASE SEPETİNDEN DİNAMİK SİPARİŞ ÖZETİ */
 const firebaseConfig = {
@@ -427,7 +427,7 @@ function renderSummary(items){
     <div class="secure">⌁ Güvenli ödeme · Kart bilgileriniz Neris üzerinde tutulmaz.</div>
   `;
 
-  document.getElementById('payBtn').addEventListener('click',()=>{
+  document.getElementById('payBtn').addEventListener('click', async ()=>{
     const required=['name','phone','email','address','city','district'];
 
     for(const id of required){
@@ -439,17 +439,124 @@ function renderSummary(items){
       }
     }
 
+    const customer = Object.fromEntries(required.map(id=>[
+      id, document.getElementById(id).value.trim()
+    ]));
+
     sessionStorage.setItem('nerisCheckout',JSON.stringify({
       items:grouped,
       subtotal,
       shipping,
       total,
-      ...Object.fromEntries(required.map(id=>[
-        id,document.getElementById(id).value.trim()
-      ]))
+      ...customer
     }));
 
-    document.getElementById('overlay').classList.add('show');
+    const btn=document.getElementById('payBtn');
+    const originalText=btn.textContent;
+    btn.disabled=true;
+    btn.textContent='ÖDEME HAZIRLANIYOR...';
+    btn.style.opacity='.7';
+    btn.style.cursor='wait';
+
+    try{
+      const first=grouped[0] || {};
+
+      const response=await fetch('https://neris-iyzico.furkancetin0661.workers.dev/',{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'Accept':'application/json'
+        },
+        body:JSON.stringify({
+          price: total.toFixed(2),
+          basketId: 'NERIS-' + Date.now(),
+          productId: first.id || '',
+          productName: first.product || first.reklam || 'Neris Ürün',
+          buyer:{
+            name:customer.name,
+            phone:customer.phone,
+            email:customer.email
+          },
+          address:{
+            address:customer.address,
+            city:customer.city,
+            district:customer.district
+          }
+        })
+      });
+
+      const result=await response.json().catch(()=>({}));
+
+      if(!response.ok || result.status === 'failure'){
+        console.error('iyzico ödeme başlatma hatası:',result);
+        throw new Error(result.errorMessage || result.errorCode || 'Ödeme başlatılamadı.');
+      }
+
+      /*
+       * Worker iyzico initialize cevabını döndürüyor.
+       * Öncelik paymentPageUrl; yoksa checkoutFormContent kullanılır.
+       */
+      if(result.paymentPageUrl){
+        window.location.href=result.paymentPageUrl;
+        return;
+      }
+
+      if(result.checkoutFormContent){
+        const paymentWindow=document.createElement('div');
+        paymentWindow.id='iyzicoPaymentWindow';
+        paymentWindow.style.cssText=[
+          'position:fixed','inset:0','z-index:99999',
+          'background:rgba(255,255,255,.96)',
+          'overflow:auto','padding:24px'
+        ].join(';');
+
+        paymentWindow.innerHTML=`
+          <div style="max-width:760px;margin:0 auto;position:relative">
+            <button type="button" id="closeIyzicoPayment"
+              style="position:sticky;top:0;float:right;z-index:2;
+              width:38px;height:38px;border:1px solid #ddd;background:#fff;
+              cursor:pointer;font-size:22px;line-height:1">×</button>
+            <div id="iyzicoFormContent" style="padding-top:10px"></div>
+          </div>`;
+
+        document.body.appendChild(paymentWindow);
+
+        const container=document.getElementById('iyzicoFormContent');
+        container.innerHTML=result.checkoutFormContent;
+
+        container.querySelectorAll('script').forEach(oldScript=>{
+          const script=document.createElement('script');
+          for(const attr of oldScript.attributes){
+            script.setAttribute(attr.name,attr.value);
+          }
+          script.textContent=oldScript.textContent;
+          oldScript.replaceWith(script);
+        });
+
+        document.getElementById('closeIyzicoPayment').onclick=()=>{
+          paymentWindow.remove();
+        };
+
+        return;
+      }
+
+      throw new Error('iyzico ödeme bağlantısı alınamadı.');
+    }catch(error){
+      console.error('Ödeme başlatma hatası:',error);
+      document.getElementById('overlay').classList.add('show');
+
+      const modal=document.querySelector('#overlay .modal');
+      if(modal){
+        modal.querySelector('h3').textContent='Ödeme Başlatılamadı';
+        modal.querySelector('p').textContent=error.message || 'Ödeme başlatılırken bir hata oluştu. Lütfen tekrar deneyin.';
+        modal.querySelector('button').textContent='Tamam';
+      }
+    }finally{
+      btn.disabled=false;
+      btn.textContent=originalText;
+      btn.style.opacity='';
+      btn.style.cursor='';
+    }
   });
 }
 
