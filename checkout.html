@@ -250,7 +250,7 @@ body{
 </div>
 </div></div><div class="field"><label>E-posta</label><input id="email" type="email" autocomplete="email" placeholder="ornek@mail.com"></div>
 <div class="field"><label>T.C. Kimlik Numarası</label><input id="identityNumber" inputmode="numeric" maxlength="11" autocomplete="off" placeholder="11 haneli T.C. kimlik numaranız"></div>
-<h3 class="section-title" style="margin-top:25px">Teslimat Adresi</h3><div class="field"><label>Adres</label><input id="address" autocomplete="street-address" placeholder="Mahalle, sokak, bina ve daire no"></div><div class="row"><div class="field"><label>İl</label><input id="city" autocomplete="address-level2" placeholder="Ankara"></div><div class="field"><label>İlçe</label><input id="district" autocomplete="address-level3" placeholder="İlçe"></div></div>
+<h3 class="section-title" style="margin-top:25px">Teslimat Adresi</h3><div class="field"><label>Adres</label><input id="address" autocomplete="street-address" placeholder="Mahalle, sokak, bina ve daire no"></div><div class="row"><div class="field"><label>İl</label><input id="city" autocomplete="address-level2" placeholder="Ankara"></div><div class="field"><label>İlçe</label><input id="district" autocomplete="address-level3" placeholder="İlçe"></div></div><div class="field"><label>Posta Kodu</label><input id="zipCode" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="Posta kodu"></div>
 <h3 class="section-title" style="margin-top:25px">Teslimat</h3>
 <div class="free-shipping-box">
   <div class="free-shipping-icon">✦</div>
@@ -259,7 +259,7 @@ body{
     <span>2–4 iş günü içerisinde adresinize güvenli teslimat. Sabit kargo ücreti 80 TL'dir.</span>
   </div>
 </div>
-<div class="pay-note"><span class="shield">♢</span><span>Ödeme aşamasında kart bilgileriniz Neris tarafından saklanmaz. Gerçek kart ödemesi, güvenli ödeme sağlayıcısı üzerinden gerçekleştirilecektir.</span></div>
+<div class="pay-note"><span class="shield">♢</span><span>Ödeme aşamasında kart bilgileriniz Neris tarafından saklanmaz. Kart ödemesi güvenli iyzico ödeme altyapısı üzerinden gerçekleştirilir.</span></div>
 </div></section>
 <aside class="panel summary"><div class="panel-head"><h2>Sipariş Özeti</h2><p>Seçtiğiniz ürün ve toplam tutar</p></div><div id="summaryContent" class="summary"></div></aside>
 </div></main>
@@ -491,7 +491,7 @@ function renderSummary(items){
   });
 
   document.getElementById('payBtn').addEventListener('click', async ()=>{
-    const required=['name','phone','email','identityNumber','address','city','district'];
+    const required=['name','phone','email','identityNumber','address','city','district','zipCode'];
 
     for(const id of required){
       const el=document.getElementById(id);
@@ -539,6 +539,14 @@ function renderSummary(items){
     }
 
     customer.phone = '+90' + normalizedPhone;
+
+    customer.zipCode = String(customer.zipCode || '').replace(/\D/g,'').slice(0,5);
+    if(!/^\d{5}$/.test(customer.zipCode)){
+      const zipEl = document.getElementById('zipCode');
+      zipEl.focus();
+      zipEl.style.borderColor = '#d4af37';
+      return;
+    }
 
     sessionStorage.setItem('nerisCheckout',JSON.stringify({
       items:grouped,
@@ -589,20 +597,32 @@ function renderSummary(items){
             id: 'NERIS-' + Date.now(),
             name: customer.name.split(/\s+/)[0] || 'Neris',
             surname: customer.name.split(/\s+/).slice(1).join(' ') || 'Müşteri',
+            gsmNumber: customer.phone,
             email: customer.email,
-            phone: customer.phone,
             identityNumber: identityNumber,
             registrationAddress: customer.address,
             city: customer.city,
-            country: 'Turkey'
+            zipCode: customer.zipCode,
+            country: 'Turkey',
+            ip: '127.0.0.1',
+            registrationDate: '2026-01-01 00:00:00',
+            lastLoginDate: '2026-01-01 00:00:00'
           },
 
-          address:{
+          shippingAddress:{
             contactName: customer.name,
-            address: customer.address,
             city: customer.city,
-            district: customer.district,
-            country: 'Turkey'
+            zipCode: customer.zipCode,
+            country: 'Turkey',
+            address: customer.address
+          },
+
+          billingAddress:{
+            contactName: customer.name,
+            city: customer.city,
+            zipCode: customer.zipCode,
+            country: 'Turkey',
+            address: customer.address
           }
         })
       });
