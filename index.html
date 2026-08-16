@@ -2949,6 +2949,60 @@ html, body{
     overflow-x:visible!important;
   }
 }
+
+
+/* NERIS — HİKAYE MODALI / MOBİL SCROLL KİLİDİ VE ALT BOŞLUK DÜZELTMESİ */
+@media(max-width:768px){
+  body.info-modal-open{
+    position:fixed !important;
+    left:0 !important;
+    right:0 !important;
+    width:100% !important;
+    height:100% !important;
+    overflow:hidden !important;
+    overscroll-behavior:none !important;
+  }
+
+  body.info-modal-open .info-modal{
+    position:fixed !important;
+    inset:0 !important;
+    width:100vw !important;
+    height:100dvh !important;
+    min-height:100dvh !important;
+    max-height:none !important;
+    padding:0 !important;
+    margin:0 !important;
+    overflow:hidden !important;
+    overscroll-behavior:none !important;
+    touch-action:none !important;
+  }
+
+  body.info-modal-open .info-modal .info-box{
+    width:100% !important;
+    height:100dvh !important;
+    min-height:100dvh !important;
+    max-height:none !important;
+    margin:0 !important;
+    box-sizing:border-box !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+    overscroll-behavior:contain !important;
+    -webkit-overflow-scrolling:touch !important;
+    touch-action:pan-y !important;
+  }
+
+  body.info-modal-open .info-modal .info-box.story-mode{
+    padding:58px 18px 24px !important;
+  }
+
+  body.info-modal-open .info-modal .info-box.story-mode .neris-story-content{
+    padding-bottom:24px !important;
+  }
+
+  body.info-modal-open .info-modal .info-box.story-mode .story-scroll-btn{
+    bottom:14px !important;
+  }
+}
 </style>
 
 RIS ANA SAYFA GİRİŞ ANİMASYONU -->
@@ -3676,7 +3730,23 @@ RIS ANA SAYFA GİRİŞ ANİMASYONU -->
       }
     }
 
-    function openInfo(type){
+    let nerisInfoScrollY = 0;
+
+function lockNerisInfoPageScroll(){
+  if(document.body.classList.contains('info-modal-open')) return;
+  nerisInfoScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+  document.body.classList.add('info-modal-open');
+  document.body.style.top = `-${nerisInfoScrollY}px`;
+}
+
+function unlockNerisInfoPageScroll(){
+  if(!document.body.classList.contains('info-modal-open')) return;
+  document.body.classList.remove('info-modal-open');
+  document.body.style.top = '';
+  window.scrollTo(0, nerisInfoScrollY);
+}
+
+function openInfo(type){
       history.pushState({ nerisInfo: type }, "", "#info");
       const content = document.getElementById('infoContent');
       const data = {
@@ -4131,6 +4201,7 @@ preinfo: {
       }
       document.getElementById('infoModal').classList.add('open');
       document.body.classList.add('modal-open');
+      lockNerisInfoPageScroll();
       if(type === 'favorites' && typeof window.loadFavoritesModal === 'function'){ window.loadFavoritesModal(); }
       if(type === 'cart'){ renderCartModal(); }
     }
@@ -4175,6 +4246,7 @@ preinfo: {
           if(storyBtn)storyBtn.remove();
         }
         document.body.classList.remove("modal-open");
+        unlockNerisInfoPageScroll();
     }
 });
 
@@ -4846,6 +4918,7 @@ function closeInfo(){
     if(storyBtn)storyBtn.remove();
   }
   document.body.classList.remove('modal-open');
+  unlockNerisInfoPageScroll();
   if(location.hash==='#info')history.replaceState(null,'',location.pathname+location.search);
 }
 
