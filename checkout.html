@@ -287,15 +287,56 @@ function getImage(item){
 }
 
 function getPrice(item){
-  const raw = item.price ?? item.fiyat ?? 0;
-  if(typeof raw === 'number') return raw;
-  return Number(String(raw).replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.')) || 0;
+  const raw = item?.price ?? item?.fiyat ?? 0;
+  if(typeof raw === 'number') return Number.isFinite(raw) ? raw : 0;
+
+  let s=String(raw).trim().replace(/[^\d,.-]/g,'');
+  if(!s) return 0;
+
+  if(s.includes(',') && s.includes('.')){
+    if(s.lastIndexOf(',') > s.lastIndexOf('.')) s=s.replace(/\./g,'').replace(',','.');
+    else s=s.replace(/,/g,'');
+  }else if(s.includes(',')){
+    const parts=s.split(',');
+    if(parts[1] && parts[1].length<=2) s=s.replace(/\./g,'').replace(',','.');
+    else s=s.replace(/,/g,'');
+  }else if(s.includes('.')){
+    const parts=s.split('.');
+    if(parts.length===2 && parts[1].length===3) s=parts.join('');
+  }
+
+  const result=Number(s);
+  return Number.isFinite(result) ? result : 0;
 }
 
 function getQuantity(item){
   return Math.max(1, Number(item.quantity) || 1);
 }
 
+
+async function refreshCheckoutProductData(items){
+  if(!Array.isArray(items) || !items.length) return [];
+
+  return await Promise.all(items.map(async item=>{
+    if(!item || !item.id) return item;
+    try{
+      const productSnap=await getDoc(doc(db,'Ürünler',String(item.id)));
+      if(!productSnap.exists()) return item;
+
+      const product={...productSnap.data(),id:productSnap.id};
+      return {
+        ...item,
+        product:product.reklam || item.product,
+        price:product.fiyat ?? item.price,
+        image:product.resim || item.image,
+        shopier:product["Bağlantı"] || item.shopier
+      };
+    }catch(error){
+      console.warn('Checkout ürün bilgisi güncellenemedi:',item.id,error);
+      return item;
+    }
+  }));
+}
 
 async function loadFirebaseCart(){
   return new Promise(async (resolve)=>{
@@ -637,9 +678,10 @@ function getLegacyUrlItem(){
 (async()=>{
   try{
     const items=await loadFirebaseCart();
+    const freshItems=await refreshCheckoutProductData(items);
 
-    if(items.length){
-      renderSummary(items);
+    if(freshItems.length){
+      renderSummary(freshItems);
       return;
     }
 
