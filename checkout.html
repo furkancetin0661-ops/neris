@@ -490,8 +490,14 @@ function renderSummary(items){
     phoneInput.value = digits.slice(0,10);
   });
 
+  const zipInput=document.getElementById('zipCode');
+  zipInput.addEventListener('input',()=>{
+    zipInput.value=zipInput.value.replace(/\D/g,'').slice(0,5);
+    zipInput.style.borderColor='#d9d7d0';
+  });
+
   document.getElementById('payBtn').addEventListener('click', async ()=>{
-    const required=['name','phone','email','identityNumber','address','city','district'];
+    const required=['name','phone','email','identityNumber','address','city','district','zipCode'];
 
     for(const id of required){
       const el=document.getElementById(id);
@@ -525,6 +531,22 @@ function renderSummary(items){
     const customer = Object.fromEntries(required.map(id=>[
       id, document.getElementById(id).value.trim()
     ]));
+
+    // Posta kodu kesin olarak 5 hane olmalı.
+    customer.zipCode = String(customer.zipCode || '').replace(/\D/g,'').slice(0,5);
+    if(!/^\d{5}$/.test(customer.zipCode)){
+      const zipEl=document.getElementById('zipCode');
+      zipEl.focus();
+      zipEl.style.borderColor='#d4af37';
+      document.getElementById('overlay').classList.add('show');
+      const modal=document.querySelector('#overlay .modal');
+      if(modal){
+        modal.querySelector('h3').textContent='Eksik Bilgi';
+        modal.querySelector('p').textContent='Lütfen 5 haneli posta kodunuzu girin.';
+        modal.querySelector('button').textContent='Tamam';
+      }
+      return;
+    }
 
     // +90 arayüzde sabittir; iyzico'ya her zaman +90XXXXXXXXXX gönderilir.
     let normalizedPhone = String(customer.phone || '').replace(/\D/g,'');
@@ -594,6 +616,7 @@ function renderSummary(items){
             identityNumber: identityNumber,
             registrationAddress: customer.address,
             city: customer.city,
+            zipCode: customer.zipCode,
             country: 'Turkey'
           },
 
@@ -602,6 +625,7 @@ function renderSummary(items){
             address: customer.address,
             city: customer.city,
             district: customer.district,
+            zipCode: customer.zipCode,
             country: 'Turkey'
           }
         })
