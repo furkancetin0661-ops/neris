@@ -2,46 +2,639 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Neris Admin</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #050505;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  padding: 40px;
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+}
+
+h1 {
+  font-family: Georgia, serif;
+  font-size: 38px;
+  letter-spacing: 8px;
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.section {
+  background: #111;
+  border: 1px solid #2c2c2c;
+  padding: 30px;
+  margin-bottom: 30px;
+  border-radius: 4px;
+}
+
+.section-title {
+  color: #d4af37;
+  font-family: Georgia, serif;
+  font-size: 25px;
+  margin-bottom: 25px;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 14px;
+  background: #080808;
+  color: #fff;
+  border: 1px solid #444;
+  outline: none;
+}
+
+input:focus,
+select:focus {
+  border-color: #c9a44c;
+}
+
+button {
+  border: none;
+  padding: 14px 22px;
+  cursor: pointer;
+  background: #c9a44c;
+  color: #fff;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+button:hover {
+  background: #b28d35;
+}
+
+.message {
+  margin-top: 15px;
+  color: #d4af37;
+}
+
+.orders {
+  display: grid;
+  gap: 15px;
+}
+
+.order {
+  border: 1px solid #333;
+  background: #090909;
+  padding: 22px;
+}
+
+.order-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.order-name {
+  font-family: Georgia, serif;
+  font-size: 22px;
+}
+
+.order-info {
+  color: #aaa;
+  margin-top: 8px;
+  line-height: 1.7;
+}
+
+.order-status {
+  min-width: 220px;
+  margin: 0;
+}
+
+.update-btn {
+  margin-top: 10px;
+  width: 100%;
+}
+
+.loading {
+  color: #aaa;
+}
+
+.empty {
+  color: #999;
+  padding: 20px 0;
+}
+
+.gold {
+  color: #d4af37;
+}
+
+@media (max-width: 700px) {
+  body {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+
+  .section {
+    padding: 20px;
+  }
+
+  .order-top {
+    display: block;
+  }
+
+  .order-status {
+    width: 100%;
+    margin-top: 15px;
+  }
+}
+</style>
 </head>
 
-<body style="background:black;color:white;padding:40px">
+<body>
 
-<h2>Ürün Ekle</h2>
+<div class="container">
 
-<input id="name" placeholder="Ürün adı"><br><br>
-<input id="price" placeholder="Fiyat"><br><br>
-<input id="img" placeholder="Görsel URL"><br><br>
-<input id="link" placeholder="Shopier link"><br><br>
+  <h1>NERIS ADMIN</h1>
 
-<button onclick="addProduct()">EKLE</button>
+  <!-- ÜRÜN EKLE -->
+  <div class="section">
+
+    <div class="section-title">
+      Ürün Ekle
+    </div>
+
+    <input
+      id="name"
+      placeholder="Ürün adı"
+    >
+
+    <input
+      id="price"
+      placeholder="Fiyat"
+      type="number"
+      step="0.01"
+    >
+
+    <input
+      id="img"
+      placeholder="Görsel URL"
+    >
+
+    <input
+      id="link"
+      placeholder="Ürün linki"
+    >
+
+    <button onclick="addProduct()">
+      ÜRÜN EKLE
+    </button>
+
+    <div id="productMessage" class="message"></div>
+
+  </div>
+
+
+  <!-- SİPARİŞLER -->
+  <div class="section">
+
+    <div class="section-title">
+      Sipariş Yönetimi
+    </div>
+
+    <div id="orders" class="orders">
+      <div class="loading">
+        Siparişler yükleniyor...
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  updateDoc,
+  doc,
+  query,
+  orderBy
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+/* =========================
+   FIREBASE
+========================= */
 
 const firebaseConfig = {
+
   apiKey: "AIzaSyBcoeTk7aZhocmMQVPMHjVK-NfG0JUiS7I",
-  authDomain: "nerissite-dc8ec.firebaseapp.com",
-  projectId: "nerissite-dc8ec",
-  storageBucket: "nerissite-dc8ec.firebasestorage.app",
-  messagingSenderId: "943518451048",
-  appId: "1:943518451048:web:e07e8594f5c1cc53c1c2dd"
+
+  authDomain:
+    "nerissite-dc8ec.firebaseapp.com",
+
+  projectId:
+    "nerissite-dc8ec",
+
+  storageBucket:
+    "nerissite-dc8ec.firebasestorage.app",
+
+  messagingSenderId:
+    "943518451048",
+
+  appId:
+    "1:943518451048:web:e07e8594f5c1cc53c1c2dd"
+
 };
 
+
 const app = initializeApp(firebaseConfig);
+
 const db = getFirestore(app);
 
-window.addProduct = async function() {
-  await addDoc(collection(db, "products"), {
-    name: document.getElementById("name").value,
-    price: document.getElementById("price").value,
-    img: document.getElementById("img").value,
-    link: document.getElementById("link").value
-  });
 
-  alert("Ürün eklendi!");
+/* =========================
+   ÜRÜN EKLE
+========================= */
+
+window.addProduct = async function () {
+
+  const name =
+    document.getElementById("name").value.trim();
+
+  const price =
+    document.getElementById("price").value.trim();
+
+  const img =
+    document.getElementById("img").value.trim();
+
+  const link =
+    document.getElementById("link").value.trim();
+
+
+  if (!name || !price || !img) {
+
+    alert("Ürün adı, fiyat ve görsel zorunludur.");
+
+    return;
+  }
+
+
+  try {
+
+    await addDoc(
+      collection(db, "products"),
+      {
+
+        name: name,
+
+        price: price,
+
+        img: img,
+
+        link: link,
+
+        createdAt: new Date().toISOString()
+
+      }
+    );
+
+
+    document.getElementById("productMessage").textContent =
+      "✓ Ürün başarıyla eklendi.";
+
+    document.getElementById("name").value = "";
+    document.getElementById("price").value = "";
+    document.getElementById("img").value = "";
+    document.getElementById("link").value = "";
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "Ürün eklenemedi: " +
+      error.message
+    );
+
+  }
+
+};
+
+
+/* =========================
+   SİPARİŞLERİ GETİR
+========================= */
+
+async function loadOrders() {
+
+  const ordersContainer =
+    document.getElementById("orders");
+
+
+  ordersContainer.innerHTML =
+    '<div class="loading">Siparişler yükleniyor...</div>';
+
+
+  try {
+
+    const snapshot =
+      await getDocs(
+        collection(db, "siparisler")
+      );
+
+
+    if (snapshot.empty) {
+
+      ordersContainer.innerHTML =
+        '<div class="empty">Henüz sipariş bulunmuyor.</div>';
+
+      return;
+    }
+
+
+    ordersContainer.innerHTML = "";
+
+
+    snapshot.forEach((orderDoc) => {
+
+      const data =
+        orderDoc.data();
+
+      createOrderCard(
+        orderDoc.id,
+        data
+      );
+
+    });
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    ordersContainer.innerHTML =
+      `<div class="empty">
+        Siparişler yüklenemedi.<br><br>
+        ${escapeHtml(error.message)}
+      </div>`;
+
+  }
+
 }
+
+
+/* =========================
+   SİPARİŞ KARTI
+========================= */
+
+function createOrderCard(id, data) {
+
+  const container =
+    document.getElementById("orders");
+
+
+  const order =
+    document.createElement("div");
+
+  order.className =
+    "order";
+
+
+  const urunAdi =
+    data.urunAdi ||
+    data.name ||
+    "Ürün";
+
+
+  const fiyat =
+    Number(data.fiyat || data.toplam || 0);
+
+
+  const adet =
+    Number(data.adet || 1);
+
+
+  const durum =
+    data.durum ||
+    "Ödeme Alındı";
+
+
+  const siparisNo =
+    data.siparisNo ||
+    id;
+
+
+  order.innerHTML = `
+
+    <div class="order-top">
+
+      <div>
+
+        <div class="order-name">
+          ${escapeHtml(urunAdi)}
+        </div>
+
+        <div class="order-info">
+
+          <span class="gold">
+            Sipariş No:
+          </span>
+
+          ${escapeHtml(String(siparisNo))}
+
+          <br>
+
+          <span class="gold">
+            Adet:
+          </span>
+
+          ${adet}
+
+          <br>
+
+          <span class="gold">
+            Tutar:
+          </span>
+
+          ₺${fiyat.toFixed(2)}
+
+          <br>
+
+          <span class="gold">
+            Kullanıcı:
+          </span>
+
+          ${escapeHtml(
+            data.kullaniciId || "Belirtilmemiş"
+          )}
+
+        </div>
+
+      </div>
+
+
+      <div>
+
+        <select
+          class="order-status"
+          id="status-${id}"
+        >
+
+          <option value="Ödeme Alındı"
+            ${durum === "Ödeme Alındı" ? "selected" : ""}>
+            Ödeme Alındı
+          </option>
+
+          <option value="Hazırlanıyor"
+            ${durum === "Hazırlanıyor" ? "selected" : ""}>
+            Hazırlanıyor
+          </option>
+
+          <option value="Kargoya Verildi"
+            ${durum === "Kargoya Verildi" ? "selected" : ""}>
+            Kargoya Verildi
+          </option>
+
+          <option value="Teslim Edildi"
+            ${durum === "Teslim Edildi" ? "selected" : ""}>
+            Teslim Edildi
+          </option>
+
+        </select>
+
+
+        <button
+          class="update-btn"
+          onclick="updateOrderStatus('${id}')"
+        >
+          DURUMU GÜNCELLE
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
+
+
+  container.appendChild(order);
+
+}
+
+
+/* =========================
+   DURUM GÜNCELLE
+========================= */
+
+window.updateOrderStatus =
+  async function (orderId) {
+
+    const select =
+      document.getElementById(
+        "status-" + orderId
+      );
+
+
+    if (!select) {
+
+      alert("Durum alanı bulunamadı.");
+
+      return;
+    }
+
+
+    const newStatus =
+      select.value;
+
+
+    try {
+
+      await updateDoc(
+        doc(
+          db,
+          "siparisler",
+          orderId
+        ),
+        {
+
+          durum: newStatus,
+
+          durumGuncellemeTarihi:
+            new Date().toISOString()
+
+        }
+      );
+
+
+      alert(
+        "✓ Sipariş durumu güncellendi: " +
+        newStatus
+      );
+
+
+      await loadOrders();
+
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "Sipariş güncellenemedi: " +
+        error.message
+      );
+
+    }
+
+  };
+
+
+/* =========================
+   GÜVENLİ HTML
+========================= */
+
+function escapeHtml(value) {
+
+  return String(value)
+
+    .replaceAll("&", "&amp;")
+
+    .replaceAll("<", "&lt;")
+
+    .replaceAll(">", "&gt;")
+
+    .replaceAll('"', "&quot;")
+
+    .replaceAll("'", "&#039;");
+
+}
+
+
+/* =========================
+   BAŞLAT
+========================= */
+
+loadOrders();
+
 </script>
 
 </body>
