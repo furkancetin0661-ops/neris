@@ -277,7 +277,7 @@ const firebaseConfig = {
 };
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 const app = initializeApp(firebaseConfig);
@@ -564,7 +564,76 @@ function renderSummary(items){
 
     customer.phone = '+90' + normalizedPhone;
 
+    // Ödeme dönüşünde Firebase Auth oturumu kaybolsa bile
+    // siparişi güvenli şekilde güncelleyebilmek için kullanıcının
+    // kimliği + kısa ömürlü ID token'ı yalnızca sessionStorage'da tutulur.
+    const currentUser = auth.currentUser;
+    if(!currentUser){
+      document.getElementById('overlay').classList.add('show');
+      const modal=document.querySelector('#overlay .modal');
+      if(modal){
+        modal.querySelector('h3').textContent='Giriş Gerekli';
+        modal.querySelector('p').textContent='Ödeme için hesabınıza giriş yapmanız gerekiyor.';
+        modal.querySelector('button').textContent='Tamam';
+      }
+      return;
+    }
+
+    const orderNo =
+      'NER-' +
+      new Date().toISOString().slice(0,10).replace(/-/g,'') +
+      '-' +
+      Math.random().toString(36).slice(2,7).toUpperCase();
+
+    const idToken = await currentUser.getIdToken();
+
+    const orderItems = grouped.map(item => ({
+      id: String(item.id || ''),
+      urunAdi: String(item.product || item.reklam || 'Neris Ürün'),
+      fiyat: Number(getPrice(item).toFixed(2)),
+      beden: String(item.size || item.beden || '-'),
+      adet: Math.max(1, Number(getQuantity(item)) || 1),
+      resim: String(getImage(item) || '')
+    }));
+
+    const orderNow = new Date().toISOString();
+
+    // Siparişi ödeme başlamadan önce oluşturuyoruz.
+    // Böylece iyzico'nun dönüş sayfasında Firebase Auth oturumu
+    // yeniden kurulmasa bile sipariş kaydı kaybolmıyor.
+    await setDoc(doc(db, 'siparisler', orderNo), {
+      siparisNo: orderNo,
+      kullaniciId: currentUser.uid,
+      kullaniciEmail: currentUser.email || customer.email || '',
+      durum: 'Ödeme Bekleniyor',
+      toplam: Number(total.toFixed(2)),
+      paraBirimi: 'TRY',
+      paymentId: '',
+      urunler: orderItems,
+      musteri: {
+        adSoyad: customer.name || '',
+        email: customer.email || '',
+        telefon: customer.phone || '',
+        tc: identityNumber,
+        adres: customer.address || '',
+        ilce: customer.district || '',
+        sehir: customer.city || '',
+        postaKodu: customer.zipCode || ''
+      },
+      olusturmaTarihi: orderNow,
+      guncellenmeTarihi: orderNow,
+      durumGecmisi: [
+        {
+          durum: 'Ödeme Bekleniyor',
+          tarih: orderNow
+        }
+      ]
+    });
+
     sessionStorage.setItem('nerisCheckout',JSON.stringify({
+      orderNo,
+      userId: currentUser.uid,
+      idToken,
       items:grouped,
       subtotal,
       shipping,
@@ -591,6 +660,7 @@ function renderSummary(items){
         body:JSON.stringify({
           price: total.toFixed(2),
           basketId: 'NERIS-' + Date.now(),
+          orderNo,
 
           // Worker/iyzico'ya sepet toplamını oluşturan gerçek kalemleri gönderiyoruz.
           // iyzico 0 TL'lik ayrı bir basket kalemini kabul etmeyebilir.
