@@ -5395,11 +5395,51 @@ import {
       .catch((error) => console.warn("Neris Auth persistence:", error));
 
 
+    function normalizeProductImageUrl(value){
+      let url = String(value || "").trim();
+      if(!url) return "";
+
+      // Firestore'a yanlışlıkla GitHub "blob" adresi kaydedildiyse
+      // otomatik olarak görsel için kullanılabilen raw adresine çevir.
+      url = url.replace(
+        /^https?:\/\/github\.com\/([^/]+)\/([^/]+)\/blob\/(.+)$/i,
+        "https://raw.githubusercontent.com/$1/$2/$3"
+      );
+
+      // Başında/sonunda oluşabilecek boşlukları temizle.
+      return url.trim();
+    }
+
+    function getMainProductImage(product){
+      if(!product) return "";
+
+      const candidates = [
+        product.resim,
+        product.img,
+        product.image,
+        product.imageUrl,
+        product.imageURL,
+        product.gorsel,
+        product.görsel
+      ];
+
+      for(const candidate of candidates){
+        const url = normalizeProductImageUrl(candidate);
+        if(url) return url;
+      }
+
+      return "";
+    }
+
     function renderProducts(products){
       const container = document.getElementById("productsGrid");
       if(!container) return;
 
       container.innerHTML = "";
+
+      if(!Array.isArray(products) || !products.length){
+        return;
+      }
 
       products.forEach((p,index)=>{
         const card = document.createElement("div");
@@ -5412,18 +5452,21 @@ import {
             .replace(',','.')
         );
 
+        const productName = String(p.reklam || p.name || "Ürün").trim();
+        const badgeText = String(p.rozet || p.badge || "NEW").trim();
+        const imageUrl = getMainProductImage(p);
+
         card.innerHTML = `
           <div class="card-image">
-            <div class="badge">${p.rozet || "NEW"}</div>
+            <div class="badge"></div>
             <img
-              src="${p.resim || 'https://picsum.photos/500/650'}"
-              alt="${p.reklam || 'Neris Ürün'}"
+              alt=""
               ${index < 4 ? 'fetchpriority="high"' : 'loading="lazy"'}
               decoding="async"
             >
           </div>
           <div class="card-content">
-            <h3>${p.reklam || "Ürün"}</h3>
+            <h3></h3>
             <div class="card-stock">* Bu ürünün seçenekleri mevcut</div>
             <p class="product-price">
               <span class="price-value">${price.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
@@ -5432,14 +5475,57 @@ import {
           </div>
         `;
 
-        container.appendChild(card);
-
+        const badge = card.querySelector(".badge");
+        const title = card.querySelector(".card-content h3");
         const productImage = card.querySelector(".card-image img");
+
+        if(badge) badge.textContent = badgeText;
+        if(title) title.textContent = productName;
+
         if(productImage){
+          productImage.alt = productName;
           productImage.style.cursor = "pointer";
           productImage.setAttribute("tabindex","0");
           productImage.setAttribute("role","button");
-          productImage.setAttribute("aria-label",`${p.reklam || "Ürün"} detaylarını aç`);
+          productImage.setAttribute("aria-label",`${productName} detaylarını aç`);
+
+          if(imageUrl){
+            productImage.src = imageUrl;
+
+            // Görsel yüklenmezse kartın tamamen bozulmasını engelle.
+            // Önce diğer olası Firestore alanlarını sırayla dene.
+            const alternateImages = [
+              p.resim2,
+              p.resim3,
+              p["2. resim"],
+              p["resim 2"],
+              p["Resim 2"],
+              p.image2,
+              p.image_2,
+              p.img2
+            ]
+              .map(normalizeProductImageUrl)
+              .filter(Boolean)
+              .filter((url)=>url !== imageUrl);
+
+            let alternateIndex = 0;
+
+            productImage.addEventListener("error", function(){
+              if(alternateIndex < alternateImages.length){
+                this.src = alternateImages[alternateIndex++];
+                return;
+              }
+
+              // Son çare: görsel alanını kırık ikon yerine sade Neris alanı yap.
+              this.removeAttribute("src");
+              this.style.background = "#111";
+              this.style.objectFit = "contain";
+              this.alt = `${productName} görseli`;
+            }, {once:false});
+          }else{
+            productImage.style.background = "#111";
+            productImage.alt = `${productName} görseli`;
+          }
 
           productImage.addEventListener("click",function(){
             if(typeof window.openProductDetail === "function"){
@@ -5455,6 +5541,8 @@ import {
             }
           });
         }
+
+        container.appendChild(card);
       });
     }
 
