@@ -255,8 +255,8 @@ body{
 <div class="free-shipping-box">
   <div class="free-shipping-icon">✦</div>
   <div>
-    <strong>Kargo 80 TL</strong>
-    <span>2–4 iş günü içerisinde adresinize güvenli teslimat. Sabit kargo ücreti 80 TL'dir.</span>
+    <strong>Kargo Ücretsiz</strong>
+    <span>2–4 iş günü içerisinde adresinize güvenli teslimat. Test aşamasında kargo ücreti alınmamaktadır.</span>
   </div>
 </div>
 <div class="pay-note"><span class="shield">♢</span><span>Ödeme aşamasında kart bilgileriniz Neris tarafından saklanmaz. Gerçek kart ödemesi, güvenli ödeme sağlayıcısı üzerinden gerçekleştirilecektir.</span></div>
@@ -436,14 +436,10 @@ function renderSummary(items){
     return sum + getPrice(item) * getQuantity(item);
   },0);
 
-  // NERIS TEST ÜRÜNÜ için test sırasında kargo ücretsiz.
-  // Gerçek ürünlerde mevcut 80 TL kargo ücreti korunur.
-  const hasTestProduct = grouped.some(item =>
-    String(item.product || item.name || item.reklam || '').trim().toUpperCase() === 'NERIS TEST ÜRÜNÜ'
-  );
-
-  const shipping = hasTestProduct ? 0 : 80;
-  const total = subtotal + shipping;
+  // TEST AŞAMASI: Checkout'ta kargo tamamen ücretsiz.
+  // Böylece iyzico'ya gönderilen toplamda da kargo eklenmez.
+  const shipping = 0;
+  const total = subtotal;
   const totalQuantity = grouped.reduce((n,x)=>n+getQuantity(x),0);
 
   sc.innerHTML = `
