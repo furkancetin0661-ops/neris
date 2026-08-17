@@ -593,17 +593,19 @@ function renderSummary(items){
           basketId: 'NERIS-' + Date.now(),
 
           // Worker/iyzico'ya sepet toplamını oluşturan gerçek kalemleri gönderiyoruz.
+          // iyzico 0 TL'lik ayrı bir basket kalemini kabul etmeyebilir.
+          // Kargo ücretsiz olduğunda kargo kalemini hiç göndermiyoruz.
           basketItems: [
             ...grouped.map(item => ({
               id: String(item.id || item.product || item.reklam || 'NERIS-URUN'),
               name: String(item.product || item.reklam || 'Neris Ürün'),
               price: (getPrice(item) * getQuantity(item)).toFixed(2)
             })),
-            {
+            ...(shipping > 0 ? [{
               id: 'NERIS-KARGO',
               name: 'Kargo',
               price: shipping.toFixed(2)
-            }
+            }] : [])
           ],
 
           productId: first.id || '',
