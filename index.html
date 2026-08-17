@@ -4768,6 +4768,24 @@ async function loadNerisCartFromFirebase(){
     return [];
   }
 
+  const localKey=`nerisCart_${user.uid}`;
+
+  // ÖNCE cihazdaki kullanıcıya özel son sepeti göster.
+  // Böylece sayı ve sepet penceresi Firebase ağ cevabını beklemez.
+  let hasLocal=false;
+  try{
+    const local=JSON.parse(localStorage.getItem(localKey)||'null');
+    if(Array.isArray(local)){
+      nerisCartCache=local;
+      hasLocal=true;
+      nerisCartSyncReady=true;
+      updateCartCount();
+      if(document.getElementById('infoModal')?.classList.contains('open')){
+        renderCartModal(false);
+      }
+    }
+  }catch(e){}
+
   try{
     const ref=fs.doc(db,'sepetler',user.uid);
     const snap=await fs.getDoc(ref);
@@ -4775,31 +4793,56 @@ async function loadNerisCartFromFirebase(){
     if(snap.exists()){
       const data=snap.data()||{};
       const storedItems=Array.isArray(data.items)?data.items:[];
-      // Sepetteki eski fiyatları değil, Ürünler koleksiyonundaki güncel fiyatı kullan.
-      nerisCartCache=await refreshNerisCartProductData(storedItems,true);
-    }else{
-      // Daha önce localStorage ile kullanılan sepet varsa, ilk girişte
-      // kullanıcının kendi Firebase sepetine bir kez aktar.
+
+      // Firebase verisini aldıktan sonra önce ekrana ver,
+      // ürün fiyat/görsel yenilemesini arka planda yap.
+      nerisCartCache=storedItems;
+      try{ localStorage.setItem(localKey,JSON.stringify(storedItems)); }catch(e){}
+      nerisCartSyncReady=true;
+      updateCartCount();
+
+      const refreshedPromise=refreshNerisCartProductData(storedItems,true);
+      refreshedPromise.then(refreshed=>{
+        nerisCartCache=refreshed;
+        try{ localStorage.setItem(localKey,JSON.stringify(refreshed)); }catch(e){}
+        updateCartCount();
+        if(document.getElementById('infoModal')?.classList.contains('open')){
+          renderCartModal(false);
+        }
+      }).catch(error=>{
+        console.warn('Sepet ürün detayları arka planda yenilenemedi:',error);
+      });
+
+    }else if(!hasLocal){
+      // İlk kez kullanan kullanıcı: eski genel sepeti bir kez aktar.
       let legacy=[];
-      try{
-        legacy=JSON.parse(localStorage.getItem('nerisCart')||'[]');
-      }catch(e){ legacy=[]; }
+      try{ legacy=JSON.parse(localStorage.getItem('nerisCart')||'[]'); }catch(e){ legacy=[]; }
 
       nerisCartCache=Array.isArray(legacy)?legacy:[];
-      nerisCartCache=await refreshNerisCartProductData(nerisCartCache,false);
+      try{ localStorage.removeItem('nerisCart'); }catch(e){}
+
       if(nerisCartCache.length){
-        await fs.setDoc(ref,{
-          items:nerisCartCache,
-          updatedAt:new Date()
-        },{merge:true});
+        try{ localStorage.setItem(localKey,JSON.stringify(nerisCartCache)); }catch(e){}
+        nerisCartSyncReady=true;
+        updateCartCount();
+
+        const refreshed=await refreshNerisCartProductData(nerisCartCache,false);
+        nerisCartCache=refreshed;
+        try{ localStorage.setItem(localKey,JSON.stringify(refreshed)); }catch(e){}
+        await fs.setDoc(ref,{items:nerisCartCache,updatedAt:new Date()},{merge:true});
+      }else{
+        nerisCartSyncReady=true;
+        updateCartCount();
       }
     }
 
-    // Aynı cihazdaki eski genel anahtarı temizle; sepetin tek kaynağı Firebase olsun.
     try{ localStorage.removeItem('nerisCart'); }catch(e){}
   }catch(error){
     console.error('Firebase sepeti yüklenemedi:',error);
-    nerisCartCache=[];
+    // Firebase geçici olarak cevap vermezse yerel kullanıcı sepetini koru.
+    if(!hasLocal) nerisCartCache=[];
+    nerisCartSyncReady=true;
+    updateCartCount();
   }
 
   nerisCartSyncReady=true;
@@ -4811,6 +4854,13 @@ async function saveNerisCartToFirebase(){
   const ref=getNerisCartRef();
   const fs=window.nerisFirestore;
   const db=window.nerisDb;
+  const user=getNerisCurrentUser();
+
+  // UI anında güncellensin; Firebase ağını beklemesin.
+  if(user){
+    try{ localStorage.setItem(`nerisCart_${user.uid}`,JSON.stringify(nerisCartCache)); }catch(e){}
+  }
+
   if(!ref || !fs || !db) return false;
 
   try{
@@ -4868,6 +4918,10 @@ async function addProductToCart(){
   if(same) same.quantity+=item.quantity;
   else nerisCartCache.push(item);
 
+  const cartUser=getNerisCurrentUser();
+  if(cartUser){
+    try{ localStorage.setItem(`nerisCart_${cartUser.uid}`,JSON.stringify(nerisCartCache)); }catch(e){}
+  }
   updateCartCount();
   try{ await queueNerisCartSave(); }catch(e){ console.warn('Sepet senkronizasyonu atlandı:',e); }
 
@@ -4885,7 +4939,7 @@ function formatCartPrice(value){
   return '₺'+n.toLocaleString('tr-TR',{minimumFractionDigits:0,maximumFractionDigits:2});
 }
 
-async function renderCartModal(){
+async function renderCartModal(refresh=true){
   const box=document.getElementById('cartContent');
   if(!box) return;
   if(!window.nerisAuthStateReady){
@@ -4898,11 +4952,17 @@ async function renderCartModal(){
     return;
   }
   let cart=getNerisCart();
-  try{
-    cart=await refreshNerisCartProductData(cart,true);
-    nerisCartCache=cart;
-  }catch(error){
-    console.warn('Sepet açılırken ürün fiyatları yenilenemedi:',error);
+  if(refresh){
+    try{
+      cart=await refreshNerisCartProductData(cart,true);
+      nerisCartCache=cart;
+      const user=getNerisCurrentUser();
+      if(user){
+        try{ localStorage.setItem(`nerisCart_${user.uid}`,JSON.stringify(cart)); }catch(e){}
+      }
+    }catch(error){
+      console.warn('Sepet açılırken ürün fiyatları yenilenemedi:',error);
+    }
   }
   if(!cart.length){
     box.innerHTML='<div class="favorites-empty"><div class="favorites-icon">🛒</div><h3>Sepetiniz boş</h3><p>Beğendiğiniz ürünleri beden seçerek sepetinize ekleyebilirsiniz.</p></div>';
@@ -4939,9 +4999,13 @@ async function removeCartItem(index){
   if(index<0 || index>=cart.length) return;
   cart.splice(index,1);
   nerisCartCache=cart;
+  const user=getNerisCurrentUser();
+  if(user){
+    try{ localStorage.setItem(`nerisCart_${user.uid}`,JSON.stringify(nerisCartCache)); }catch(e){}
+  }
   updateCartCount();
   await queueNerisCartSave();
-  renderCartModal();
+  renderCartModal(false);
 }
 window.removeCartItem=removeCartItem;
 
@@ -5691,8 +5755,15 @@ onAuthStateChanged(auth,function(user){
   if(!loginLink)return;
 
   if(user){
-    nerisCartSyncReady=false;
-    nerisCartCache=[];
+    // Oturum açılır açılmaz yerel kullanıcı sepetini göster; Firebase arka planda eşitlenir.
+    nerisCartSyncReady=true;
+    try{
+      const cached=JSON.parse(localStorage.getItem(`nerisCart_${user.uid}`)||'null');
+      nerisCartCache=Array.isArray(cached)?cached:[];
+    }catch(e){
+      nerisCartCache=[];
+    }
+    updateCartCount();
     nerisCartSyncPromise=loadNerisCartFromFirebase();
     const userName=(user.displayName && user.displayName.trim()) || (user.email?user.email.split('@')[0]:'HESABIM');
     if(accountName) accountName.textContent=userName;
