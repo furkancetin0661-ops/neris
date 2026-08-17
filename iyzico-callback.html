@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Neris | Ödeme Sonucu</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: #f7f7f7;
+      color: #111;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 520px;
+      background: #fff;
+      border: 1px solid #e7e7e7;
+      border-radius: 18px;
+      padding: 42px 30px;
+      text-align: center;
+      box-shadow: 0 12px 40px rgba(0,0,0,.08);
+    }
+
+    .logo {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 42px;
+      letter-spacing: 7px;
+      margin-bottom: 30px;
+    }
+
+    .icon {
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      margin: 0 auto 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      font-weight: bold;
+    }
+
+    .success .icon {
+      background: #111;
+      color: #fff;
+    }
+
+    .failure .icon {
+      background: #eee;
+      color: #111;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 30px;
+      font-weight: 500;
+    }
+
+    p {
+      margin: 0 auto 24px;
+      max-width: 400px;
+      line-height: 1.6;
+      color: #666;
+      font-size: 15px;
+    }
+
+    .payment-id {
+      margin: 18px 0 26px;
+      padding: 13px;
+      background: #fafafa;
+      border-radius: 10px;
+      font-size: 13px;
+      color: #555;
+      word-break: break-all;
+    }
+
+    .button {
+      display: inline-block;
+      width: 100%;
+      padding: 15px 20px;
+      border-radius: 10px;
+      background: #111;
+      color: #fff;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 600;
+      transition: .2s;
+    }
+
+    .button:hover {
+      opacity: .85;
+    }
+
+    .loading {
+      color: #777;
+      font-size: 14px;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 34px 22px;
+      }
+
+      .logo {
+        font-size: 36px;
+      }
+
+      h1 {
+        font-size: 26px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card" id="resultCard">
+    <div class="logo">NERIS</div>
+
+    <div class="icon" id="resultIcon">
+      …
+    </div>
+
+    <h1 id="resultTitle">
+      Ödeme sonucu kontrol ediliyor
+    </h1>
+
+    <p id="resultMessage" class="loading">
+      Lütfen bekleyin...
+    </p>
+
+    <div
+      class="payment-id"
+      id="paymentIdBox"
+      style="display:none;"
+    ></div>
+
+    <a
+      href="https://neris.com.tr/"
+      class="button"
+    >
+      Neris'e Dön
+    </a>
+  </div>
+
+  <script>
+    (function () {
+
+      const params =
+        new URLSearchParams(
+          window.location.search
+        );
+
+      const status =
+        String(
+          params.get("status") || ""
+        ).toLowerCase();
+
+      const message =
+        params.get("message") ||
+        "";
+
+      const paymentId =
+        params.get("paymentId") ||
+        "";
+
+      const card =
+        document.getElementById(
+          "resultCard"
+        );
+
+      const icon =
+        document.getElementById(
+          "resultIcon"
+        );
+
+      const title =
+        document.getElementById(
+          "resultTitle"
+        );
+
+      const resultMessage =
+        document.getElementById(
+          "resultMessage"
+        );
+
+      const paymentIdBox =
+        document.getElementById(
+          "paymentIdBox"
+        );
+
+      // =====================================================
+      // BAŞARILI
+      // =====================================================
+
+      if (status === "success") {
+
+        card.classList.add(
+          "success"
+        );
+
+        icon.textContent = "✓";
+
+        title.textContent =
+          "Ödemeniz Başarılı";
+
+        resultMessage.textContent =
+          "Siparişiniz başarıyla oluşturuldu. Bizi tercih ettiğiniz için teşekkür ederiz.";
+
+        if (paymentId) {
+          paymentIdBox.style.display =
+            "block";
+
+          paymentIdBox.textContent =
+            "Ödeme No: " +
+            paymentId;
+        }
+
+        return;
+      }
+
+      // =====================================================
+      // BAŞARISIZ
+      // =====================================================
+
+      card.classList.add(
+        "failure"
+      );
+
+      icon.textContent = "×";
+
+      title.textContent =
+        "Ödeme Tamamlanamadı";
+
+      if (message) {
+        resultMessage.textContent =
+          decodeURIComponent(
+            message
+          );
+      } else {
+        resultMessage.textContent =
+          "Ödeme işlemi tamamlanamadı. Lütfen tekrar deneyin.";
+      }
+
+    })();
+  </script>
+
+</body>
+</html>
