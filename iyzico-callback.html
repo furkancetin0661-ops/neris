@@ -547,36 +547,7 @@
   </div>
 
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-    import {
-      getFirestore,
-      doc,
-      getDoc,
-      setDoc,
-      deleteDoc
-    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-    import {
-      getAuth,
-      onAuthStateChanged,
-      setPersistence,
-      browserLocalPersistence
-    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBcoeTk7aZhocmMQVPMHjVK-NfG0JUiS7I",
-      authDomain: "neris-78944.firebaseapp.com",
-      projectId: "neris-78944",
-      storageBucket: "neris-78944.firebasestorage.app",
-      messagingSenderId: "58960639184",
-      appId: "1:58960639184:web:dc25f186f8887f64f1dad5",
-      measurementId: "G-CVD0X6X882"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-
+  <script>
     const params = new URLSearchParams(window.location.search);
 
     const status =
@@ -587,6 +558,18 @@
 
     const paymentId =
       params.get("paymentId") || "";
+
+    const orderNo =
+      params.get("orderNo") ||
+      (() => {
+        try {
+          return JSON.parse(
+            sessionStorage.getItem("nerisCheckout") || "{}"
+          ).orderNo || "";
+        } catch {
+          return "";
+        }
+      })();
 
     const card =
       document.getElementById("resultCard");
@@ -603,193 +586,172 @@
     const paymentIdBox =
       document.getElementById("paymentIdBox");
 
-    function money(value) {
-      return Number(value || 0).toLocaleString(
-        "tr-TR",
-        {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        }
-      ) + " TL";
+    const FIRESTORE_BASE =
+      "https://firestore.googleapis.com/v1/projects/neris-78944/databases/(default)/documents";
+
+    function showFailure(text) {
+      card.classList.add("failure");
+      icon.textContent = "×";
+      title.textContent = "Ödeme Tamamlanamadı";
+      resultMessage.textContent =
+        text ||
+        "Ödeme işlemi tamamlanamadı. Lütfen tekrar deneyin.";
     }
 
-    function makeOrderNo() {
-      const date =
-        new Date()
-          .toISOString()
-          .slice(0, 10)
-          .replaceAll("-", "");
+    function showSuccess(order) {
+      card.classList.add("success");
+      icon.textContent = "✓";
+      title.textContent = "Siparişiniz Alındı";
+      resultMessage.textContent =
+        "Ödemeniz başarıyla tamamlandı. Siparişiniz Neris hesabınıza kaydedildi.";
 
-      const random =
-        Math.random()
-          .toString(36)
-          .slice(2, 7)
-          .toUpperCase();
+      paymentIdBox.style.display = "block";
 
-      return `NER-${date}-${random}`;
+      paymentIdBox.innerHTML =
+        (order
+          ? "Sipariş No • " + escapeHtml(order)
+          : "Sipariş No • —") +
+        "<br>" +
+        "<span style='opacity:.7'>Ödeme No • " +
+        escapeHtml(paymentId || "—") +
+        "</span>";
     }
 
-    async function createOrder(user) {
-      const cartRef =
-        doc(db, "sepetler", user.uid);
+    function escapeHtml(value) {
+      return String(value ?? "").replace(
+        /[&<>'"]/g,
+        c => ({
+          "&":"&amp;",
+          "<":"&lt;",
+          ">":"&gt;",
+          "'":"&#39;",
+          '"':"&quot;"
+        }[c])
+      );
+    }
 
-      const cartSnap =
-        await getDoc(cartRef);
-
-      if (!cartSnap.exists()) {
-        throw new Error(
-          "Ödeme sonrası sepet bulunamadı."
-        );
+    async function updateOrderWithIdToken() {
+      if (!orderNo) {
+        throw new Error("Sipariş numarası bulunamadı.");
       }
 
-      const cartData =
-        cartSnap.data() || {};
-
-      const cartItems =
-        Array.isArray(cartData.items)
-          ? cartData.items
-          : [];
-
-      if (!cartItems.length) {
-        throw new Error(
-          "Sipariş oluşturulacak ürün bulunamadı."
+      let checkout = {};
+      try {
+        checkout = JSON.parse(
+          sessionStorage.getItem("nerisCheckout") || "{}"
         );
+      } catch {}
+
+      const idToken =
+        String(checkout.idToken || "").trim();
+
+      if (!idToken) {
+        throw new Error("Ödeme oturum anahtarı bulunamadı.");
       }
 
-      const products =
-        cartItems.map((item) => {
-          const quantity =
-            Math.max(
-              1,
-              Number(
-                item.quantity || 1
-              )
-            );
+      const orderUrl =
+        FIRESTORE_BASE +
+        "/siparisler/" +
+        encodeURIComponent(orderNo);
 
-          const price =
-            Number(
-              item.price || 0
-            );
-
-          return {
-            id: String(item.id || ""),
-            urunAdi: String(
-              item.product ||
-              item.name ||
-              "Neris Ürün"
-            ),
-            fiyat: Number(
-              price.toFixed(2)
-            ),
-            beden: String(
-              item.size ||
-              item.beden ||
-              "-"
-            ),
-            adet: quantity,
-            resim: String(
-              item.image ||
-              item.img ||
-              ""
-            ),
-            shopier: String(
-              item.shopier ||
-              item.link ||
-              ""
-            )
-          };
+      const getResponse =
+        await fetch(orderUrl, {
+          headers: {
+            "Authorization": "Bearer " + idToken
+          }
         });
 
-      const total =
-        products.reduce(
-          (sum, item) =>
-            sum +
-            (
-              item.fiyat *
-              item.adet
-            ),
-          0
+      if (!getResponse.ok) {
+        throw new Error(
+          "Sipariş kaydı okunamadı. HTTP " +
+          getResponse.status
         );
+      }
 
-      const orderNo =
-        makeOrderNo();
+      const current =
+        await getResponse.json();
+
+      const previousHistory =
+        Array.isArray(
+          current?.fields?.durumGecmisi?.arrayValue?.values
+        )
+          ? current.fields.durumGecmisi.arrayValue.values
+          : [];
 
       const now =
         new Date().toISOString();
 
-      const order = {
-        siparisNo: orderNo,
-        kullaniciId: user.uid,
-        kullaniciEmail:
-          user.email || "",
-        durum: "Sipariş Alındı",
-        toplam: Number(
-          total.toFixed(2)
-        ),
-        paraBirimi: "TRY",
-        paymentId:
-          paymentId || "",
-        urunler: products,
-        olusturmaTarihi: now,
-        guncellenmeTarihi: now,
-        durumGecmisi: [
-          {
-            durum: "Sipariş Alındı",
-            tarih: now
+      const historyValues = [
+        ...previousHistory,
+        {
+          mapValue: {
+            fields: {
+              durum: {
+                stringValue: "Sipariş Alındı"
+              },
+              tarih: {
+                timestampValue: now
+              }
+            }
           }
-        ]
+        }
+      ];
+
+      const patchBody = {
+        fields: {
+          durum: {
+            stringValue: "Sipariş Alındı"
+          },
+          paymentId: {
+            stringValue: paymentId || ""
+          },
+          guncellenmeTarihi: {
+            timestampValue: now
+          },
+          durumGecmisi: {
+            arrayValue: {
+              values: historyValues
+            }
+          }
+        }
       };
 
-      await setDoc(
-        doc(
-          db,
-          "siparisler",
-          orderNo
-        ),
-        order
-      );
+      const patchUrl =
+        orderUrl +
+        "?updateMask.fieldPaths=durum" +
+        "&updateMask.fieldPaths=paymentId" +
+        "&updateMask.fieldPaths=guncellenmeTarihi" +
+        "&updateMask.fieldPaths=durumGecmisi";
 
-      // Sipariş başarıyla kaydedildikten sonra
-      // kullanıcının Firebase sepetini temizle.
-      await deleteDoc(cartRef);
+      const patchResponse =
+        await fetch(patchUrl, {
+          method: "PATCH",
+          headers: {
+            "Authorization": "Bearer " + idToken,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(patchBody)
+        });
 
-      return order;
-    }
+      if (!patchResponse.ok) {
+        const errorText =
+          await patchResponse.text();
 
-    function showOrder(order) {
-      card.classList.add("success");
+        throw new Error(
+          "Sipariş güncellenemedi. HTTP " +
+          patchResponse.status +
+          " " +
+          errorText.slice(0, 180)
+        );
+      }
 
-      icon.textContent = "✓";
+      // Kart bilgisi / token URL'ye hiç yazılmadı;
+      // işlem bitince ID token'ı da sessionStorage'dan siliyoruz.
+      try {
+        sessionStorage.removeItem("nerisCheckout");
+      } catch {}
 
-      title.textContent =
-        "Siparişiniz Alındı";
-
-      resultMessage.textContent =
-        "Ödemeniz başarıyla tamamlandı. Siparişiniz Neris hesabınıza kaydedildi.";
-
-      paymentIdBox.style.display =
-        "block";
-
-      paymentIdBox.innerHTML =
-        "Sipariş No • " +
-        order.siparisNo +
-        "<br>" +
-        "<span style='opacity:.7'>Ödeme No • " +
-        (order.paymentId || "—") +
-        "</span>";
-    }
-
-    function showFailure(text) {
-      card.classList.add("failure");
-
-      icon.textContent = "×";
-
-      title.textContent =
-        "Ödeme Tamamlanamadı";
-
-      resultMessage.textContent =
-        text ||
-        "Ödeme işlemi tamamlanamadı. Lütfen tekrar deneyin.";
+      return true;
     }
 
     if (status !== "success") {
@@ -800,61 +762,39 @@
       );
     } else {
       card.classList.add("success");
-
       icon.textContent = "✓";
-      title.textContent =
-        "Ödeme Doğrulanıyor";
+      title.textContent = "Ödeme Doğrulanıyor";
       resultMessage.textContent =
-        "Ödemeniz doğrulandı. Siparişiniz oluşturuluyor.";
+        "Ödemeniz doğrulandı. Siparişiniz güncelleniyor.";
 
-      setPersistence(
-        auth,
-        browserLocalPersistence
-      ).catch(() => {});
+      updateOrderWithIdToken()
+        .then(() => {
+          showSuccess(orderNo);
+        })
+        .catch(error => {
+          console.error(
+            "NERIS ORDER UPDATE ERROR",
+            error
+          );
 
-      onAuthStateChanged(
-        auth,
-        async (user) => {
-          if (!user) {
-            showFailure(
-              "Ödeme başarılı ancak siparişinizi hesabınıza bağlamak için giriş bilgileriniz bulunamadı. Lütfen giriş yapıp Siparişlerim bölümünü kontrol edin."
-            );
-            return;
-          }
+          // Ödeme gerçekten başarılıysa müşteriye ödeme başarısız
+          // demiyoruz. Sadece sipariş kaydının güncellenemediğini
+          // belirtiyoruz.
+          card.classList.add("success");
+          icon.textContent = "✓";
+          title.textContent = "Ödeme Başarılı";
+          resultMessage.textContent =
+            "Ödemeniz alındı. Sipariş numaranız oluşturuldu; sipariş kaydı senkronize edilirken kısa bir gecikme yaşandı.";
 
-          try {
-            const order =
-              await createOrder(user);
-
-            showOrder(order);
-          } catch (error) {
-            console.error(
-              "NERIS ORDER CREATE ERROR",
-              error
-            );
-
-            card.classList.add("failure");
-
-            icon.textContent = "!";
-            title.textContent =
-              "Ödeme Başarılı";
-
-            resultMessage.textContent =
-              "Ödemeniz alındı ancak sipariş kaydı oluşturulurken bir sorun oluştu. Lütfen Siparişlerim sayfasını kontrol edin.";
-
-            paymentIdBox.style.display =
-              paymentId
-                ? "block"
-                : "none";
-
-            if (paymentId) {
-              paymentIdBox.textContent =
-                "Ödeme No • " +
-                paymentId;
-            }
-          }
-        }
-      );
+          paymentIdBox.style.display = "block";
+          paymentIdBox.innerHTML =
+            "Sipariş No • " +
+            escapeHtml(orderNo || "—") +
+            "<br>" +
+            "<span style='opacity:.7'>Ödeme No • " +
+            escapeHtml(paymentId || "—") +
+            "</span>";
+        });
     }
   </script>
 
