@@ -436,7 +436,13 @@ function renderSummary(items){
     return sum + getPrice(item) * getQuantity(item);
   },0);
 
-  const shipping = 80;
+  // NERIS TEST ÜRÜNÜ için test sırasında kargo ücretsiz.
+  // Gerçek ürünlerde mevcut 80 TL kargo ücreti korunur.
+  const hasTestProduct = grouped.some(item =>
+    String(item.product || item.name || item.reklam || '').trim().toUpperCase() === 'NERIS TEST ÜRÜNÜ'
+  );
+
+  const shipping = hasTestProduct ? 0 : 80;
   const total = subtotal + shipping;
   const totalQuantity = grouped.reduce((n,x)=>n+getQuantity(x),0);
 
