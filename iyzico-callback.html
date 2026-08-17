@@ -2,136 +2,515 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Neris | Ödeme Sonucu</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Montserrat:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  >
+
   <style>
+
     * {
       box-sizing: border-box;
     }
 
+    html,
     body {
       margin: 0;
+      padding: 0;
+      min-height: 100%;
+    }
+
+    body {
       min-height: 100vh;
+
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px;
-      background: #f7f7f7;
-      color: #111;
-      font-family: Arial, Helvetica, sans-serif;
+
+      padding: 30px 20px;
+
+      background:
+        radial-gradient(
+          circle at 50% 15%,
+          rgba(214, 181, 108, 0.10),
+          transparent 32%
+        ),
+        linear-gradient(
+          135deg,
+          #fffdf9 0%,
+          #f8f5ee 50%,
+          #fffdf9 100%
+        );
+
+      color: #1c1a17;
+
+      font-family:
+        "Montserrat",
+        Arial,
+        sans-serif;
     }
+
+    /* =====================================================
+       ANA KART
+       ===================================================== */
 
     .card {
+
+      position: relative;
+
       width: 100%;
-      max-width: 520px;
-      background: #fff;
-      border: 1px solid #e7e7e7;
-      border-radius: 18px;
-      padding: 42px 30px;
+      max-width: 540px;
+
+      padding: 52px 42px 44px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255,255,255,.98),
+          rgba(250,247,239,.98)
+        );
+
+      border: 1px solid
+        rgba(190, 154, 76, .35);
+
+      border-radius: 4px;
+
+      box-shadow:
+        0 25px 70px
+        rgba(50, 40, 20, .10),
+
+        0 2px 8px
+        rgba(50, 40, 20, .05);
+
       text-align: center;
-      box-shadow: 0 12px 40px rgba(0,0,0,.08);
+
+      overflow: hidden;
     }
+
+    /* Altın iç çerçeve */
+
+    .card::before {
+
+      content: "";
+
+      position: absolute;
+
+      inset: 9px;
+
+      border: 1px solid
+        rgba(190, 154, 76, .18);
+
+      pointer-events: none;
+    }
+
+    /* Üst dekoratif çizgi */
+
+    .card::after {
+
+      content: "";
+
+      position: absolute;
+
+      top: 0;
+      left: 50%;
+
+      transform: translateX(-50%);
+
+      width: 110px;
+      height: 2px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          #c6a45c,
+          #e5cd91,
+          #c6a45c,
+          transparent
+        );
+    }
+
+    /* =====================================================
+       LOGO
+       ===================================================== */
 
     .logo {
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 42px;
-      letter-spacing: 7px;
-      margin-bottom: 30px;
+
+      margin-bottom: 34px;
+
+      color: #1d1a16;
+
+      font-family:
+        "Cormorant Garamond",
+        Georgia,
+        serif;
+
+      font-size: 48px;
+
+      font-weight: 500;
+
+      letter-spacing: 11px;
+
+      line-height: 1;
     }
 
+    .logo::after {
+
+      content: "";
+
+      display: block;
+
+      width: 42px;
+      height: 1px;
+
+      margin: 15px auto 0;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          #c6a45c,
+          transparent
+        );
+    }
+
+    /* =====================================================
+       İKON
+       ===================================================== */
+
     .icon {
-      width: 74px;
-      height: 74px;
-      border-radius: 50%;
-      margin: 0 auto 22px;
+
+      width: 82px;
+      height: 82px;
+
+      margin: 0 auto 24px;
+
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 34px;
-      font-weight: bold;
+
+      border-radius: 50%;
+
+      font-family:
+        "Cormorant Garamond",
+        Georgia,
+        serif;
+
+      font-size: 40px;
+
+      font-weight: 500;
+
+      position: relative;
+    }
+
+    .icon::before {
+
+      content: "";
+
+      position: absolute;
+
+      inset: -7px;
+
+      border-radius: 50%;
+
+      border: 1px solid
+        rgba(198,164,92,.35);
     }
 
     .success .icon {
-      background: #111;
+
       color: #fff;
+
+      background:
+        linear-gradient(
+          145deg,
+          #d9bd7b,
+          #b48a3c
+        );
+
+      box-shadow:
+        0 8px 25px
+        rgba(180,138,60,.22);
     }
 
     .failure .icon {
-      background: #eee;
-      color: #111;
+
+      color: #a67b32;
+
+      background:
+        linear-gradient(
+          145deg,
+          #fffdf8,
+          #f3ecdc
+        );
+
+      border: 1px solid
+        rgba(190,154,76,.45);
     }
 
+    /* =====================================================
+       BAŞLIK
+       ===================================================== */
+
     h1 {
-      margin: 0 0 12px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 30px;
+
+      margin: 0 0 14px;
+
+      color: #211e19;
+
+      font-family:
+        "Cormorant Garamond",
+        Georgia,
+        serif;
+
+      font-size: 36px;
+
+      line-height: 1.15;
+
       font-weight: 500;
     }
 
+    /* =====================================================
+       MESAJ
+       ===================================================== */
+
     p {
-      margin: 0 auto 24px;
-      max-width: 400px;
-      line-height: 1.6;
-      color: #666;
-      font-size: 15px;
+
+      margin: 0 auto 28px;
+
+      max-width: 410px;
+
+      color: #777066;
+
+      font-size: 14px;
+
+      line-height: 1.8;
+
+      font-weight: 400;
     }
 
+    /* =====================================================
+       ÖDEME NUMARASI
+       ===================================================== */
+
     .payment-id {
-      margin: 18px 0 26px;
-      padding: 13px;
-      background: #fafafa;
-      border-radius: 10px;
-      font-size: 13px;
-      color: #555;
+
+      margin: 20px 0 28px;
+
+      padding: 15px 18px;
+
+      background:
+        rgba(255,255,255,.72);
+
+      border: 1px solid
+        rgba(190,154,76,.25);
+
+      border-radius: 3px;
+
+      color: #756445;
+
+      font-size: 12px;
+
+      letter-spacing: .4px;
+
       word-break: break-all;
     }
 
+    /* =====================================================
+       BUTON
+       ===================================================== */
+
     .button {
-      display: inline-block;
+
+      position: relative;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
       width: 100%;
-      padding: 15px 20px;
-      border-radius: 10px;
-      background: #111;
+
+      min-height: 54px;
+
+      padding: 15px 22px;
+
+      border-radius: 2px;
+
+      border: 1px solid
+        #b99148;
+
+      background:
+        linear-gradient(
+          135deg,
+          #c5a25e,
+          #a77a31
+        );
+
       color: #fff;
+
       text-decoration: none;
-      font-size: 15px;
+
+      font-size: 12px;
+
       font-weight: 600;
-      transition: .2s;
+
+      letter-spacing: 1.4px;
+
+      text-transform: uppercase;
+
+      box-shadow:
+        0 8px 22px
+        rgba(167,122,49,.18);
+
+      transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        filter .25s ease;
+
+      overflow: hidden;
+    }
+
+    .button::before {
+
+      content: "";
+
+      position: absolute;
+
+      top: 0;
+      left: -120%;
+
+      width: 70%;
+      height: 100%;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(255,255,255,.35),
+          transparent
+        );
+
+      transform: skewX(-20deg);
+
+      transition:
+        left .6s ease;
     }
 
     .button:hover {
-      opacity: .85;
+
+      transform: translateY(-2px);
+
+      box-shadow:
+        0 12px 28px
+        rgba(167,122,49,.25);
+
+      filter: brightness(1.03);
     }
 
-    .loading {
-      color: #777;
-      font-size: 14px;
+    .button:hover::before {
+
+      left: 140%;
     }
 
-    @media (max-width: 480px) {
+    /* =====================================================
+       ALT BİLGİ
+       ===================================================== */
+
+    .secure-note {
+
+      margin-top: 22px;
+
+      color: #a09482;
+
+      font-size: 10px;
+
+      letter-spacing: .7px;
+    }
+
+    .secure-note span {
+
+      color: #b48a3c;
+    }
+
+    /* =====================================================
+       MOBİL
+       ===================================================== */
+
+    @media (max-width: 600px) {
+
+      body {
+        padding: 18px;
+      }
+
       .card {
-        padding: 34px 22px;
+
+        padding:
+          42px
+          24px
+          34px;
+
+        border-radius: 3px;
       }
 
       .logo {
-        font-size: 36px;
+
+        font-size: 40px;
+
+        letter-spacing: 8px;
+
+        margin-bottom: 30px;
       }
 
       h1 {
-        font-size: 26px;
+        font-size: 31px;
+      }
+
+      .icon {
+
+        width: 74px;
+        height: 74px;
+
+        font-size: 36px;
+      }
+
+      p {
+        font-size: 13px;
+      }
+
+      .button {
+        min-height: 52px;
       }
     }
+
   </style>
 </head>
 
 <body>
 
-  <div class="card" id="resultCard">
-    <div class="logo">NERIS</div>
+  <div
+    class="card"
+    id="resultCard"
+  >
 
-    <div class="icon" id="resultIcon">
+    <div class="logo">
+      NERIS
+    </div>
+
+    <div
+      class="icon"
+      id="resultIcon"
+    >
       …
     </div>
 
@@ -139,7 +518,10 @@
       Ödeme sonucu kontrol ediliyor
     </h1>
 
-    <p id="resultMessage" class="loading">
+    <p
+      id="resultMessage"
+      class="loading"
+    >
       Lütfen bekleyin...
     </p>
 
@@ -155,9 +537,18 @@
     >
       Neris'e Dön
     </a>
+
+    <div class="secure-note">
+      <span>✦</span>
+      NERIS GÜVENLİ ÖDEME
+      <span>✦</span>
+    </div>
+
   </div>
 
+
   <script>
+
     (function () {
 
       const params =
@@ -203,11 +594,14 @@
           "paymentIdBox"
         );
 
-      // =====================================================
-      // BAŞARILI
-      // =====================================================
 
-      if (status === "success") {
+      /* =====================================================
+         BAŞARILI
+         ===================================================== */
+
+      if (
+        status === "success"
+      ) {
 
         card.classList.add(
           "success"
@@ -219,23 +613,25 @@
           "Ödemeniz Başarılı";
 
         resultMessage.textContent =
-          "Siparişiniz başarıyla oluşturuldu. Bizi tercih ettiğiniz için teşekkür ederiz.";
+          "Siparişiniz başarıyla oluşturuldu. Neris'i tercih ettiğiniz için teşekkür ederiz.";
 
         if (paymentId) {
+
           paymentIdBox.style.display =
             "block";
 
           paymentIdBox.textContent =
-            "Ödeme No: " +
+            "Ödeme No • " +
             paymentId;
         }
 
         return;
       }
 
-      // =====================================================
-      // BAŞARISIZ
-      // =====================================================
+
+      /* =====================================================
+         BAŞARISIZ
+         ===================================================== */
 
       card.classList.add(
         "failure"
@@ -247,16 +643,21 @@
         "Ödeme Tamamlanamadı";
 
       if (message) {
+
         resultMessage.textContent =
           decodeURIComponent(
             message
           );
+
       } else {
+
         resultMessage.textContent =
           "Ödeme işlemi tamamlanamadı. Lütfen tekrar deneyin.";
+
       }
 
     })();
+
   </script>
 
 </body>
