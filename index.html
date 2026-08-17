@@ -2849,6 +2849,99 @@ document.addEventListener("keydown", function(event) {
 </style>
 
 
+<style id="neris-benefits-premium-final">
+/* NERIS — PREMIUM AVANTAJLAR */
+.benefits{
+  max-width:1200px!important;
+  margin:34px auto 0!important;
+  padding:58px 54px 52px!important;
+  background:#fff!important;
+  border:1px solid rgba(184,145,35,.18)!important;
+  border-radius:2px!important;
+  box-shadow:0 18px 55px rgba(0,0,0,.16)!important;
+  position:relative!important;
+  overflow:hidden!important;
+}
+.benefits::before{
+  content:"";position:absolute;left:12%;right:12%;top:0;height:1px;
+  background:linear-gradient(90deg,transparent,#d4af37,transparent);
+}
+.benefits::after{
+  content:"N";position:absolute;left:50%;bottom:-20px;transform:translateX(-50%);
+  width:58px;height:58px;border:1px solid rgba(184,145,35,.42);border-radius:50%;
+  background:#fff;color:#b58a20;font-family:'Playfair Display',serif;font-size:27px;
+  display:flex;align-items:center;justify-content:center;z-index:2;
+  box-shadow:0 0 0 8px #fff;
+}
+.benefits-heading{
+  text-align:center!important;margin:0 auto 42px!important;max-width:680px!important;
+}
+.benefits-heading span{
+  color:#b58a20!important;font-size:10px!important;letter-spacing:4px!important;
+  font-weight:500!important;display:block!important;margin-bottom:12px!important;
+}
+.benefits-heading span::before,.benefits-heading span::after{
+  content:"";display:inline-block;width:52px;height:1px;vertical-align:middle;
+  background:linear-gradient(90deg,transparent,#d4af37);margin:0 14px;
+}
+.benefits-heading span::after{background:linear-gradient(90deg,#d4af37,transparent)}
+.benefits-heading h2{
+  color:#171717!important;font-family:'Playfair Display',serif!important;
+  font-size:42px!important;font-weight:500!important;letter-spacing:.2px!important;
+}
+.benefits-heading p{color:#777!important;font-size:13px!important;margin-top:11px!important}
+.benefits-grid{display:grid!important;grid-template-columns:repeat(4,1fr)!important;align-items:stretch!important}
+.benefit{
+  padding:8px 30px 8px!important;text-align:center!important;position:relative!important;min-width:0!important;
+}
+.benefit:not(:last-child)::after{
+  content:""!important;position:absolute!important;right:0!important;top:8%!important;height:84%!important;width:1px!important;
+  background:linear-gradient(180deg,transparent,rgba(184,145,35,.25),transparent)!important;
+}
+.benefit-icon{
+  width:112px!important;height:112px!important;margin:0 auto 22px!important;
+  border:1px solid rgba(184,145,35,.34)!important;border-radius:50%!important;
+  color:#b58a20!important;background:linear-gradient(180deg,#fff,#fbfaf6)!important;
+  box-shadow:0 0 0 8px rgba(184,145,35,.035),inset 0 -7px 0 rgba(184,145,35,.035)!important;
+}
+.benefit-icon svg{
+  width:39px!important;height:39px!important;fill:none!important;stroke:currentColor!important;
+  stroke-width:1.35!important;stroke-linecap:round!important;stroke-linejoin:round!important;
+}
+.benefit-copy h3{
+  margin:0!important;color:#171717!important;font-family:'Playfair Display',serif!important;
+  font-size:18px!important;font-weight:500!important;letter-spacing:1.8px!important;text-transform:uppercase!important;
+}
+.benefit-diamond{
+  display:block!important;width:7px!important;height:7px!important;border:1px solid #c59f2c!important;
+  transform:rotate(45deg)!important;margin:14px auto 13px!important;position:relative!important;
+}
+.benefit-diamond::before,.benefit-diamond::after{
+  content:"";position:absolute;top:2px;width:42px;height:1px;background:#d8c18a;
+}
+.benefit-diamond::before{right:9px}.benefit-diamond::after{left:9px}
+.benefit-copy p{margin:0!important;color:#777!important;font-size:12px!important;line-height:1.75!important}
+@media(max-width:900px){
+  .benefits{margin-left:15px!important;margin-right:15px!important;padding:48px 24px 52px!important}
+  .benefits-heading h2{font-size:34px!important}
+  .benefit-icon{width:82px!important;height:82px!important}
+  .benefit-icon svg{width:30px!important;height:30px!important}
+  .benefit{padding:22px 18px!important}
+}
+@media(max-width:768px){
+  .benefits{margin:18px 12px 0!important;padding:42px 14px 48px!important}
+  .benefits-heading{margin-bottom:28px!important}
+  .benefits-heading span::before,.benefits-heading span::after{width:24px;margin:0 8px}
+  .benefits-heading h2{font-size:27px!important}.benefits-heading p{font-size:11px!important}
+  .benefits-grid{grid-template-columns:1fr 1fr!important}.benefit{padding:18px 10px!important}
+  .benefit-icon{width:64px!important;height:64px!important;margin-bottom:16px!important}
+  .benefit-icon svg{width:25px!important;height:25px!important}
+  .benefit-copy h3{font-size:13px!important;letter-spacing:1px!important}
+  .benefit-diamond{margin:11px auto 10px!important}.benefit-copy p{font-size:10px!important;line-height:1.6!important}
+  .benefits::after{width:48px;height:48px;font-size:22px;bottom:-17px}
+}
+</style>
+
 <style id="neris-instagram-webview-fix">
 /* NERIS — Instagram / uygulama içi tarayıcı mobil viewport sabitleme */
 html, body{
@@ -3313,8 +3406,9 @@ RIS ANA SAYFA GİRİŞ ANİMASYONU -->
         </svg>
       </div>
       <div class="benefit-copy">
-        <h3>Kargo Ücreti</h3>
-        <p>Tüm siparişlerde sabit 80 TL kargo ücreti.</p>
+        <h3>Hızlı Teslimat</h3>
+        <span class="benefit-diamond" aria-hidden="true"></span>
+        <p>Siparişlerinizi en kısa sürede<br>kapınıza ulaştırıyoruz.</p>
       </div>
     </div>
 
@@ -3353,8 +3447,9 @@ RIS ANA SAYFA GİRİŞ ANİMASYONU -->
         </svg>
       </div>
       <div class="benefit-copy">
-        <h3>Özenli Paketleme</h3>
-        <p>Her sipariş NERIS dokunuşuyla hazırlanır.</p>
+        <h3>Özenle Seçildi</h3>
+        <span class="benefit-diamond" aria-hidden="true"></span>
+        <p>Her ürünümüz kalite ve şıklık<br>standartlarımızla seçilir.</p>
       </div>
     </div>
   </div>
