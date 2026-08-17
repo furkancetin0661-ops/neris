@@ -255,8 +255,8 @@ body{
 <div class="free-shipping-box">
   <div class="free-shipping-icon">✦</div>
   <div>
-    <strong>Kargo Ücretsiz</strong>
-    <span>2–4 iş günü içerisinde adresinize güvenli teslimat. Test aşamasında kargo ücreti alınmamaktadır.</span>
+    <strong>Kargo 80 TL</strong>
+    <span>2–4 iş günü içerisinde adresinize güvenli teslimat. Sabit kargo ücreti 80 TL'dir.</span>
   </div>
 </div>
 <div class="pay-note"><span class="shield">♢</span><span>Ödeme aşamasında kart bilgileriniz Neris tarafından saklanmaz. Gerçek kart ödemesi, güvenli ödeme sağlayıcısı üzerinden gerçekleştirilecektir.</span></div>
@@ -437,10 +437,9 @@ function renderSummary(items){
     return sum + getPrice(item) * getQuantity(item);
   },0);
 
-  // TEST AŞAMASI: Checkout'ta kargo tamamen ücretsiz.
-  // Böylece iyzico'ya gönderilen toplamda da kargo eklenmez.
-  const shipping = 0;
-  const total = subtotal;
+  // 1 TL deneme ürünü dahil siparişlerde sabit 80 TL kargo ücreti.
+  const shipping = 80;
+  const total = subtotal + shipping;
   const totalQuantity = grouped.reduce((n,x)=>n+getQuantity(x),0);
 
   sc.innerHTML = `
@@ -664,8 +663,7 @@ function renderSummary(items){
           orderNo,
 
           // Worker/iyzico'ya sepet toplamını oluşturan gerçek kalemleri gönderiyoruz.
-          // iyzico 0 TL'lik ayrı bir basket kalemini kabul etmeyebilir.
-          // Kargo ücretsiz olduğunda kargo kalemini hiç göndermiyoruz.
+          // Kargo ücreti 80 TL olarak ayrı basket kalemi şeklinde gönderilir.
           basketItems: [
             ...grouped.map(item => ({
               id: String(item.id || item.product || item.reklam || 'NERIS-URUN'),
