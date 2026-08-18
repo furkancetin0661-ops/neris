@@ -4672,7 +4672,7 @@ function openProductDetail(product){
   if(productInfoFabric) productInfoFabric.textContent=product.kumas || product.fabric || 'Şifon';
   if(productInfoNeckline) productInfoNeckline.textContent=product.yaka || product.neckline || 'Balerin Yaka';
   if(productInfoFit) productInfoFit.textContent=product.kalip || product.fit || 'Standart Kalıp';
-  if(productInfoSizes) productInfoSizes.textContent=isInciSatenProduct ? 'S – L' : (product.bedenler || product.sizes || '36 – 46');
+  if(productInfoSizes) productInfoSizes.textContent=isInciSatenProduct ? 'S – L' : '36 – 46';
   const rawPrice=String(product.fiyat||'0').replace(/[^0-9,.-]/g,'').replace(',', '.');
   const numericPrice=Number.parseFloat(rawPrice)||0;
   price.textContent=numericPrice.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})+' TL';
@@ -4680,23 +4680,13 @@ function openProductDetail(product){
   clearProductInlineAlert();
 
   // BEDENLER ÜRÜNE ÖZELDİR:
-  // Firebase'de "bedenler" alanı varsa (örn. "S,M,L") yalnızca o bedenler gösterilir.
-  // Alan yoksa mevcut ürünler için eski 36-46 sistemi korunur.
+  // İnci Saten Takım: yalnızca S / M / L.
+  // Diğer tüm ürünler: mevcut Neris standardı 36 / 38 / 40 / 42 / 44 / 46.
   const sizeOptions=document.getElementById('productSizeOptions');
   if(sizeOptions){
-    const rawSizes=isInciSatenProduct ? 'S,M,L' : (product.bedenler || product.sizes || '');
-    let sizes=String(rawSizes)
-      .split(/[|,;\s–—-]+/)
-      .map(s=>s.trim().toUpperCase())
-      .filter(Boolean);
-
-    if(!sizes.length){
-      sizes=['36','38','40','42','44','46'];
-    }
-
-    const allowed=['XS','S','M','L','XL','XXL','34','36','38','40','42','44','46','48','50','52'];
-    sizes=sizes.filter(s=>allowed.includes(s));
-    if(!sizes.length) sizes=['36','38','40','42','44','46'];
+    const sizes=isInciSatenProduct
+      ? ['S','M','L']
+      : ['36','38','40','42','44','46'];
 
     sizeOptions.innerHTML=sizes.map(size =>
       `<button class="product-size-btn" type="button" data-size="${size}">${size}</button>`
