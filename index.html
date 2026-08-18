@@ -3808,8 +3808,11 @@ RIS ANA SAYFA GİRİŞ ANİMASYONU -->
       const modal=document.getElementById('premiumAlert');
       if(!modal)return;
       premiumAlertCallback=null;
+      const selected=(typeof nerisSelectedProduct !== 'undefined' ? nerisSelectedProduct : window.nerisSelectedProduct) || null;
+      const selectedName=String(selected?.reklam || '').toLocaleLowerCase('tr-TR');
+      const isSmlProduct=selectedName.includes('inci saten') && selectedName.includes('takım');
       document.getElementById('premiumAlertTitle').textContent='Beden Rehberi';
-      document.getElementById('premiumAlertMessage').innerHTML=`
+      document.getElementById('premiumAlertMessage').innerHTML=isSmlProduct ? `
         <div class="premium-size-guide">
           <p class="premium-size-guide-note">Balerin Yaka Şifon Elbise için önerilen vücut ölçüleri:</p>
           <div class="premium-size-table-wrap">
@@ -3826,6 +3829,20 @@ RIS ANA SAYFA GİRİŞ ANİMASYONU -->
             </table>
           </div>
           <p class="premium-size-guide-note bottom">Ölçüler yaklaşık vücut ölçüleridir. Elbisenin kalıbı ve kumaş yapısına göre küçük farklılıklar olabilir.</p>
+        </div>` : `
+        <div class="premium-size-guide">
+          <p class="premium-size-guide-note">İnci Saten Gömlek &amp; Pantolon Takım için önerilen vücut ölçüleri:</p>
+          <div class="premium-size-table-wrap">
+            <table class="premium-size-table">
+              <thead><tr><th>Beden</th><th>Göğüs</th><th>Bel</th><th>Basen</th></tr></thead>
+              <tbody>
+                <tr><td>S</td><td>86–90 cm</td><td>68–72 cm</td><td>92–96 cm</td></tr>
+                <tr><td>M</td><td>90–94 cm</td><td>72–76 cm</td><td>96–100 cm</td></tr>
+                <tr><td>L</td><td>94–98 cm</td><td>76–80 cm</td><td>100–104 cm</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="premium-size-guide-note bottom">Ölçüler yaklaşık vücut ölçüleridir. Takımın kalıbı ve kumaş yapısına göre küçük farklılıklar olabilir.</p>
         </div>`;
       document.getElementById('premiumAlertActions').innerHTML='<button type="button" class="premium-alert-primary" onclick="closePremiumAlert()">TAMAM</button>';
       modal.classList.add('open');
@@ -4672,7 +4689,7 @@ function openProductDetail(product){
   if(productInfoFabric) productInfoFabric.textContent=product.kumas || product.fabric || 'Şifon';
   if(productInfoNeckline) productInfoNeckline.textContent=product.yaka || product.neckline || 'Balerin Yaka';
   if(productInfoFit) productInfoFit.textContent=product.kalip || product.fit || 'Standart Kalıp';
-  if(productInfoSizes) productInfoSizes.textContent=isInciSatenProduct ? 'S – L' : '36 – 46';
+  if(productInfoSizes) productInfoSizes.textContent=isInciSatenProduct ? 'S – M – L' : '36 – 46';
   const rawPrice=String(product.fiyat||'0').replace(/[^0-9,.-]/g,'').replace(',', '.');
   const numericPrice=Number.parseFloat(rawPrice)||0;
   price.textContent=numericPrice.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})+' TL';
@@ -6008,7 +6025,9 @@ onAuthStateChanged(auth,function(user){
     const actions=document.getElementById('premiumAlertActions');
     if(!modal||!title||!message||!actions) return false;
 
-    const product=window.nerisSelectedProduct || null;
+    // openProductDetail içinde let olarak tutulan gerçek seçili ürünü kullan.
+    // window.nerisSelectedProduct bazı tarayıcılarda bu let değişkenini görmez.
+    const product=(typeof nerisSelectedProduct !== 'undefined' ? nerisSelectedProduct : window.nerisSelectedProduct) || null;
     const productName=String(product?.reklam || '').toLocaleLowerCase('tr-TR');
     const isSmlProduct=productName.includes('inci saten') && productName.includes('takım');
 
