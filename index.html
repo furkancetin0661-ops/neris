@@ -4547,7 +4547,7 @@ function getProductImages(product){
   product.image2,
   product.image_2
 ];
-  return [...new Set(candidates.map(v=>String(v||'').trim()).filter(Boolean))].slice(0,2);
+  return [...new Set(candidates.map(v=>String(v||'').trim()).filter(Boolean))].slice(0,3);
 }
 
 function preloadNerisProductImages(images){
@@ -4676,6 +4676,31 @@ function openProductDetail(product){
   price.textContent=numericPrice.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})+' TL';
   if(quantity) quantity.textContent='1';
   clearProductInlineAlert();
+
+  // BEDENLER ÜRÜNE ÖZELDİR:
+  // Firebase'de "bedenler" alanı varsa (örn. "S,M,L") yalnızca o bedenler gösterilir.
+  // Alan yoksa mevcut ürünler için eski 36-46 sistemi korunur.
+  const sizeOptions=document.getElementById('productSizeOptions');
+  if(sizeOptions){
+    const rawSizes=product.bedenler || product.sizes || '';
+    let sizes=String(rawSizes)
+      .split(/[|,;\s–—-]+/)
+      .map(s=>s.trim().toUpperCase())
+      .filter(Boolean);
+
+    if(!sizes.length){
+      sizes=['36','38','40','42','44','46'];
+    }
+
+    const allowed=['XS','S','M','L','XL','XXL','34','36','38','40','42','44','46','48','50','52'];
+    sizes=sizes.filter(s=>allowed.includes(s));
+    if(!sizes.length) sizes=['36','38','40','42','44','46'];
+
+    sizeOptions.innerHTML=sizes.map(size =>
+      `<button class="product-size-btn" type="button" data-size="${size}">${size}</button>`
+    ).join('');
+  }
+
   document.querySelectorAll('#productSizeOptions .product-size-btn').forEach(btn=>btn.classList.remove('selected'));
   if(favorite){
     favorite.textContent='♡';
@@ -5991,9 +6016,50 @@ onAuthStateChanged(auth,function(user){
     const actions=document.getElementById('premiumAlertActions');
     if(!modal||!title||!message||!actions) return false;
 
+    const product=window.nerisSelectedProduct || null;
+    const productName=String(product?.reklam || '').toLowerCase();
+    const rawSizes=String(product?.bedenler || product?.sizes || '').toUpperCase();
+    const sizeList=rawSizes.split(/[|,;\s–—-]+/).filter(Boolean);
+    const isSmlProduct=sizeList.includes('S') && sizeList.includes('M') && sizeList.includes('L')
+      || productName.includes('inci saten');
+
     title.textContent='Beden Bilgisi';
-    message.innerHTML='<div class="premium-size-guide">\n  <p class="premium-size-guide-note">Balerin Yaka Şifon Elbise için önerilen vücut ölçüleri:</p>\n  <div class="premium-size-table-wrap">\n    <table class="premium-size-table">\n      <thead><tr><th>Beden</th><th>Göğüs</th><th>Bel</th><th>Basen</th></tr></thead>\n      <tbody>\n<tr><td>36</td><td>84–88 cm</td><td>66–70 cm</td><td>90–94 cm</td></tr>
-        <tr><td>38</td><td>88–92 cm</td><td>70–74 cm</td><td>94–98 cm</td></tr>\n        <tr><td>40</td><td>92–96 cm</td><td>74–78 cm</td><td>98–102 cm</td></tr>\n        <tr><td>42</td><td>96–100 cm</td><td>78–82 cm</td><td>102–106 cm</td></tr>\n        <tr><td>44</td><td>100–104 cm</td><td>82–86 cm</td><td>106–110 cm</td></tr>\n        <tr><td>46</td><td>104–108 cm</td><td>86–90 cm</td><td>110–114 cm</td></tr>\n      </tbody>\n    </table>\n  </div>\n  <p class="premium-size-guide-note bottom">Ölçüler yaklaşık vücut ölçüleridir. Elbisenin kalıbı ve kumaş yapısına göre küçük farklılıklar olabilir.</p>\n</div>';
+
+    if(isSmlProduct){
+      message.innerHTML='<div class="premium-size-guide">\
+  <p class="premium-size-guide-note">İnci Saten Gömlek &amp; Pantolon Takım için önerilen vücut ölçüleri:</p>\
+  <div class="premium-size-table-wrap">\
+    <table class="premium-size-table">\
+      <thead><tr><th>Beden</th><th>Göğüs</th><th>Bel</th><th>Basen</th></tr></thead>\
+      <tbody>\
+        <tr><td>S</td><td>86–90 cm</td><td>68–72 cm</td><td>92–96 cm</td></tr>\
+        <tr><td>M</td><td>90–94 cm</td><td>72–76 cm</td><td>96–100 cm</td></tr>\
+        <tr><td>L</td><td>94–98 cm</td><td>76–80 cm</td><td>100–104 cm</td></tr>\
+      </tbody>\
+    </table>\
+  </div>\
+  <p class="premium-size-guide-note bottom">Ölçüler yaklaşık vücut ölçüleridir. Takımın kalıbı ve kumaş yapısına göre küçük farklılıklar olabilir.</p>\
+</div>';
+    }else{
+      message.innerHTML='<div class="premium-size-guide">\
+  <p class="premium-size-guide-note">Balerin Yaka Şifon Elbise için önerilen vücut ölçüleri:</p>\
+  <div class="premium-size-table-wrap">\
+    <table class="premium-size-table">\
+      <thead><tr><th>Beden</th><th>Göğüs</th><th>Bel</th><th>Basen</th></tr></thead>\
+      <tbody>\
+        <tr><td>36</td><td>84–88 cm</td><td>66–70 cm</td><td>90–94 cm</td></tr>\
+        <tr><td>38</td><td>88–92 cm</td><td>70–74 cm</td><td>94–98 cm</td></tr>\
+        <tr><td>40</td><td>92–96 cm</td><td>74–78 cm</td><td>98–102 cm</td></tr>\
+        <tr><td>42</td><td>96–100 cm</td><td>78–82 cm</td><td>102–106 cm</td></tr>\
+        <tr><td>44</td><td>100–104 cm</td><td>82–86 cm</td><td>106–110 cm</td></tr>\
+        <tr><td>46</td><td>104–108 cm</td><td>86–90 cm</td><td>110–114 cm</td></tr>\
+      </tbody>\
+    </table>\
+  </div>\
+  <p class="premium-size-guide-note bottom">Ölçüler yaklaşık vücut ölçüleridir. Elbisenin kalıbı ve kumaş yapısına göre küçük farklılıklar olabilir.</p>\
+</div>';
+    }
+
     actions.innerHTML='<button type="button" class="premium-alert-primary" id="nerisSizeGuideClose">TAMAM</button>';
     modal.classList.add('open');
     document.body.classList.add('modal-open');
