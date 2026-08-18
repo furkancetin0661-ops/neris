@@ -4656,6 +4656,8 @@ function openProductDetail(product){
   if(!modal||!image||!title||!price) return;
 
   const name=product.reklam||'Neris Ürün';
+  const normalizedProductName=String(name).toLocaleLowerCase('tr-TR');
+  const isInciSatenProduct=normalizedProductName.includes('inci saten') && normalizedProductName.includes('takım');
   nerisProductImages=getProductImages(product);
   if(!nerisProductImages.length) nerisProductImages=['https://picsum.photos/700/900'];
   nerisProductImageIndex=0;
@@ -4670,7 +4672,7 @@ function openProductDetail(product){
   if(productInfoFabric) productInfoFabric.textContent=product.kumas || product.fabric || 'Şifon';
   if(productInfoNeckline) productInfoNeckline.textContent=product.yaka || product.neckline || 'Balerin Yaka';
   if(productInfoFit) productInfoFit.textContent=product.kalip || product.fit || 'Standart Kalıp';
-  if(productInfoSizes) productInfoSizes.textContent=product.bedenler || product.sizes || '36 – 46';
+  if(productInfoSizes) productInfoSizes.textContent=isInciSatenProduct ? 'S – L' : (product.bedenler || product.sizes || '36 – 46');
   const rawPrice=String(product.fiyat||'0').replace(/[^0-9,.-]/g,'').replace(',', '.');
   const numericPrice=Number.parseFloat(rawPrice)||0;
   price.textContent=numericPrice.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})+' TL';
@@ -4682,7 +4684,7 @@ function openProductDetail(product){
   // Alan yoksa mevcut ürünler için eski 36-46 sistemi korunur.
   const sizeOptions=document.getElementById('productSizeOptions');
   if(sizeOptions){
-    const rawSizes=product.bedenler || product.sizes || '';
+    const rawSizes=isInciSatenProduct ? 'S,M,L' : (product.bedenler || product.sizes || '');
     let sizes=String(rawSizes)
       .split(/[|,;\s–—-]+/)
       .map(s=>s.trim().toUpperCase())
@@ -6017,11 +6019,8 @@ onAuthStateChanged(auth,function(user){
     if(!modal||!title||!message||!actions) return false;
 
     const product=window.nerisSelectedProduct || null;
-    const productName=String(product?.reklam || '').toLowerCase();
-    const rawSizes=String(product?.bedenler || product?.sizes || '').toUpperCase();
-    const sizeList=rawSizes.split(/[|,;\s–—-]+/).filter(Boolean);
-    const isSmlProduct=sizeList.includes('S') && sizeList.includes('M') && sizeList.includes('L')
-      || productName.includes('inci saten');
+    const productName=String(product?.reklam || '').toLocaleLowerCase('tr-TR');
+    const isSmlProduct=productName.includes('inci saten') && productName.includes('takım');
 
     title.textContent='Beden Bilgisi';
 
