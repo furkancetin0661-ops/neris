@@ -5454,6 +5454,299 @@ function closeMobileMenu() {
 }
   </script>
 
+  <!-- NERIS INSTAGRAM / IN-APP BROWSER PRODUCT FALLBACK -->
+  <script>
+  (function(){
+    "use strict";
+
+    var NERIS_PROJECT_ID = "neris-78944";
+    var NERIS_COLLECTION = encodeURIComponent("Ürünler");
+    var NERIS_REST_URL =
+      "https://firestore.googleapis.com/v1/projects/" +
+      NERIS_PROJECT_ID +
+      "/databases/(default)/documents/" +
+      NERIS_COLLECTION +
+      "?pageSize=3000";
+
+    function readFirestoreValue(field){
+      if(!field) return null;
+      if(Object.prototype.hasOwnProperty.call(field,"stringValue")) return field.stringValue;
+      if(Object.prototype.hasOwnProperty.call(field,"integerValue")) return Number(field.integerValue);
+      if(Object.prototype.hasOwnProperty.call(field,"doubleValue")) return Number(field.doubleValue);
+      if(Object.prototype.hasOwnProperty.call(field,"booleanValue")) return field.booleanValue;
+      if(Object.prototype.hasOwnProperty.call(field,"timestampValue")) return field.timestampValue;
+      if(Object.prototype.hasOwnProperty.call(field,"nullValue")) return null;
+
+      if(field.mapValue && field.mapValue.fields){
+        var obj = {};
+        Object.keys(field.mapValue.fields).forEach(function(key){
+          obj[key] = readFirestoreValue(field.mapValue.fields[key]);
+        });
+        return obj;
+      }
+
+      if(field.arrayValue && Array.isArray(field.arrayValue.values)){
+        return field.arrayValue.values.map(readFirestoreValue);
+      }
+
+      return "";
+    }
+
+    function convertDocuments(data){
+      var documents = Array.isArray(data && data.documents) ? data.documents : [];
+      return documents.map(function(document){
+        var product = {};
+        var fields = document.fields || {};
+
+        Object.keys(fields).forEach(function(key){
+          product[key] = readFirestoreValue(fields[key]);
+        });
+
+        var parts = String(document.name || "").split("/");
+        product.id = parts[parts.length - 1] || "";
+        return product;
+      });
+    }
+
+    function normalizeImage(value){
+      var url = String(value || "").trim();
+      if(!url) return "";
+      return url.replace(
+        /^https?:\/\/github\.com\/([^/]+)\/([^/]+)\/blob\/(.+)$/i,
+        "https://raw.githubusercontent.com/$1/$2/$3"
+      ).trim();
+    }
+
+    function getImage(product){
+      var keys = ["resim","img","image","imageUrl","imageURL","gorsel","görsel"];
+      for(var i=0;i<keys.length;i++){
+        var url = normalizeImage(product && product[keys[i]]);
+        if(url) return url;
+      }
+      return "";
+    }
+
+    function getPrice(product){
+      var raw = String((product && product.fiyat) || "0")
+        .replace(/[^0-9.,-]/g,"")
+        .replace(/\.(?=.*\.)/g,"")
+        .replace(",",".");
+      var price = Number(raw);
+      return isFinite(price) ? price : 0;
+    }
+
+    function renderFallback(products){
+      var container = document.getElementById("productsGrid");
+      if(!container || !Array.isArray(products) || !products.length) return;
+
+      /*
+       * Firebase moduleü Instagram içinde gecikse/blöklense bile
+       * ürünleri doğrudan HTML DOM'una basıyoruz.
+       * Module daha sonra çalışırsa kendi renderProducts() fonksiyonu
+       * aynı listeyi tekrar güvenli şekilde yeniler.
+       */
+      container.innerHTML = "";
+
+      products.forEach(function(product){
+        var card = document.createElement("div");
+        card.className = "card";
+
+        var image = getImage(product);
+        var name = String(
+          (product && (product.reklam || product.name)) || "Ürün"
+        ).trim();
+        var badge = String(
+          (product && (product.rozet || product.badge)) || "NEW"
+        ).trim();
+
+        var imageBox = document.createElement("div");
+        imageBox.className = "card-image";
+
+        var badgeEl = document.createElement("div");
+        badgeEl.className = "badge";
+        badgeEl.textContent = badge;
+
+        var img = document.createElement("img");
+        img.alt = name;
+        img.decoding = "async";
+        img.loading = "eager";
+        if(image) img.src = image;
+
+        img.onerror = function(){
+          var alternatives = [
+            product && product.resim2,
+            product && product.resim3,
+            product && product["2. resim"],
+            product && product["resim 2"],
+            product && product["Resim 2"],
+            product && product.image2,
+            product && product.image_2,
+            product && product.img2
+          ].map(normalizeImage).filter(Boolean);
+
+          if(alternatives.length){
+            img.onerror = function(){
+              img.removeAttribute("src");
+              img.style.background = "#111";
+              img.style.objectFit = "contain";
+            };
+            img.src = alternatives[0];
+          }else{
+            img.removeAttribute("src");
+            img.style.background = "#111";
+            img.style.objectFit = "contain";
+          }
+        };
+
+        imageBox.appendChild(badgeEl);
+        imageBox.appendChild(img);
+
+        var content = document.createElement("div");
+        content.className = "card-content";
+
+        var title = document.createElement("h3");
+        title.textContent = name;
+
+        var price = document.createElement("p");
+        price.className = "product-price";
+
+        var priceValue = document.createElement("span");
+        priceValue.className = "price-value";
+        priceValue.textContent = getPrice(product).toLocaleString(
+          "tr-TR",
+          {minimumFractionDigits:2,maximumFractionDigits:2}
+        );
+
+        var currency = document.createElement("span");
+        currency.className = "price-currency";
+        currency.textContent = " TL";
+
+        price.appendChild(priceValue);
+        price.appendChild(currency);
+        content.appendChild(title);
+        content.appendChild(price);
+
+        card.appendChild(imageBox);
+        card.appendChild(content);
+
+        function openDetail(){
+          if(typeof window.openProductDetail === "function"){
+            window.openProductDetail(product);
+          }
+        }
+
+        img.style.cursor = "pointer";
+        img.setAttribute("role","button");
+        img.setAttribute("tabindex","0");
+        img.addEventListener("click",openDetail);
+        img.addEventListener("keydown",function(event){
+          if(event.key === "Enter" || event.key === " "){
+            event.preventDefault();
+            openDetail();
+          }
+        });
+
+        container.appendChild(card);
+      });
+
+      window.__nerisEarlyProducts = products;
+      try{
+        localStorage.setItem("nerisProductsCacheV2",JSON.stringify({
+          savedAt:Date.now(),
+          products:products
+        }));
+      }catch(e){}
+    }
+
+    async function fetchProducts(){
+      var response = await fetch(NERIS_REST_URL,{
+        method:"GET",
+        headers:{"Accept":"application/json"},
+        cache:"no-store",
+        credentials:"omit"
+      });
+
+      if(!response.ok){
+        throw new Error("Firestore REST " + response.status);
+      }
+
+      var data = await response.json();
+      var products = convertDocuments(data);
+
+      /*
+       * Sayfalama gerekiyorsa devam et.
+       * Böylece ürün sayısı arttığında ilk sayfayla sınırlı kalmaz.
+       */
+      var pageToken = data.nextPageToken;
+      var safety = 0;
+
+      while(pageToken && safety < 10){
+        safety++;
+        var nextUrl = NERIS_REST_URL +
+          "&pageToken=" + encodeURIComponent(pageToken);
+
+        var nextResponse = await fetch(nextUrl,{
+          method:"GET",
+          headers:{"Accept":"application/json"},
+          cache:"no-store",
+          credentials:"omit"
+        });
+
+        if(!nextResponse.ok) break;
+
+        var nextData = await nextResponse.json();
+        products = products.concat(convertDocuments(nextData));
+        pageToken = nextData.nextPageToken;
+      }
+
+      return products;
+    }
+
+    /*
+     * İstek DOM hazır olmadan başlar; Instagram tarayıcısında
+     * Firebase modülünü beklemeden ürün verisi hazırlanmaya başlar.
+     */
+    window.__nerisEarlyProductPromise = fetchProducts()
+      .then(function(products){
+        window.__nerisEarlyProducts = products;
+        if(document.readyState === "loading"){
+          document.addEventListener("DOMContentLoaded",function(){
+            renderFallback(products);
+          },{once:true});
+        }else{
+          renderFallback(products);
+        }
+        return products;
+      })
+      .catch(function(error){
+        console.warn("Neris erken ürün yükleme başarısız:",error);
+
+        /*
+         * Daha önce aynı cihazda ürün önbelleği varsa onu kullan.
+         * Instagram localStorage'ı kapatmışsa hata sessizce geçilir.
+         */
+        try{
+          var cached = JSON.parse(
+            localStorage.getItem("nerisProductsCacheV2") || "null"
+          );
+          if(cached && Array.isArray(cached.products) && cached.products.length){
+            window.__nerisEarlyProducts = cached.products;
+
+            if(document.readyState === "loading"){
+              document.addEventListener("DOMContentLoaded",function(){
+                renderFallback(cached.products);
+              },{once:true});
+            }else{
+              renderFallback(cached.products);
+            }
+          }
+        }catch(e){}
+
+        return [];
+      });
+  })();
+  </script>
+
   <!-- FIREBASE -->
   <script type="module">
 
@@ -5757,8 +6050,44 @@ import {
     async function loadProducts(){
       const CACHE_KEY = "nerisProductsCacheV2";
 
-      // Önce cihazdaki son ürün listesini anında göster.
-      // Instagram gibi uygulama içi tarayıcılarda ilk ziyaret boş kalmasın.
+      // Instagram / uygulama içi tarayıcı fallback'i Firebase modülünden
+      // önce ürünleri hazırladıysa onları hemen kullan.
+      try{
+        if(Array.isArray(window.__nerisEarlyProducts) &&
+           window.__nerisEarlyProducts.length){
+          renderProducts(window.__nerisEarlyProducts);
+
+          try{
+            localStorage.setItem(CACHE_KEY,JSON.stringify({
+              savedAt:Date.now(),
+              products:window.__nerisEarlyProducts
+            }));
+          }catch(error){}
+
+          /*
+           * REST verisini arka planda yenile. Böylece Instagram'da
+           * ilk ekran Firebase SDK'yı beklemez.
+           */
+          if(window.__nerisEarlyProductPromise){
+            window.__nerisEarlyProductPromise.then(function(fresh){
+              if(Array.isArray(fresh) && fresh.length){
+                renderProducts(fresh);
+                try{
+                  localStorage.setItem(CACHE_KEY,JSON.stringify({
+                    savedAt:Date.now(),
+                    products:fresh
+                  }));
+                }catch(error){}
+              }
+            }).catch(function(){});
+          }
+          return;
+        }
+      }catch(error){
+        console.warn("Neris erken ürün listesi kullanılamadı:",error);
+      }
+
+      // Yerel önbelleği varsa anında göster.
       try{
         const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
         if(cached && Array.isArray(cached.products) && cached.products.length){
@@ -5768,15 +6097,41 @@ import {
         console.warn("Neris ürün önbelleği okunamadı:",error);
       }
 
+      /*
+       * Ürün listesi için REST yolu artık öncelikli.
+       * Instagram gibi uygulama içi tarayıcılarda Firestore SDK'nın
+       * ağ katmanında takılma ihtimalini ortadan kaldırır.
+       */
+      try{
+        const products = await loadProductsViaRest();
+
+        if(products.length){
+          renderProducts(products);
+
+          try{
+            localStorage.setItem(CACHE_KEY,JSON.stringify({
+              savedAt:Date.now(),
+              products
+            }));
+          }catch(error){
+            console.warn("Neris REST ürün önbelleği kaydedilemedi:",error);
+          }
+          return;
+        }
+      }catch(restFirstError){
+        console.warn("Neris REST öncelikli ürün yükleme sorunu:",restFirstError);
+      }
+
+      /*
+       * REST başarısız olursa klasik Firestore SDK son çare olarak denenir.
+       */
       try{
         const productsRef = collection(db, "Ürünler");
 
-        // Normal Firestore SDK yolunu kısa bir zaman aşımıyla dene.
-        // Bazı uygulama içi tarayıcılar Firestore SDK ağ katmanında takılabiliyor.
         const querySnapshot = await Promise.race([
           getDocs(productsRef),
           new Promise((_,reject)=>
-            setTimeout(()=>reject(new Error("Firestore SDK zaman aşımı")), 8000)
+            setTimeout(()=>reject(new Error("Firestore SDK zaman aşımı")),8000)
           )
         ]);
 
@@ -5796,43 +6151,22 @@ import {
               savedAt:Date.now(),
               products
             }));
-          }catch(error){
-            console.warn("Neris ürün önbelleği kaydedilemedi:",error);
-          }
+          }catch(error){}
+
           return;
         }
+      }catch(sdkError){
+        console.warn("Neris Firestore SDK yükleme sorunu:",sdkError);
+      }
 
-        // SDK boş dönerse REST yolu da denenir.
-        await loadProductsViaRest();
-      }catch(error){
-        console.warn("Neris Firestore SDK yükleme sorunu, REST yedeği deneniyor:",error);
+      const container = document.getElementById("productsGrid");
 
-        try{
-          const products = await loadProductsViaRest();
-
-          if(!products.length){
-            const container = document.getElementById("productsGrid");
-            if(container && !container.querySelector(".card")){
-              container.innerHTML = `
-                <div style="grid-column:1/-1;text-align:center;padding:35px 15px;color:#888">
-                  Ürünler şu anda yüklenemiyor. Lütfen sayfayı yenileyin.
-                </div>
-              `;
-            }
-          }
-        }catch(restError){
-          console.error("Neris Firestore REST yükleme hatası:",restError);
-
-          // Daha önce kaydedilmiş ürün varsa ekranda bırak.
-          const container=document.getElementById("productsGrid");
-          if(container && !container.querySelector(".card")){
-            container.innerHTML = `
-              <div style="grid-column:1/-1;text-align:center;padding:35px 15px;color:#888">
-                Ürünler şu anda yüklenemiyor. Lütfen sayfayı yenileyin.
-              </div>
-            `;
-          }
-        }
+      if(container && !container.querySelector(".card")){
+        container.innerHTML = `
+          <div style="grid-column:1/-1;text-align:center;padding:35px 15px;color:#888">
+            Ürünler şu anda yüklenemiyor. Lütfen sayfayı yenileyin.
+          </div>
+        `;
       }
     }
 
