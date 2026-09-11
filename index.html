@@ -5722,26 +5722,12 @@ function closeMobileMenu() {
         console.warn("Neris erken ürün yükleme başarısız:",error);
 
         /*
-         * Daha önce aynı cihazda ürün önbelleği varsa onu kullan.
-         * Instagram localStorage'ı kapatmışsa hata sessizce geçilir.
+         * ÖNEMLİ: Burada eski localStorage verisini ekrana basmıyoruz.
+         * Firebase'den silinen bir ürün cihaz önbelleğinde kalmışsa,
+         * eski ürünün tekrar görünmesine sebep olabilirdi.
+         * Güncel Firestore verisi alınamazsa ana Firebase SDK yolu
+         * denenecek; en son çare olarak yalnızca kısa süreli cache kullanılacak.
          */
-        try{
-          var cached = JSON.parse(
-            localStorage.getItem("nerisProductsCacheV2") || "null"
-          );
-          if(cached && Array.isArray(cached.products) && cached.products.length){
-            window.__nerisEarlyProducts = cached.products;
-
-            if(document.readyState === "loading"){
-              document.addEventListener("DOMContentLoaded",function(){
-                renderFallback(cached.products);
-              },{once:true});
-            }else{
-              renderFallback(cached.products);
-            }
-          }
-        }catch(e){}
-
         return [];
       });
   })();
@@ -6050,77 +6036,34 @@ import {
     async function loadProducts(){
       const CACHE_KEY = "nerisProductsCacheV2";
 
-      // Instagram / uygulama içi tarayıcı fallback'i Firebase modülünden
-      // önce ürünleri hazırladıysa onları hemen kullan.
+      // Önce doğrudan Firestore REST'ten GÜNCEL listeyi al.
+      // Erken istek aynı REST kaynağını kullanıyorsa onun sonucunu bekle;
+      // eski localStorage verisini ilk olarak ekrana basma.
       try{
-        if(Array.isArray(window.__nerisEarlyProducts) &&
-           window.__nerisEarlyProducts.length){
-          renderProducts(window.__nerisEarlyProducts);
-
-          try{
-            localStorage.setItem(CACHE_KEY,JSON.stringify({
-              savedAt:Date.now(),
-              products:window.__nerisEarlyProducts
-            }));
-          }catch(error){}
-
-          /*
-           * REST verisini arka planda yenile. Böylece Instagram'da
-           * ilk ekran Firebase SDK'yı beklemez.
-           */
-          if(window.__nerisEarlyProductPromise){
-            window.__nerisEarlyProductPromise.then(function(fresh){
-              if(Array.isArray(fresh) && fresh.length){
-                renderProducts(fresh);
-                try{
-                  localStorage.setItem(CACHE_KEY,JSON.stringify({
-                    savedAt:Date.now(),
-                    products:fresh
-                  }));
-                }catch(error){}
-              }
-            }).catch(function(){});
+        if(window.__nerisEarlyProductPromise){
+          const earlyFresh = await window.__nerisEarlyProductPromise;
+          if(Array.isArray(earlyFresh)){
+            renderProducts(earlyFresh);
+            if(earlyFresh.length){
+              try{
+                localStorage.setItem(CACHE_KEY,JSON.stringify({
+                  savedAt:Date.now(),
+                  products:earlyFresh
+                }));
+              }catch(error){}
+            }else{
+              // Firestore gerçekten boşsa eski cache'i temizle.
+              try{ localStorage.removeItem(CACHE_KEY); }catch(error){}
+            }
+            return;
           }
-          return;
         }
       }catch(error){
-        console.warn("Neris erken ürün listesi kullanılamadı:",error);
+        console.warn("Neris güncel REST listesi kullanılamadı:",error);
       }
 
-      // Yerel önbelleği varsa anında göster.
-      try{
-        const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
-        if(cached && Array.isArray(cached.products) && cached.products.length){
-          renderProducts(cached.products);
-        }
-      }catch(error){
-        console.warn("Neris ürün önbelleği okunamadı:",error);
-      }
+      // REST başarısızsa SDK'yı dene. Eski cache ancak en son çare.
 
-      /*
-       * Ürün listesi için REST yolu artık öncelikli.
-       * Instagram gibi uygulama içi tarayıcılarda Firestore SDK'nın
-       * ağ katmanında takılma ihtimalini ortadan kaldırır.
-       */
-      try{
-        const products = await loadProductsViaRest();
-
-        if(products.length){
-          renderProducts(products);
-
-          try{
-            localStorage.setItem(CACHE_KEY,JSON.stringify({
-              savedAt:Date.now(),
-              products
-            }));
-          }catch(error){
-            console.warn("Neris REST ürün önbelleği kaydedilemedi:",error);
-          }
-          return;
-        }
-      }catch(restFirstError){
-        console.warn("Neris REST öncelikli ürün yükleme sorunu:",restFirstError);
-      }
 
       /*
        * REST başarısız olursa klasik Firestore SDK son çare olarak denenir.
@@ -6157,6 +6100,19 @@ import {
         }
       }catch(sdkError){
         console.warn("Neris Firestore SDK yükleme sorunu:",sdkError);
+      }
+
+      // Yalnızca ağ/SDK tamamen başarısızsa eski cache'i kullan.
+      // Böylece normal durumda Firebase'den silinen ürün tekrar gösterilmez.
+      try{
+        const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
+        const age = cached && Number(cached.savedAt) ? Date.now() - Number(cached.savedAt) : Infinity;
+        if(cached && age < 5 * 60 * 1000 && Array.isArray(cached.products) && cached.products.length){
+          renderProducts(cached.products);
+          return;
+        }
+      }catch(error){
+        console.warn("Neris son çare cache okunamadı:",error);
       }
 
       const container = document.getElementById("productsGrid");
