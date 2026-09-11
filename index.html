@@ -5675,12 +5675,90 @@ import {
       });
     }
 
+    async function loadProductsViaRest(){
+      const projectId = "neris-78944";
+      const collectionName = encodeURIComponent("Ürünler");
+      const url =
+        `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/${collectionName}`;
+
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 8000);
+
+      try{
+        const response = await fetch(url, {
+          method: "GET",
+          headers: { "Accept": "application/json" },
+          cache: "no-store",
+          signal: controller.signal
+        });
+
+        if(!response.ok){
+          throw new Error(`Firestore REST ${response.status}`);
+        }
+
+        const data = await response.json();
+        const documents = Array.isArray(data.documents) ? data.documents : [];
+
+        const products = documents.map((document)=>{
+          const fields = document.fields || {};
+
+          function readValue(field){
+            if(!field) return null;
+            if(Object.prototype.hasOwnProperty.call(field,"stringValue")) return field.stringValue;
+            if(Object.prototype.hasOwnProperty.call(field,"integerValue")) return Number(field.integerValue);
+            if(Object.prototype.hasOwnProperty.call(field,"doubleValue")) return Number(field.doubleValue);
+            if(Object.prototype.hasOwnProperty.call(field,"booleanValue")) return field.booleanValue;
+            if(Object.prototype.hasOwnProperty.call(field,"timestampValue")) return field.timestampValue;
+            if(Object.prototype.hasOwnProperty.call(field,"nullValue")) return null;
+
+            if(field.mapValue && field.mapValue.fields){
+              const obj = {};
+              Object.entries(field.mapValue.fields).forEach(([key,value])=>{
+                obj[key] = readValue(value);
+              });
+              return obj;
+            }
+
+            if(field.arrayValue && Array.isArray(field.arrayValue.values)){
+              return field.arrayValue.values.map(readValue);
+            }
+
+            return "";
+          }
+
+          const product = {};
+          Object.entries(fields).forEach(([key,value])=>{
+            product[key] = readValue(value);
+          });
+
+          const parts = String(document.name || "").split("/");
+          product.id = parts[parts.length - 1] || "";
+          return product;
+        });
+
+        if(products.length){
+          renderProducts(products);
+          try{
+            localStorage.setItem("nerisProductsCacheV2", JSON.stringify({
+              savedAt: Date.now(),
+              products
+            }));
+          }catch(error){
+            console.warn("Neris REST ürün önbelleği kaydedilemedi:", error);
+          }
+        }
+
+        return products;
+      }finally{
+        clearTimeout(timer);
+      }
+    }
+
     async function loadProducts(){
       const CACHE_KEY = "nerisProductsCacheV2";
-      const CACHE_TTL = 10 * 60 * 1000; // 10 dakika
 
       // Önce cihazdaki son ürün listesini anında göster.
-      // Böylece Firebase cevap verene kadar sayfa boş kalmaz.
+      // Instagram gibi uygulama içi tarayıcılarda ilk ziyaret boş kalmasın.
       try{
         const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
         if(cached && Array.isArray(cached.products) && cached.products.length){
@@ -5693,51 +5771,67 @@ import {
       try{
         const productsRef = collection(db, "Ürünler");
 
-        // Firestore'un kalıcı cihaz önbelleğinden mümkün olan en erken anda oku.
-        // Ağ isteğini ayrıca başlatıyoruz; güncel veri geldiğinde ekrandaki liste yenilenir.
-        try{
-          const cacheSnap = await getDocsFromCache(productsRef);
-          if(!cacheSnap.empty){
-            const cachedProducts = [];
-            cacheSnap.forEach((docSnap)=>cachedProducts.push({...docSnap.data(),id:docSnap.id}));
-            renderProducts(cachedProducts);
-          }
-        }catch(cacheError){
-          // İlk ziyaret gibi durumlarda yerel Firestore cache'i henüz olmayabilir.
-        }
+        // Normal Firestore SDK yolunu kısa bir zaman aşımıyla dene.
+        // Bazı uygulama içi tarayıcılar Firestore SDK ağ katmanında takılabiliyor.
+        const querySnapshot = await Promise.race([
+          getDocs(productsRef),
+          new Promise((_,reject)=>
+            setTimeout(()=>reject(new Error("Firestore SDK zaman aşımı")), 8000)
+          )
+        ]);
 
-        const querySnapshot = await getDocs(productsRef);
-        if(querySnapshot.empty){
+        if(!querySnapshot.empty){
+          const products = [];
+          querySnapshot.forEach((docSnap)=>{
+            products.push({
+              ...docSnap.data(),
+              id: docSnap.id
+            });
+          });
+
+          renderProducts(products);
+
+          try{
+            localStorage.setItem(CACHE_KEY,JSON.stringify({
+              savedAt:Date.now(),
+              products
+            }));
+          }catch(error){
+            console.warn("Neris ürün önbelleği kaydedilemedi:",error);
+          }
           return;
         }
 
-        const products = [];
-        querySnapshot.forEach((docSnap)=>{
-          products.push({
-            ...docSnap.data(),
-            id: docSnap.id
-          });
-        });
-
-        // Firebase'den güncel liste gelir gelmez ekrandaki cache'i yenile.
-        renderProducts(products);
+        // SDK boş dönerse REST yolu da denenir.
+        await loadProductsViaRest();
+      }catch(error){
+        console.warn("Neris Firestore SDK yükleme sorunu, REST yedeği deneniyor:",error);
 
         try{
-          localStorage.setItem(CACHE_KEY,JSON.stringify({
-            savedAt:Date.now(),
-            products
-          }));
-        }catch(error){
-          console.warn("Neris ürün önbelleği kaydedilemedi:",error);
-        }
+          const products = await loadProductsViaRest();
 
-      }catch(error){
-        console.error("Ürünler yüklenirken hata:",error);
+          if(!products.length){
+            const container = document.getElementById("productsGrid");
+            if(container && !container.querySelector(".card")){
+              container.innerHTML = `
+                <div style="grid-column:1/-1;text-align:center;padding:35px 15px;color:#888">
+                  Ürünler şu anda yüklenemiyor. Lütfen sayfayı yenileyin.
+                </div>
+              `;
+            }
+          }
+        }catch(restError){
+          console.error("Neris Firestore REST yükleme hatası:",restError);
 
-        // Firebase geçici olarak cevap vermezse eski cache ekranda kalır.
-        const container=document.getElementById("productsGrid");
-        if(container && !container.querySelector(".card")){
-          container.innerHTML="";
+          // Daha önce kaydedilmiş ürün varsa ekranda bırak.
+          const container=document.getElementById("productsGrid");
+          if(container && !container.querySelector(".card")){
+            container.innerHTML = `
+              <div style="grid-column:1/-1;text-align:center;padding:35px 15px;color:#888">
+                Ürünler şu anda yüklenemiyor. Lütfen sayfayı yenileyin.
+              </div>
+            `;
+          }
         }
       }
     }
