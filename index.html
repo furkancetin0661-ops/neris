@@ -5675,127 +5675,70 @@ import {
       });
     }
 
-    async function loadProductsViaRest(){
-      const projectId = "neris-78944";
-      const collectionName = encodeURIComponent("Ürünler");
-      const url =
-        `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/${collectionName}`;
-
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 8000);
-
-      try{
-        const response = await fetch(url, {
-          method: "GET",
-          headers: { "Accept": "application/json" },
-          cache: "no-store",
-          signal: controller.signal
-        });
-
-        if(!response.ok){
-          throw new Error(`Firestore REST ${response.status}`);
-        }
-
-        const data = await response.json();
-        const documents = Array.isArray(data.documents) ? data.documents : [];
-
-        const products = documents.map((document)=>{
-          const fields = document.fields || {};
-
-          function readValue(field){
-            if(!field) return null;
-            if(Object.prototype.hasOwnProperty.call(field,"stringValue")) return field.stringValue;
-            if(Object.prototype.hasOwnProperty.call(field,"integerValue")) return Number(field.integerValue);
-            if(Object.prototype.hasOwnProperty.call(field,"doubleValue")) return Number(field.doubleValue);
-            if(Object.prototype.hasOwnProperty.call(field,"booleanValue")) return field.booleanValue;
-            if(Object.prototype.hasOwnProperty.call(field,"timestampValue")) return field.timestampValue;
-            if(Object.prototype.hasOwnProperty.call(field,"nullValue")) return null;
-
-            if(field.mapValue && field.mapValue.fields){
-              const obj = {};
-              Object.entries(field.mapValue.fields).forEach(([key,value])=>{
-                obj[key] = readValue(value);
-              });
-              return obj;
-            }
-
-            if(field.arrayValue && Array.isArray(field.arrayValue.values)){
-              return field.arrayValue.values.map(readValue);
-            }
-
-            return "";
-          }
-
-          const product = {};
-          Object.entries(fields).forEach(([key,value])=>{
-            product[key] = readValue(value);
-          });
-
-          const parts = String(document.name || "").split("/");
-          product.id = parts[parts.length - 1] || "";
-          return product;
-        });
-
-        if(products.length){
-          renderProducts(products);
-          try{
-            localStorage.setItem("nerisProductsCacheV2", JSON.stringify({
-              savedAt: Date.now(),
-              products
-            }));
-          }catch(error){
-            console.warn("Neris REST ürün önbelleği kaydedilemedi:", error);
-          }
-        }
-
-        return products;
-      }finally{
-        clearTimeout(timer);
-      }
-    }
-
     async function loadProducts(){
       const CACHE_KEY = "nerisProductsCacheV2";
+      const CACHE_TTL = 10 * 60 * 1000; // 10 dakika
+
+      // Önce cihazdaki son ürün listesini anında göster.
+      // Böylece Firebase cevap verene kadar sayfa boş kalmaz.
+      try{
+        const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
+        if(cached && Array.isArray(cached.products) && cached.products.length){
+          renderProducts(cached.products);
+        }
+      }catch(error){
+        console.warn("Neris ürün önbelleği okunamadı:",error);
+      }
+
       try{
         const productsRef = collection(db, "Ürünler");
-        const querySnapshot = await Promise.race([
-          getDocs(productsRef),
-          new Promise((_,reject)=>setTimeout(()=>reject(new Error("Firestore SDK zaman aşımı")),8000))
-        ]);
-        const products=[];
-        querySnapshot.forEach((docSnap)=>products.push({...docSnap.data(),id:docSnap.id}));
+
+        // Firestore'un kalıcı cihaz önbelleğinden mümkün olan en erken anda oku.
+        // Ağ isteğini ayrıca başlatıyoruz; güncel veri geldiğinde ekrandaki liste yenilenir.
         try{
-          if(products.length) localStorage.setItem(CACHE_KEY,JSON.stringify({savedAt:Date.now(),products}));
-          else localStorage.removeItem(CACHE_KEY);
-        }catch(error){}
-        renderProducts(products);
-        return;
-      }catch(error){
-        console.warn("Neris Firestore SDK yükleme sorunu, REST yedeği deneniyor:",error);
-      }
-      try{
-        const products=await loadProductsViaRest();
-        if(Array.isArray(products)){
-          renderProducts(products);
-          try{
-            if(products.length) localStorage.setItem(CACHE_KEY,JSON.stringify({savedAt:Date.now(),products}));
-            else localStorage.removeItem(CACHE_KEY);
-          }catch(error){}
+          const cacheSnap = await getDocsFromCache(productsRef);
+          if(!cacheSnap.empty){
+            const cachedProducts = [];
+            cacheSnap.forEach((docSnap)=>cachedProducts.push({...docSnap.data(),id:docSnap.id}));
+            renderProducts(cachedProducts);
+          }
+        }catch(cacheError){
+          // İlk ziyaret gibi durumlarda yerel Firestore cache'i henüz olmayabilir.
+        }
+
+        const querySnapshot = await getDocs(productsRef);
+        if(querySnapshot.empty){
           return;
         }
-      }catch(restError){
-        console.error("Neris Firestore REST yükleme hatası:",restError);
-      }
-      try{
-        const cached=JSON.parse(localStorage.getItem(CACHE_KEY)||"null");
-        const age=cached&&Number(cached.savedAt)?Date.now()-Number(cached.savedAt):Infinity;
-        if(cached&&age<5*60*1000&&Array.isArray(cached.products)&&cached.products.length){
-          renderProducts(cached.products); return;
+
+        const products = [];
+        querySnapshot.forEach((docSnap)=>{
+          products.push({
+            ...docSnap.data(),
+            id: docSnap.id
+          });
+        });
+
+        // Firebase'den güncel liste gelir gelmez ekrandaki cache'i yenile.
+        renderProducts(products);
+
+        try{
+          localStorage.setItem(CACHE_KEY,JSON.stringify({
+            savedAt:Date.now(),
+            products
+          }));
+        }catch(error){
+          console.warn("Neris ürün önbelleği kaydedilemedi:",error);
         }
-      }catch(error){}
-      const container=document.getElementById("productsGrid");
-      if(container&&!container.querySelector(".card")){
-        container.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:35px 15px;color:#888">Ürünler şu anda yüklenemiyor. Lütfen sayfayı yenileyin.</div>';
+
+      }catch(error){
+        console.error("Ürünler yüklenirken hata:",error);
+
+        // Firebase geçici olarak cevap vermezse eski cache ekranda kalır.
+        const container=document.getElementById("productsGrid");
+        if(container && !container.querySelector(".card")){
+          container.innerHTML="";
+        }
       }
     }
 
@@ -6150,58 +6093,5 @@ onAuthStateChanged(auth,function(user){
   },true);
 
   window.openNerisSizeGuide=openNerisSizeGuide;
-})();
-</script>
-
-
-<!-- Instagram / WebView güvenli ürün yedeği. Firebase modülü açılmazsa devreye girer. -->
-<script>
-(function(){
-  "use strict";
-  var endpoint="https://firestore.googleapis.com/v1/projects/neris-78944/databases/(default)/documents/%C3%9Cr%C3%BCnler?pageSize=3000";
-  function val(f){
-    if(!f)return null;
-    if(f.stringValue!==undefined)return f.stringValue;
-    if(f.integerValue!==undefined)return Number(f.integerValue);
-    if(f.doubleValue!==undefined)return Number(f.doubleValue);
-    if(f.booleanValue!==undefined)return f.booleanValue;
-    if(f.timestampValue!==undefined)return f.timestampValue;
-    if(f.nullValue!==undefined)return null;
-    if(f.mapValue&&f.mapValue.fields){var o={};Object.keys(f.mapValue.fields).forEach(function(k){o[k]=val(f.mapValue.fields[k]);});return o;}
-    if(f.arrayValue&&Array.isArray(f.arrayValue.values))return f.arrayValue.values.map(val);
-    return "";
-  }
-  function parse(data){
-    var docs=Array.isArray(data.documents)?data.documents:[];
-    return docs.map(function(d){var p={};Object.keys(d.fields||{}).forEach(function(k){p[k]=val(d.fields[k]);});var s=String(d.name||"").split("/");p.id=s[s.length-1]||"";return p;});
-  }
-  function image(p){
-    var keys=["resim","img","image","imageUrl","imageURL","gorsel","görsel"];
-    for(var i=0;i<keys.length;i++){var u=String(p&&p[keys[i]]||"").trim();if(u)return u.replace(/^https?:\/\/github\.com\/([^/]+)\/([^/]+)\/blob\/(.+)$/i,"https://raw.githubusercontent.com/$1/$2/$3");}
-    return "";
-  }
-  function render(products){
-    var c=document.getElementById("productsGrid");if(!c||!products.length||c.querySelector(".card"))return;
-    c.innerHTML="";
-    products.forEach(function(p,i){
-      var card=document.createElement("div");card.className="card";
-      var raw=String(p.fiyat||"0").replace(/[^0-9.,-]/g,"").replace(/\.(?=.*\.)/g,"").replace(",",".");var price=Number(raw);if(!isFinite(price))price=0;
-      var name=String(p.reklam||p.name||"Ürün").trim(),badge=String(p.rozet||p.badge||"NEW").trim();
-      card.innerHTML='<div class="card-image"><div class="badge"></div><img alt="" decoding="async"></div><div class="card-content"><h3></h3><p class="product-price"><span class="price-value"></span> <span class="price-currency">TL</span></p></div>';
-      card.querySelector(".badge").textContent=badge;card.querySelector("h3").textContent=name;card.querySelector(".price-value").textContent=price.toLocaleString("tr-TR",{minimumFractionDigits:2,maximumFractionDigits:2});
-      var img=card.querySelector("img"),src=image(p);img.alt=name;if(src)img.src=src;img.onclick=function(){if(typeof window.openProductDetail==="function")window.openProductDetail(p);};c.appendChild(card);
-    });
-  }
-  function run(){
-    var c=document.getElementById("productsGrid");if(!c||c.querySelector(".card"))return;
-    var controller=window.AbortController?new AbortController():null;
-    var timer=setTimeout(function(){if(controller)controller.abort();},7000);
-    fetch(endpoint,{method:"GET",headers:{"Accept":"application/json"},cache:"no-store",credentials:"omit",signal:controller?controller.signal:undefined})
-      .then(function(r){if(!r.ok)throw new Error("REST "+r.status);return r.json();})
-      .then(function(data){var products=parse(data);render(products);try{if(products.length)localStorage.setItem("nerisProductsCacheV2",JSON.stringify({savedAt:Date.now(),products:products}));else localStorage.removeItem("nerisProductsCacheV2");}catch(e){}})
-      .catch(function(e){console.warn("Neris Instagram ürün yedeği:",e);})
-      .then(function(){clearTimeout(timer);});
-  }
-  setTimeout(run,9000);
 })();
 </script>
