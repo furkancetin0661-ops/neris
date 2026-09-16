@@ -5676,7 +5676,8 @@ import {
     }
 
     async function loadProducts(){
-      const CACHE_KEY = "nerisProductsCacheV2";
+      // Ürün listesindeki eski localStorage verilerini kullanmamak için cache sürümü yenilendi.
+      const CACHE_KEY = "nerisProductsCacheV3";
       const CACHE_TTL = 10 * 60 * 1000; // 10 dakika
 
       // Önce cihazdaki son ürün listesini anında göster.
@@ -5708,6 +5709,13 @@ import {
 
         const querySnapshot = await getDocs(productsRef);
         if(querySnapshot.empty){
+          // Firebase'de hiç ürün kalmadıysa eski ekrandaki/cache'teki ürünleri temizle.
+          renderProducts([]);
+          try{
+            localStorage.removeItem(CACHE_KEY);
+          }catch(error){
+            console.warn("Neris ürün önbelleği temizlenemedi:",error);
+          }
           return;
         }
 
