@@ -3119,6 +3119,17 @@ html, body{
   observer.observe(document.documentElement, {subtree:true, attributes:true, attributeFilter:['class']});
 })();
 </script>
+<style id="neris-cart-feedback-fix">
+/* NERIS — Sepet geri bildirimi */
+#productInlineAlert .product-inline-alert-box.success,
+.product-inline-alert-box.success{
+  animation:nerisCartSuccessIn .22s ease-out;
+}
+@keyframes nerisCartSuccessIn{
+  from{opacity:0;transform:translateY(8px) scale(.98)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+</style>
 </head>
 
 <body>
@@ -5061,9 +5072,18 @@ async function addProductToCart(){
     try{ localStorage.setItem(`nerisCart_${cartUser.uid}`,JSON.stringify(nerisCartCache)); }catch(e){}
   }
   updateCartCount();
-  try{ await queueNerisCartSave(); }catch(e){ console.warn('Sepet senkronizasyonu atlandı:',e); }
 
-  showProductInlineAlert('Sepete Eklendi',`${item.product} — ${item.size} beden, ${item.quantity} adet sepetinize eklendi.`,'success');
+  // Bildirimi Firebase'i beklemeden hemen göster.
+  showProductInlineAlert(
+    'Sepete Eklendi',
+    `${item.product} — ${item.size} beden, ${item.quantity} adet sepetinize eklendi.`,
+    'success'
+  );
+
+  // Firebase kaydı arka planda yapılsın; kullanıcıyı bekletmesin.
+  queueNerisCartSave().catch(e=>{
+    console.warn('Sepet senkronizasyonu atlandı:',e);
+  });
 }
 window.addProductToCart=addProductToCart;
 
@@ -5135,15 +5155,27 @@ function escapeHtml(value){
 async function removeCartItem(index){
   const cart=getNerisCart();
   if(index<0 || index>=cart.length) return;
+
+  // Önce ekrandan anında kaldır.
+  // Firebase ağ isteğini beklemediği için çarpıya basınca gecikme olmaz.
   cart.splice(index,1);
   nerisCartCache=cart;
+
   const user=getNerisCurrentUser();
   if(user){
-    try{ localStorage.setItem(`nerisCart_${user.uid}`,JSON.stringify(nerisCartCache)); }catch(e){}
+    try{
+      localStorage.setItem(`nerisCart_${user.uid}`,JSON.stringify(nerisCartCache));
+    }catch(e){}
   }
+
   updateCartCount();
-  await queueNerisCartSave();
   renderCartModal(false);
+
+  // Firebase senkronizasyonu arka planda devam etsin.
+  // UI'yi bloke etmesin.
+  queueNerisCartSave().catch(e=>{
+    console.warn('Sepet senkronizasyonu atlandı:',e);
+  });
 }
 window.removeCartItem=removeCartItem;
 
@@ -5473,7 +5505,7 @@ function closeMobileMenu() {
     persistentMultipleTabManager,
     collection,
     getDocs,
-    getDocsFromCache,
+    getDocsFromServer,
     doc,
     setDoc,
     deleteDoc,
@@ -5682,48 +5714,16 @@ import {
     }
 
     async function loadProducts(){
-      // Ürün listesindeki eski localStorage verilerini kullanmamak için cache sürümü yenilendi.
-      const CACHE_KEY = "nerisProductsCacheV3";
-      const CACHE_TTL = 10 * 60 * 1000; // 10 dakika
-
-      // Önce cihazdaki son ürün listesini anında göster.
-      // Böylece Firebase cevap verene kadar sayfa boş kalmaz.
-      try{
-        const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
-        if(cached && Array.isArray(cached.products) && cached.products.length){
-          renderProducts(cached.products);
-        }
-      }catch(error){
-        console.warn("Neris ürün önbelleği okunamadı:",error);
-      }
+      // Firebase/Firestore sunucusu tek gerçek kaynak.
+      // Eski localStorage veya cihaz Firestore cache'i ürün listesini belirleyemez.
+      const CACHE_KEY = "nerisProductsCacheV4";
 
       try{
         const productsRef = collection(db, "Ürünler");
 
-        // Firestore'un kalıcı cihaz önbelleğinden mümkün olan en erken anda oku.
-        // Ağ isteğini ayrıca başlatıyoruz; güncel veri geldiğinde ekrandaki liste yenilenir.
-        try{
-          const cacheSnap = await getDocsFromCache(productsRef);
-          if(!cacheSnap.empty){
-            const cachedProducts = [];
-            cacheSnap.forEach((docSnap)=>cachedProducts.push({...docSnap.data(),id:docSnap.id}));
-            renderProducts(cachedProducts);
-          }
-        }catch(cacheError){
-          // İlk ziyaret gibi durumlarda yerel Firestore cache'i henüz olmayabilir.
-        }
-
-        const querySnapshot = await getDocs(productsRef);
-        if(querySnapshot.empty){
-          // Firebase'de hiç ürün kalmadıysa eski ekrandaki/cache'teki ürünleri temizle.
-          renderProducts([]);
-          try{
-            localStorage.removeItem(CACHE_KEY);
-          }catch(error){
-            console.warn("Neris ürün önbelleği temizlenemedi:",error);
-          }
-          return;
-        }
+        // SADECE SUNUCUDAN oku.
+        // Böylece Firebase'den silinen bir ürün cihazdaki eski cache'ten geri gelemez.
+        const querySnapshot = await getDocsFromServer(productsRef);
 
         const products = [];
         querySnapshot.forEach((docSnap)=>{
@@ -5733,25 +5733,34 @@ import {
           });
         });
 
-        // Firebase'den güncel liste gelir gelmez ekrandaki cache'i yenile.
+        // Firebase'deki güncel listeyi birebir ekrana bas.
         renderProducts(products);
 
+        // Cache yalnızca yardımcı veri olarak tutulur; Firebase listesinin yerine geçmez.
         try{
-          localStorage.setItem(CACHE_KEY,JSON.stringify({
-            savedAt:Date.now(),
-            products
-          }));
-        }catch(error){
-          console.warn("Neris ürün önbelleği kaydedilemedi:",error);
+          if(products.length){
+            localStorage.setItem(CACHE_KEY,JSON.stringify({
+              savedAt:Date.now(),
+              products
+            }));
+          }else{
+            localStorage.removeItem(CACHE_KEY);
+          }
+
+          // Daha önce kullanılan eski ürün cache sürümlerini temizle.
+          localStorage.removeItem("nerisProductsCacheV2");
+          localStorage.removeItem("nerisProductsCacheV3");
+        }catch(cacheError){
+          console.warn("Neris ürün önbelleği güncellenemedi:",cacheError);
         }
 
       }catch(error){
-        console.error("Ürünler yüklenirken hata:",error);
+        console.error("Ürünler sunucudan yüklenemedi:",error);
 
-        // Firebase geçici olarak cevap vermezse eski cache ekranda kalır.
+        // Sunucu okunamadığında eski ürünleri göstermiyoruz.
         const container=document.getElementById("productsGrid");
-        if(container && !container.querySelector(".card")){
-          container.innerHTML="";
+        if(container){
+          container.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#777;padding:40px 20px;font-size:13px;">Ürünler şu anda yüklenemiyor. Lütfen sayfayı yenileyin.</div>';
         }
       }
     }
