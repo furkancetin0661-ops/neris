@@ -5062,7 +5062,7 @@ async function addProductToCart(){
   }
   updateCartCount();
 
-  // Başarı bildirimini Firebase'i beklemeden hemen göster.
+  // Kullanıcı Firebase'i beklemeden hemen "Sepete Eklendi" mesajını görsün.
   showProductInlineAlert(
     'Sepete Eklendi',
     `${item.product} — ${item.size} beden, ${item.quantity} adet sepetinize eklendi.`,
@@ -5145,19 +5145,21 @@ async function removeCartItem(index){
   const cart=getNerisCart();
   if(index<0 || index>=cart.length) return;
 
-  // Önce arayüzden anında kaldır; Firebase'i bekleme.
+  // Önce UI'dan anında kaldır.
   cart.splice(index,1);
   nerisCartCache=cart;
 
   const user=getNerisCurrentUser();
   if(user){
-    try{ localStorage.setItem(`nerisCart_${user.uid}`,JSON.stringify(nerisCartCache)); }catch(e){}
+    try{
+      localStorage.setItem(`nerisCart_${user.uid}`,JSON.stringify(nerisCartCache));
+    }catch(e){}
   }
 
   updateCartCount();
   renderCartModal(false);
 
-  // Firebase kaydını arka planda yap.
+  // Firebase senkronizasyonu UI'yi bekletmeden arka planda devam etsin.
   queueNerisCartSave().catch(e=>{
     console.warn('Sepet senkronizasyonu atlandı:',e);
   });
@@ -5491,6 +5493,7 @@ function closeMobileMenu() {
     collection,
     getDocs,
     getDocsFromServer,
+    getDocsFromCache,
     doc,
     setDoc,
     deleteDoc,
@@ -5699,13 +5702,15 @@ import {
     }
 
     async function loadProducts(){
+      // Firebase sunucusundaki güncel liste tek gerçek kaynak.
+      // Eski localStorage / Firestore cache verisi önce ekrana basılmıyor.
+      const CACHE_KEY = "nerisProductsCacheV4";
+
       try{
         const productsRef = collection(db, "Ürünler");
 
-        // ÖNEMLİ:
-        // Ürün listesini cihaz cache'inden değil, doğrudan Firebase
-        // sunucusundan alıyoruz. Böylece Firebase'den HANGİ ürünü
-        // silersen, o ürün bir daha eski cache'ten geri gelmez.
+        // Özellikle sunucudan oku. Böylece Firebase'den silinen ürün,
+        // cihazın eski Firestore cache'inden tekrar görünmez.
         const querySnapshot = await getDocsFromServer(productsRef);
 
         const products = [];
@@ -5716,29 +5721,35 @@ import {
           });
         });
 
-        // Firebase'de şu anda bulunan ürünleri birebir göster.
-        // Örn. A, B, C varsa üçü görünür; B silinirse A ve C görünür.
-        // Hangi doküman silindiyse onun yerine göre karar verilmez.
+        // Firebase'deki güncel listeyi ekrana bas.
         renderProducts(products);
 
-        // Eski ürün cache'lerini temizle; sonraki açılışta silinen
-        // herhangi bir ürünün geri gelmesini engelle.
+        // Sadece yardımcı cache olarak güncel Firebase listesini kaydet.
         try{
+          if(products.length){
+            localStorage.setItem(CACHE_KEY,JSON.stringify({
+              savedAt:Date.now(),
+              products
+            }));
+          }else{
+            localStorage.removeItem(CACHE_KEY);
+          }
+
+          // Eski ürün cache sürümlerini temizle.
           localStorage.removeItem("nerisProductsCacheV2");
           localStorage.removeItem("nerisProductsCacheV3");
-          localStorage.removeItem("nerisProductsCacheV4");
         }catch(cacheError){
-          console.warn("Neris eski ürün önbelleği temizlenemedi:",cacheError);
+          console.warn("Neris ürün önbelleği güncellenemedi:",cacheError);
         }
 
       }catch(error){
-        console.error("Ürünler Firebase'den yüklenirken hata:",error);
+        console.error("Ürünler sunucudan yüklenirken hata:",error);
 
-        // Firebase okunamazsa eski cache'i göstermiyoruz.
-        // Böylece silinmiş bir ürün yanlışlıkla sitede tutulmaz.
-        const container = document.getElementById("productsGrid");
+        // Hata durumunda eski cache'i gösterme; aksi halde silinmiş ürün
+        // yeniden görünür. Kullanıcıya anlaşılır mesaj göster.
+        const container=document.getElementById("productsGrid");
         if(container){
-          container.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#777;padding:40px 20px;font-size:13px;">Ürünler şu anda yüklenemiyor. Lütfen sayfayı yenileyin.</div>';
+          container.innerHTML='<div style="grid-column:1/-1;text-align:center;color:#777;padding:40px 20px;font-size:13px;">Ürünler şu anda yüklenemiyor. Lütfen sayfayı yenileyin.</div>';
         }
       }
     }
