@@ -5062,7 +5062,6 @@ async function addProductToCart(){
   }
   updateCartCount();
 
-  // Başarı bildirimini Firebase'i beklemeden hemen göster.
   showProductInlineAlert(
     'Sepete Eklendi',
     `${item.product} — ${item.size} beden, ${item.quantity} adet sepetinize eklendi.`,
@@ -5144,20 +5143,16 @@ function escapeHtml(value){
 async function removeCartItem(index){
   const cart=getNerisCart();
   if(index<0 || index>=cart.length) return;
-
-  // Önce arayüzden anında kaldır; Firebase'i bekleme.
   cart.splice(index,1);
   nerisCartCache=cart;
-
   const user=getNerisCurrentUser();
   if(user){
     try{ localStorage.setItem(`nerisCart_${user.uid}`,JSON.stringify(nerisCartCache)); }catch(e){}
   }
-
   updateCartCount();
   renderCartModal(false);
 
-  // Firebase kaydını arka planda yap.
+  // Firebase'i beklemeden arayüzü güncelle.
   queueNerisCartSave().catch(e=>{
     console.warn('Sepet senkronizasyonu atlandı:',e);
   });
@@ -5490,7 +5485,6 @@ function closeMobileMenu() {
     persistentMultipleTabManager,
     collection,
     getDocs,
-    getDocsFromServer,
     doc,
     setDoc,
     deleteDoc,
@@ -5702,11 +5696,9 @@ import {
       try{
         const productsRef = collection(db, "Ürünler");
 
-        // ÖNEMLİ:
-        // Ürün listesini cihaz cache'inden değil, doğrudan Firebase
-        // sunucusundan alıyoruz. Böylece Firebase'den HANGİ ürünü
-        // silersen, o ürün bir daha eski cache'ten geri gelmez.
-        const querySnapshot = await getDocsFromServer(productsRef);
+        // Ürünleri Firebase'deki mevcut koleksiyondan al.
+        // Tarayıcı localStorage / Firestore cache'i ürün listesinin yerine geçmez.
+        const querySnapshot = await getDocs(productsRef);
 
         const products = [];
         querySnapshot.forEach((docSnap)=>{
@@ -5716,13 +5708,11 @@ import {
           });
         });
 
-        // Firebase'de şu anda bulunan ürünleri birebir göster.
-        // Örn. A, B, C varsa üçü görünür; B silinirse A ve C görünür.
-        // Hangi doküman silindiyse onun yerine göre karar verilmez.
+        // Firebase'de o anda hangi ürünler varsa sadece onları göster.
+        // Hangi ürünü silersen diğer ürünlere dokunulmaz.
         renderProducts(products);
 
-        // Eski ürün cache'lerini temizle; sonraki açılışta silinen
-        // herhangi bir ürünün geri gelmesini engelle.
+        // Eski ürün listelerinin tekrar görünmesini engelle.
         try{
           localStorage.removeItem("nerisProductsCacheV2");
           localStorage.removeItem("nerisProductsCacheV3");
@@ -5734,11 +5724,9 @@ import {
       }catch(error){
         console.error("Ürünler Firebase'den yüklenirken hata:",error);
 
-        // Firebase okunamazsa eski cache'i göstermiyoruz.
-        // Böylece silinmiş bir ürün yanlışlıkla sitede tutulmaz.
-        const container = document.getElementById("productsGrid");
+        const container=document.getElementById("productsGrid");
         if(container){
-          container.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#777;padding:40px 20px;font-size:13px;">Ürünler şu anda yüklenemiyor. Lütfen sayfayı yenileyin.</div>';
+          container.innerHTML='<div style="grid-column:1/-1;text-align:center;color:#777;padding:40px 20px;font-size:13px;">Ürünler şu anda yüklenemiyor. Lütfen sayfayı yenileyin.</div>';
         }
       }
     }
