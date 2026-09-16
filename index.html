@@ -4933,6 +4933,12 @@ async function loadNerisCartFromFirebase(){
       nerisCartSyncReady=true;
       updateCartCount();
 
+      // Sepeti ürün detaylarını bekletmeden hemen göster.
+      if(document.getElementById('infoModal')?.classList.contains('open')){
+        renderCartModal(false);
+      }
+
+      // Fiyat/görsel gibi ürün bilgilerini arka planda güncelle.
       const refreshedPromise=refreshNerisCartProductData(storedItems,true);
       refreshedPromise.then(refreshed=>{
         nerisCartCache=refreshed;
@@ -5071,7 +5077,7 @@ function formatCartPrice(value){
   return '₺'+n.toLocaleString('tr-TR',{minimumFractionDigits:0,maximumFractionDigits:2});
 }
 
-async function renderCartModal(refresh=true){
+async function renderCartModal(refresh=false){
   const box=document.getElementById('cartContent');
   if(!box) return;
   if(!window.nerisAuthStateReady){
@@ -6020,6 +6026,12 @@ onAuthStateChanged(auth,function(user){
 
   if(document.getElementById('favoritesContent')&&document.getElementById('infoModal')?.classList.contains('open')){
     window.loadFavoritesModal();
+  }
+
+  // Sepet modalı kimlik doğrulama tamamlanmadan açıldıysa
+  // "Sepetiniz yükleniyor" ekranında kalmasın.
+  if(document.getElementById('cartContent')&&document.getElementById('infoModal')?.classList.contains('open')){
+    renderCartModal(false);
   }
 });
 </script>
