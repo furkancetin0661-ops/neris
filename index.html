@@ -4085,7 +4085,7 @@ function unlockNerisInfoPageScroll(){
 }
 
 function openInfo(type){
-      history.pushState({ nerisInfo: type }, "", "#info");
+      history.pushState({ nerisInfo: type }, '', location.pathname + location.search);
       const content = document.getElementById('infoContent');
       const data = {
         story: {
@@ -5408,7 +5408,7 @@ function closeInfo(){
   }
   document.body.classList.remove('modal-open');
   unlockNerisInfoPageScroll();
-  if(location.hash==='#info')history.replaceState(null,'',location.pathname+location.search);
+  history.replaceState(null,'',location.pathname+location.search);
 }
 
     async function sendContactMessage(){
@@ -6156,7 +6156,16 @@ onAuthStateChanged(auth,function(user){
     if (!link) return;
 
     const hash = link.getAttribute('href');
-    if (!hash || hash === '#') return;
+
+    // href="#" ana sayfaya dönsün ama URL'ye # eklemesin.
+    if (hash === '#') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+      return;
+    }
+
+    if (!hash) return;
 
     const target = document.querySelector(hash);
     if (!target) return;
@@ -6167,10 +6176,19 @@ onAuthStateChanged(auth,function(user){
     const offset = header ? header.offsetHeight : 0;
     const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
 
-    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    window.scrollTo({
+      top: Math.max(0, top),
+      behavior: 'smooth'
+    });
+
     history.replaceState(null, '', window.location.pathname + window.location.search);
   }
 
-  document.addEventListener('click', cleanHashNavigation);
+  document.addEventListener('click', cleanHashNavigation, true);
+
+  // Sayfa açılırken URL'de eski bir hash varsa da temizle.
+  if (window.location.hash) {
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+  }
 })();
 </script>
