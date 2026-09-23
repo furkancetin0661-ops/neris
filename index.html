@@ -6147,3 +6147,30 @@ onAuthStateChanged(auth,function(user){
   window.openNerisSizeGuide=openNerisSizeGuide;
 })();
 </script>
+
+
+<script>
+(function () {
+  function cleanHashNavigation(e) {
+    const link = e.target.closest('a[href^="#"]');
+    if (!link) return;
+
+    const hash = link.getAttribute('href');
+    if (!hash || hash === '#') return;
+
+    const target = document.querySelector(hash);
+    if (!target) return;
+
+    e.preventDefault();
+
+    const header = document.querySelector('.navbar');
+    const offset = header ? header.offsetHeight : 0;
+    const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+
+    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+  }
+
+  document.addEventListener('click', cleanHashNavigation);
+})();
+</script>
