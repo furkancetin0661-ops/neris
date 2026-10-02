@@ -5546,6 +5546,7 @@ function closeMobileMenu() {
     persistentMultipleTabManager,
     collection,
     getDocs,
+    getDocsFromServer,
     doc,
     setDoc,
     deleteDoc,
@@ -5593,7 +5594,7 @@ import {
     // Firebase oturumuna güvenli şekilde erişebilmesi için global köprü.
     window.nerisDb = db;
     window.nerisAuth = auth;
-    window.nerisFirestore = { doc, getDoc, setDoc, deleteDoc, collection, getDocs };
+    window.nerisFirestore = { doc, getDoc, setDoc, deleteDoc, collection, getDocs, getDocsFromServer };
     window.nerisAuthStateReady = false;
     window.nerisCurrentUser = null;
 
@@ -5757,9 +5758,10 @@ import {
       try{
         const productsRef = collection(db, "Ürünler");
 
-        // Ürünleri Firebase'deki mevcut koleksiyondan al.
-        // Tarayıcı localStorage / Firestore cache'i ürün listesinin yerine geçmez.
-        const querySnapshot = await getDocs(productsRef);
+        // Ürün listesini HER SEFERİNDE Firestore sunucusundan al.
+        // Böylece Firebase'den silinen ürünler eski tarayıcı cache'inden
+        // tekrar ürün listesine dönmez.
+        const querySnapshot = await getDocsFromServer(productsRef);
 
         const products = [];
         querySnapshot.forEach((docSnap)=>{
