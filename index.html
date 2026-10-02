@@ -4733,6 +4733,7 @@ function openProductDetail(product){
   const normalizedProductName=String(name).toLocaleLowerCase('tr-TR');
   const isInciSatenProduct=normalizedProductName.includes('inci saten') && normalizedProductName.includes('takım');
   const isLunaSatenMaxiProduct=normalizedProductName.includes('luna saten maxi');
+  const isSafirTulumProduct=normalizedProductName.includes('safir tulum');
   nerisProductImages=getProductImages(product);
   if(!nerisProductImages.length) nerisProductImages=['https://picsum.photos/700/900'];
   nerisProductImageIndex=0;
@@ -4747,7 +4748,7 @@ function openProductDetail(product){
   if(productInfoFabric) productInfoFabric.textContent=product.kumas || product.fabric || 'Şifon';
   if(productInfoNeckline) productInfoNeckline.textContent=product.yaka || product.neckline || 'Balerin Yaka';
   if(productInfoFit) productInfoFit.textContent=product.kalip || product.fit || 'Standart Kalıp';
-  if(productInfoSizes) productInfoSizes.textContent=isInciSatenProduct ? 'S – M – L' : (isLunaSatenMaxiProduct ? '38 – 44' : '36 – 46');
+  if(productInfoSizes) productInfoSizes.textContent=isInciSatenProduct ? 'S – M – L' : ((isLunaSatenMaxiProduct || isSafirTulumProduct) ? '38 – 44' : '36 – 46');
   const rawPrice=String(product.fiyat||'0').replace(/[^0-9,.-]/g,'').replace(',', '.');
   const numericPrice=Number.parseFloat(rawPrice)||0;
   price.textContent=numericPrice.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})+' TL';
@@ -4757,12 +4758,13 @@ function openProductDetail(product){
   // BEDENLER ÜRÜNE ÖZELDİR:
   // İnci Saten Takım: yalnızca S / M / L.
   // Luna Saten Maxi Elbise: yalnızca 38 / 40 / 42 / 44.
+  // Safir Tulum: yalnızca 38 / 40 / 42 / 44.
   // Diğer ürünler: mevcut Neris standardı 36 / 38 / 40 / 42 / 44 / 46.
   const sizeOptions=document.getElementById('productSizeOptions');
   if(sizeOptions){
     const sizes=isInciSatenProduct
       ? ['S','M','L']
-      : (isLunaSatenMaxiProduct ? ['38','40','42','44'] : ['36','38','40','42','44','46']);
+      : ((isLunaSatenMaxiProduct || isSafirTulumProduct) ? ['38','40','42','44'] : ['36','38','40','42','44','46']);
 
     sizeOptions.innerHTML=sizes.map(size =>
       `<button class="product-size-btn" type="button" data-size="${size}">${size}</button>`
